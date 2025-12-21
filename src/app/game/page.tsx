@@ -1,0 +1,44 @@
+'use client';
+
+import React, { useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
+import { useSearchParams } from 'next/navigation';
+import type { Scene } from 'phaser';
+import type { RefPhaserGame } from '@/components/PhaserGame';
+
+const PhaserGame = dynamic(() => import('@/components/PhaserGame'), {
+  ssr: false,
+  loading: () => <p>Загрузка...</p>,
+});
+
+export default function GamePage() {
+  const searchParams = useSearchParams();
+  const phaserRef = useRef<RefPhaserGame | null>(null);
+
+  const playerName = searchParams.get('player') || 'Игрок';
+
+  const currentScene = (scene: Scene) => {
+    console.log(scene);
+  };
+
+  useEffect(() => {
+    console.log(phaserRef.current);
+  }, [phaserRef.current]);
+
+  return (
+    <div className="game-container">
+      <div className="game-ui-overlay">
+        <div className="player-info">
+          <span className="player-name">Игрок: {playerName}</span>
+          <button
+            onClick={() => (window.location.href = '/')}
+            className="exit-button"
+          >
+            ← Выйти в меню
+          </button>
+        </div>
+      </div>
+      <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
+    </div>
+  );
+}
