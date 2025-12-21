@@ -2,6 +2,7 @@
 
 import React, { memo } from 'react';
 import { SparklesCore } from '@/components/ui';
+import { cn } from '@/lib/utils';
 
 export const BackgroundParticles = memo(function BackgroundParticles() {
   return (
@@ -10,7 +11,7 @@ export const BackgroundParticles = memo(function BackgroundParticles() {
       minSize={0.6}
       maxSize={1.2}
       particleDensity={80}
-      className="absolute inset-0 w-full h-full pointer-events-none"
+      className={cn('absolute inset-0 w-full h-full pointer-events-none')}
       particleColor="#FFFFFF"
     />
   );

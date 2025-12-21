@@ -19,6 +19,7 @@ type ParticlesProps = {
   particleColor?: string;
   particleDensity?: number;
 };
+
 export const SparklesCore = (props: ParticlesProps) => {
   const {
     id,
@@ -31,14 +32,9 @@ export const SparklesCore = (props: ParticlesProps) => {
     particleDensity,
   } = props;
   const [init, setInit] = useState(false);
-  useEffect(() => {
-    initParticlesEngine(async (engine) => {
-      await loadSlim(engine);
-    }).then(() => {
-      setInit(true);
-    });
-  }, []);
+
   const controls = useAnimation();
+  const generatedId = useId();
 
   const particlesLoaded = async (container?: Container) => {
     if (container) {
@@ -51,7 +47,14 @@ export const SparklesCore = (props: ParticlesProps) => {
     }
   };
 
-  const generatedId = useId();
+  useEffect(() => {
+    initParticlesEngine(async (engine) => {
+      await loadSlim(engine);
+    }).then(() => {
+      setInit(true);
+    });
+  }, []);
+
   return (
     <motion.div animate={controls} className={cn('opacity-0', className)}>
       {init && (

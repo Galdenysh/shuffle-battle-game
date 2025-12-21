@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 import type { ChangeEvent, MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import clsx from 'clsx';
 import { BackgroundParticles, ErrorIcon } from './components';
+import { cn } from '@/lib/utils';
 import { PLAYER_NAME_LENGTH } from './constants';
 
 export default function MarketingPage() {
@@ -50,24 +50,32 @@ export default function MarketingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white flex flex-col items-center justify-center p-4 overflow-hidden">
+    <div
+      className={cn(
+        'min-h-screen bg-gradient-to-br from-gray-900 to-black text-white flex flex-col items-center justify-center p-4 overflow-hidden'
+      )}
+    >
       {/* Фон */}
       <BackgroundParticles />
 
-      <div className="relative z-10 w-full max-w-md mx-auto">
+      <div className={cn('relative z-10 w-full max-w-md mx-auto')}>
         {/* Заголовок */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-10"
+          className={cn('text-center mb-10')}
         >
-          <h1 className="text-5xl md:text-6xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-              SHUFFLE BATTLE
+          <h1 className={cn('text-5xl md:text-6xl font-bold mb-4')}>
+            <span
+              className={cn(
+                'bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent uppercase'
+              )}
+            >
+              Shuffle Battle
             </span>
           </h1>
-          <p className="text-lg text-gray-300">
+          <p className={cn('text-lg text-gray-300')}>
             Твой танцевальный вызов начинается здесь
           </p>
         </motion.div>
@@ -77,17 +85,19 @@ export default function MarketingPage() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 shadow-2xl"
+          className={cn(
+            'bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 shadow-2xl'
+          )}
         >
-          <div className="mb-8">
+          <div className={cn('mb-8')}>
             <label
               htmlFor="playerName"
-              className="block text-lg font-medium mb-3 text-gray-200"
+              className={cn('block text-lg font-medium mb-3 text-gray-200')}
             >
               Введи своё игровое имя
             </label>
 
-            <div className="relative">
+            <div className={cn('relative')}>
               <input
                 id="playerName"
                 type="text"
@@ -99,11 +109,13 @@ export default function MarketingPage() {
                 maxLength={PLAYER_NAME_LENGTH}
                 aria-invalid={!!error}
                 aria-describedby={error ? 'playerNameError' : undefined}
-                className="w-full px-5 py-4 bg-black/50 border-2 border-purple-500/50 rounded-xl text-white text-lg placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 transition-all"
+                className={cn(
+                  'w-full px-5 py-4 bg-black/50 border-2 border-purple-500/50 rounded-xl text-white text-lg placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 transition-all'
+                )}
               />
 
               <div
-                className={clsx(
+                className={cn(
                   'mt-2 flex gap-2 text-sm text-right',
                   error ? 'justify-between' : 'justify-end'
                 )}
@@ -114,14 +126,14 @@ export default function MarketingPage() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="text-red-400 flex items-center gap-1"
+                    className={cn('text-red-400 flex items-center gap-1')}
                   >
                     <ErrorIcon />
                     <span>{error}</span>
                   </motion.div>
                 )}
 
-                <div className="text-gray-400 text-right">
+                <div className={cn('text-gray-400 text-right')}>
                   {playerName.length}/{PLAYER_NAME_LENGTH}
                 </div>
               </div>
@@ -134,17 +146,23 @@ export default function MarketingPage() {
             whileTap={{ scale: 0.95 }}
             onClick={handleStartGame}
             disabled={isLoading}
-            className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl text-white text-xl font-bold shadow-lg shadow-purple-500/30 disabled:opacity-70 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3"
+            className={cn(
+              'w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl text-white text-xl font-bold shadow-lg shadow-purple-500/30 disabled:opacity-70 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3'
+            )}
           >
             {isLoading ? (
               <>
-                <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <div
+                  className={cn(
+                    'w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin'
+                  )}
+                />
                 Запуск игры...
               </>
             ) : (
               <>
-                <span className="text-2xl">🎮</span>
-                <span className="uppercase">Начать игру</span>
+                <span className={cn('text-2xl')}>🎮</span>
+                <span className={cn('uppercase')}>Начать игру</span>
               </>
             )}
           </motion.button>

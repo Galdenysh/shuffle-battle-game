@@ -1,8 +1,9 @@
 import React from 'react';
+import { cn } from '@/lib/utils';
 
 export const ErrorIcon = () => (
   <svg
-    className="w-4 h-4 flex-shrink-0"
+    className={cn('w-4 h-4 flex-shrink-0')}
     fill="currentColor"
     viewBox="0 0 20 20"
   >
