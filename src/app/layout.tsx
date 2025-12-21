@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import "@/styles/globals.css";
+import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Shuffle Battle | Phaser Game',
-  description: 'Танцевальный баттл по шаффлу на Phaser и Next.js',
+  title: 'Shuffle Battle Game',
+  description: 'Танцевальный баттл по шаффлу',
 };
 
 export default function RootLayout({
@@ -16,9 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
-      <body className={inter.className}>
-        {children}
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
