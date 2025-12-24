@@ -1,7 +1,6 @@
 import { Scene } from 'phaser';
 import { Player } from '../abstract';
 import type { CharacterType, Direction, PlayerConfig } from '../types';
-import { CHARACTER_ANIMATION_DEFAULTS } from '../constants';
 
 export class NetrunnerWoman extends Player {
   private static readonly DEFAULT_CONFIG: PlayerConfig = {
@@ -13,6 +12,7 @@ export class NetrunnerWoman extends Player {
     maxVelocity: 300,
     collideWorldBounds: true,
     drag: 800,
+    speedWalking: 200,
   };
 
   private static readonly WALK_DIRECTION_PREFIXES: Record<Direction, string> = {
@@ -35,27 +35,19 @@ export class NetrunnerWoman extends Player {
     super(scene, x, y, { ...NetrunnerWoman.DEFAULT_CONFIG, ...customConfig });
   }
 
-  protected setupAnimations(): void {
-    Object.entries(NetrunnerWoman.WALK_DIRECTION_PREFIXES).forEach(
-      ([direction, prefix]) => {
-        this.addWalkAnimation(direction as Direction, prefix);
-      }
-    );
-  }
-
-  private addWalkAnimation(direction: Direction, prefix: string): void {
-    this.addAnimation({
-      key: `walk_${direction}`,
-      prefix,
-      ...CHARACTER_ANIMATION_DEFAULTS,
-    });
-  }
-
   public getConfig(): PlayerConfig {
     return { ...this.config };
   }
 
   public getType(): CharacterType {
     return 'netrunner';
+  }
+
+  protected setupWalkAnimations(): void {
+    Object.entries(NetrunnerWoman.WALK_DIRECTION_PREFIXES).forEach(
+      ([direction, prefix]) => {
+        this.addWalkAnimation(direction as Direction, prefix);
+      }
+    );
   }
 }

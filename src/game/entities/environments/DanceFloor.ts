@@ -18,18 +18,16 @@ export class DanceFloor extends Background {
     super(scene, x, y, { ...DanceFloor.DEFAULT_CONFIG, ...customConfig });
   }
 
-  protected setupAnimations(): void {
-    console.log('setupAnimations');
+  public getConfig(): BackgroundConfig {
+    return { ...this.config };
+  }
 
+  protected setupAnimations(): void {
     this.addAnimation({
       key: DanceFloor.DEFAULT_CONFIG.animationKey,
       start: 0,
       end: 48,
       ...BACKGROUND_ANIMATION_DEFAULTS,
     });
-  }
-
-  public getConfig(): BackgroundConfig {
-    return { ...this.config };
   }
 }

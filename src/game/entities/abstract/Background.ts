@@ -9,14 +9,15 @@ export abstract class Background extends GameObjects.Sprite {
 
     this.config = config;
 
-    scene.add.existing(this);
-
     const scaleX = scene.cameras.main.width / this.width;
     const scaleY = scene.cameras.main.height / this.height;
     const scale = Math.max(scaleX, scaleY);
 
     this.setScale(scale);
     this.setPosition(scene.cameras.main.centerX, scene.cameras.main.centerY);
+
+    scene.add.existing(this);
+
     this.setupAnimations();
     this.play(config.animationKey);
   }

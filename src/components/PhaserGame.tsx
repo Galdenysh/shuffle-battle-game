@@ -58,7 +58,16 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
       };
     }, [currentActiveScene, ref]);
 
-    return <div id="phaser-game"></div>;
+    return (
+      <div
+        id="phaser-game"
+        style={{
+          opacity: 0,
+          transition: 'opacity 0.3s',
+          pointerEvents: 'none',
+        }}
+      ></div>
+    );
   }
 );
 

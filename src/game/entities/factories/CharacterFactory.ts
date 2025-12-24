@@ -1,4 +1,4 @@
-import { Scene } from 'phaser';
+import type { Scene } from 'phaser';
 import { Player } from '../abstract';
 import { NetrunnerWoman } from '../characters';
 import type { FactoryCharacterConfig } from '../types';

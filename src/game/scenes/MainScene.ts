@@ -1,22 +1,20 @@
 import { Scene } from 'phaser';
-import { Background, CharacterFactory, DanceFloor, Player } from '../entities';
-
-interface WASDKeys {
-  up: Phaser.Input.Keyboard.Key;
-  down: Phaser.Input.Keyboard.Key;
-  left: Phaser.Input.Keyboard.Key;
-  right: Phaser.Input.Keyboard.Key;
-}
+import {
+  CharacterFactory,
+  ControlScheme,
+  DanceFloor,
+  InputManager,
+  Player,
+  PlayerController,
+} from '../entities';
 
 export class MainScene extends Scene {
-  private background: DanceFloor;
   private player: Player;
-  private cursors: Phaser.Types.Input.Keyboard.CursorKeys | null;
-  private keys: WASDKeys | null;
-  private playArea: { x: number; y: number; width: number; height: number };
+  private inputManager: InputManager;
+  private playerController: PlayerController;
 
   constructor() {
-    super('MainScene');
+    super({ key: 'MainScene', visible: false });
   }
 
   preload() {
@@ -34,140 +32,21 @@ export class MainScene extends Scene {
   }
 
   create() {
-    this.background = new DanceFloor(this, 0, 0);
-
-    // this.playArea = {
-    //   x: 360,
-    //   y: 830,
-    //   width: 850,
-    //   height: 850,
-    // };
-
-    // const graphics = this.add.graphics();
-
-    // graphics.lineStyle(2, 0x00ff00, 0.5);
-
-    // graphics.strokePoints([
-    //   { x: this.playArea.x, y: this.playArea.y - this.playArea.height / 2 },
-    //   { x: this.playArea.x + this.playArea.width / 2, y: this.playArea.y },
-    //   { x: this.playArea.x, y: this.playArea.y + this.playArea.height / 2 },
-    //   { x: this.playArea.x - this.playArea.width / 2, y: this.playArea.y },
-    //   { x: this.playArea.x, y: this.playArea.y - this.playArea.height / 2 },
-    // ]);
+    new DanceFloor(this, 0, 0);
 
     this.player = CharacterFactory.create('netrunner', this, 400, 800);
 
-    this.cursors = this.input.keyboard?.createCursorKeys() ?? null;
+    this.inputManager = new InputManager(this, ControlScheme.BOTH);
 
-    this.keys =
-      (this.input.keyboard?.addKeys({
-        up: Phaser.Input.Keyboard.KeyCodes.W,
-        down: Phaser.Input.Keyboard.KeyCodes.S,
-        left: Phaser.Input.Keyboard.KeyCodes.A,
-        right: Phaser.Input.Keyboard.KeyCodes.D,
-      }) as WASDKeys) ?? null;
+    this.playerController = new PlayerController(
+      this.player,
+      this.inputManager
+    );
+
+    this.game.events.emit('scene-visible');
   }
 
   update() {
-    const player = this.player;
-    const area = this.playArea;
-    const cursors = this.cursors;
-    const keys = this.keys;
-    const speed = 200;
-
-    const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
-
-    playerBody.setVelocity(0);
-
-    let isMoving = false;
-
-    // const dx = Math.abs(player.x - area.x) / (area.width / 2);
-    // const dy = Math.abs(player.y - area.y) / (area.height / 2);
-
-    // if (dx + dy > 1) {
-    //   const angle = Math.atan2(player.y - area.y, player.x - area.x);
-    //   const rx = (area.width / 2) * Math.cos(angle);
-    //   const ry = (area.height / 2) * Math.sin(angle);
-
-    //   player.x = area.x + rx * 0.95;
-    //   player.y = area.y + ry * 0.95;
-
-    //   playerBody.setVelocity(0);
-    // }
-
-    if (!cursors || !keys) return;
-
-    // Диагональ: ВВЕРХ-ВПРАВО (СЕВЕРО-ВОСТОК)
-    if (
-      (cursors.up.isDown || keys.up.isDown) &&
-      (cursors.right.isDown || keys.right.isDown)
-    ) {
-      playerBody.setVelocity(speed * 0.7, -speed * 0.7);
-      player.play('walk_north_east', true);
-      isMoving = true;
-    }
-    // Диагональ: ВВЕРХ-ВЛЕВО (СЕВЕРО-ЗАПАД)
-    else if (
-      (cursors.up.isDown || keys.up.isDown) &&
-      (cursors.left.isDown || keys.left.isDown)
-    ) {
-      playerBody.setVelocity(-speed * 0.7, -speed * 0.7);
-      player.play('walk_north_west', true);
-      isMoving = true;
-    }
-    // Диагональ: ВНИЗ-ВПРАВО (ЮГО-ВОСТОК)
-    else if (
-      (cursors.down.isDown || keys.down.isDown) &&
-      (cursors.right.isDown || keys.right.isDown)
-    ) {
-      playerBody.setVelocity(speed * 0.7, speed * 0.7);
-      player.play('walk_south_east', true);
-      isMoving = true;
-    }
-    // Диагональ: ВНИЗ-ВЛЕВО (ЮГО-ЗАПАД)
-    else if (
-      (cursors.down.isDown || keys.down.isDown) &&
-      (cursors.left.isDown || keys.left.isDown)
-    ) {
-      playerBody.setVelocity(-speed * 0.7, speed * 0.7);
-      player.play('walk_south_west', true);
-      isMoving = true;
-    }
-    // ВЛЕВО (ЗАПАД)
-    else if (cursors.left.isDown || keys.left.isDown) {
-      playerBody.setVelocityX(-speed);
-      player.play('walk_west', true);
-      isMoving = true;
-    }
-    // ВПРАВО (ВОСТОК)
-    else if (cursors.right.isDown || keys.right.isDown) {
-      playerBody.setVelocityX(speed);
-      player.play('walk_east', true);
-      isMoving = true;
-    }
-    // ВВЕРХ (СЕВЕР)
-    else if (cursors.up.isDown || keys.up.isDown) {
-      playerBody.setVelocityY(-speed);
-      player.play('walk_north', true);
-      isMoving = true;
-    }
-    // ВНИЗ (ЮГ)
-    else if (cursors.down.isDown || keys.down.isDown) {
-      playerBody.setVelocityY(speed);
-      player.play('walk_south', true);
-      isMoving = true;
-    }
-
-    // Если игрок не двигается, останавливаем анимацию
-    if (!isMoving) {
-      player.anims.stop();
-    }
-  }
-
-  private getPlayerName(): string {
-    // Получаем имя из URL (упрощенный вариант)
-    const urlParams = new URLSearchParams(window.location.search);
-
-    return urlParams.get('player') || 'Игрок';
+    this.playerController.update();
   }
 }
