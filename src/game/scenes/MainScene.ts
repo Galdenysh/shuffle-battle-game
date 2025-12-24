@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import { CharacterFactory, Player } from '../entities';
 
 interface IWASDKeys {
   up: Phaser.Input.Keyboard.Key;
@@ -9,7 +10,7 @@ interface IWASDKeys {
 
 export class MainScene extends Scene {
   private background: Phaser.GameObjects.Sprite;
-  private player: Phaser.GameObjects.Sprite;
+  private player: Player;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys | null;
   private keys: IWASDKeys | null;
   private playArea: { x: number; y: number; width: number; height: number };
@@ -58,153 +59,26 @@ export class MainScene extends Scene {
 
     this.background.play('dance_floor_anim');
 
-    this.playArea = {
-      x: 360,
-      y: 830,
-      width: 850,
-      height: 850,
-    };
+    // this.playArea = {
+    //   x: 360,
+    //   y: 830,
+    //   width: 850,
+    //   height: 850,
+    // };
 
-    const graphics = this.add.graphics();
+    // const graphics = this.add.graphics();
 
-    graphics.lineStyle(2, 0x00ff00, 0.5);
+    // graphics.lineStyle(2, 0x00ff00, 0.5);
 
-    graphics.strokePoints([
-      { x: this.playArea.x, y: this.playArea.y - this.playArea.height / 2 },
-      { x: this.playArea.x + this.playArea.width / 2, y: this.playArea.y },
-      { x: this.playArea.x, y: this.playArea.y + this.playArea.height / 2 },
-      { x: this.playArea.x - this.playArea.width / 2, y: this.playArea.y },
-      { x: this.playArea.x, y: this.playArea.y - this.playArea.height / 2 },
-    ]);
+    // graphics.strokePoints([
+    //   { x: this.playArea.x, y: this.playArea.y - this.playArea.height / 2 },
+    //   { x: this.playArea.x + this.playArea.width / 2, y: this.playArea.y },
+    //   { x: this.playArea.x, y: this.playArea.y + this.playArea.height / 2 },
+    //   { x: this.playArea.x - this.playArea.width / 2, y: this.playArea.y },
+    //   { x: this.playArea.x, y: this.playArea.y - this.playArea.height / 2 },
+    // ]);
 
-    // east
-    this.anims.create({
-      key: 'walk_east',
-      frames: this.anims.generateFrameNames('character_netrunner_woman', {
-        prefix: 'walking-6-frames/east/frame_',
-        start: 0,
-        end: 5,
-        zeroPad: 3,
-        suffix: '.png',
-      }),
-      frameRate: 12,
-      repeat: -1,
-    });
-
-    // north-east
-    this.anims.create({
-      key: 'walk_north_east',
-      frames: this.anims.generateFrameNames('character_netrunner_woman', {
-        prefix: 'walking-6-frames/north-east/frame_',
-        start: 0,
-        end: 5,
-        zeroPad: 3,
-        suffix: '.png',
-      }),
-      frameRate: 12,
-      repeat: -1,
-    });
-
-    // north-west
-    this.anims.create({
-      key: 'walk_north_west',
-      frames: this.anims.generateFrameNames('character_netrunner_woman', {
-        prefix: 'walking-6-frames/north-west/frame_',
-        start: 0,
-        end: 5,
-        zeroPad: 3,
-        suffix: '.png',
-      }),
-      frameRate: 12,
-      repeat: -1,
-    });
-
-    // north
-    this.anims.create({
-      key: 'walk_north',
-      frames: this.anims.generateFrameNames('character_netrunner_woman', {
-        prefix: 'walking-6-frames/north/frame_',
-        start: 0,
-        end: 5,
-        zeroPad: 3,
-        suffix: '.png',
-      }),
-      frameRate: 12,
-      repeat: -1,
-    });
-
-    // south-east
-    this.anims.create({
-      key: 'walk_south_east',
-      frames: this.anims.generateFrameNames('character_netrunner_woman', {
-        prefix: 'walking-6-frames/south-east/frame_',
-        start: 0,
-        end: 5,
-        zeroPad: 3,
-        suffix: '.png',
-      }),
-      frameRate: 12,
-      repeat: -1,
-    });
-
-    // south-west
-    this.anims.create({
-      key: 'walk_south_west',
-      frames: this.anims.generateFrameNames('character_netrunner_woman', {
-        prefix: 'walking-6-frames/south-west/frame_',
-        start: 0,
-        end: 5,
-        zeroPad: 3,
-        suffix: '.png',
-      }),
-      frameRate: 12,
-      repeat: -1,
-    });
-
-    // south
-    this.anims.create({
-      key: 'walk_south',
-      frames: this.anims.generateFrameNames('character_netrunner_woman', {
-        prefix: 'walking-6-frames/south/frame_',
-        start: 0,
-        end: 5,
-        zeroPad: 3,
-        suffix: '.png',
-      }),
-      frameRate: 12,
-      repeat: -1,
-    });
-
-    // west
-    this.anims.create({
-      key: 'walk_west',
-      frames: this.anims.generateFrameNames('character_netrunner_woman', {
-        prefix: 'walking-6-frames/west/frame_',
-        start: 0,
-        end: 5,
-        zeroPad: 3,
-        suffix: '.png',
-      }),
-      frameRate: 12,
-      repeat: -1,
-    });
-
-    this.player = this.physics.add.sprite(
-      400,
-      800,
-      'character_netrunner_woman',
-      'walking-6-frames/south/frame_000.png'
-    );
-
-    const playerBody = this.player.body as Phaser.Physics.Arcade.Body;
-
-    playerBody.setSize(this.player.width * 0.4, this.player.height * 0.8, true);
-    playerBody.setCollideWorldBounds(true);
-    playerBody.setMaxSpeed(300);
-
-    this.player.setOrigin(0.5, 0.5);
-    this.player.setScale(4);
-    this.player.play('walk_south');
+    this.player = CharacterFactory.create('netrunner', this, 400, 800);
 
     this.cursors = this.input.keyboard?.createCursorKeys() ?? null;
 
@@ -215,8 +89,6 @@ export class MainScene extends Scene {
         left: Phaser.Input.Keyboard.KeyCodes.A,
         right: Phaser.Input.Keyboard.KeyCodes.D,
       }) as IWASDKeys) ?? null;
-
-    console.log('Keyboard доступен:', this.input.keyboard);
   }
 
   update() {
@@ -232,19 +104,19 @@ export class MainScene extends Scene {
 
     let isMoving = false;
 
-    const dx = Math.abs(player.x - area.x) / (area.width / 2);
-    const dy = Math.abs(player.y - area.y) / (area.height / 2);
+    // const dx = Math.abs(player.x - area.x) / (area.width / 2);
+    // const dy = Math.abs(player.y - area.y) / (area.height / 2);
 
-    if (dx + dy > 1) {
-      const angle = Math.atan2(player.y - area.y, player.x - area.x);
-      const rx = (area.width / 2) * Math.cos(angle);
-      const ry = (area.height / 2) * Math.sin(angle);
+    // if (dx + dy > 1) {
+    //   const angle = Math.atan2(player.y - area.y, player.x - area.x);
+    //   const rx = (area.width / 2) * Math.cos(angle);
+    //   const ry = (area.height / 2) * Math.sin(angle);
 
-      player.x = area.x + rx * 0.95;
-      player.y = area.y + ry * 0.95;
+    //   player.x = area.x + rx * 0.95;
+    //   player.y = area.y + ry * 0.95;
 
-      playerBody.setVelocity(0);
-    }
+    //   playerBody.setVelocity(0);
+    // }
 
     if (!cursors || !keys) return;
 
