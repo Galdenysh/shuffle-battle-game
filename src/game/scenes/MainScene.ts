@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
-import { CharacterFactory, Player } from '../entities';
+import { Background, CharacterFactory, DanceFloor, Player } from '../entities';
 
-interface IWASDKeys {
+interface WASDKeys {
   up: Phaser.Input.Keyboard.Key;
   down: Phaser.Input.Keyboard.Key;
   left: Phaser.Input.Keyboard.Key;
@@ -9,10 +9,10 @@ interface IWASDKeys {
 }
 
 export class MainScene extends Scene {
-  private background: Phaser.GameObjects.Sprite;
+  private background: DanceFloor;
   private player: Player;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys | null;
-  private keys: IWASDKeys | null;
+  private keys: WASDKeys | null;
   private playArea: { x: number; y: number; width: number; height: number };
 
   constructor() {
@@ -34,30 +34,7 @@ export class MainScene extends Scene {
   }
 
   create() {
-    this.anims.create({
-      key: 'dance_floor_anim',
-      frames: this.anims.generateFrameNumbers('background_anim', {
-        start: 0,
-        end: 48,
-      }),
-      frameRate: 12,
-      repeat: -1,
-    });
-
-    this.background = this.add.sprite(0, 0, 'background_anim');
-
-    const scaleX = this.cameras.main.width / this.background.width;
-    const scaleY = this.cameras.main.height / this.background.height;
-    const scale = Math.max(scaleX, scaleY);
-
-    this.background.setScale(scale);
-
-    this.background.setPosition(
-      this.cameras.main.centerX,
-      this.cameras.main.centerY
-    );
-
-    this.background.play('dance_floor_anim');
+    this.background = new DanceFloor(this, 0, 0);
 
     // this.playArea = {
     //   x: 360,
@@ -88,7 +65,7 @@ export class MainScene extends Scene {
         down: Phaser.Input.Keyboard.KeyCodes.S,
         left: Phaser.Input.Keyboard.KeyCodes.A,
         right: Phaser.Input.Keyboard.KeyCodes.D,
-      }) as IWASDKeys) ?? null;
+      }) as WASDKeys) ?? null;
   }
 
   update() {

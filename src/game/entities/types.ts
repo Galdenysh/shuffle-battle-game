@@ -12,8 +12,8 @@ export type CharacterType = 'netrunner' | 'hoodie';
 
 export interface PlayerConfig {
   textureKey: string;
+  defaultAnimationKey: string;
   scale: number;
-  defaultAnimation: string;
   colliderScaleX: number;
   colliderScaleY: number;
   maxVelocity: number;
@@ -21,15 +21,20 @@ export interface PlayerConfig {
   drag: number;
 }
 
+export interface BackgroundConfig {
+  textureKey: string;
+  animationKey: string;
+}
+
 export interface AnimationConfig {
   key: string;
-  prefix: string;
   start: number;
   end: number;
-  zeroPad: number;
   frameRate: number;
-  repeat?: number;
+  prefix?: string;
+  zeroPad?: number;
   suffix?: string;
+  repeat?: number;
   yoyo?: boolean;
 }
 

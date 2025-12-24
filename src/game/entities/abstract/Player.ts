@@ -17,16 +17,21 @@ export abstract class Player extends Physics.Arcade.Sprite {
     this.setOrigin(0.5, 0.5);
     this.setupPhysics();
     this.setupAnimations();
-    this.play(config.defaultAnimation);
+    this.play(config.defaultAnimationKey);
   }
 
-  protected addAnimation(config: AnimationConfig): void {
+  protected addAnimation(
+    config: AnimationConfig & {
+      prefix: Required<AnimationConfig['prefix']>;
+      zeroPad: Required<AnimationConfig['zeroPad']>;
+    }
+  ): void {
     this.scene.anims.create({
       key: config.key,
       frames: this.scene.anims.generateFrameNames(this.config.textureKey, {
-        prefix: config.prefix,
         start: config.start,
         end: config.end,
+        prefix: config.prefix,
         zeroPad: config.zeroPad,
         suffix: config.suffix || '.png',
       }),

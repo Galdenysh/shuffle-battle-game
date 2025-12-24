@@ -1,13 +1,13 @@
 import { Scene } from 'phaser';
 import { Player } from '../abstract';
 import type { CharacterType, Direction, PlayerConfig } from '../types';
-import { ANIMATION_DEFAULTS } from '../constants';
+import { CHARACTER_ANIMATION_DEFAULTS } from '../constants';
 
 export class NetrunnerWoman extends Player {
   private static readonly DEFAULT_CONFIG: PlayerConfig = {
     textureKey: 'character_netrunner_woman',
+    defaultAnimationKey: 'walk_south',
     scale: 4,
-    defaultAnimation: 'walk_south',
     colliderScaleX: 0.4,
     colliderScaleY: 0.8,
     maxVelocity: 300,
@@ -47,7 +47,7 @@ export class NetrunnerWoman extends Player {
     this.addAnimation({
       key: `walk_${direction}`,
       prefix,
-      ...ANIMATION_DEFAULTS,
+      ...CHARACTER_ANIMATION_DEFAULTS,
     });
   }
 
