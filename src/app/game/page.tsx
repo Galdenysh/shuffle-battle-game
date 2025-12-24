@@ -17,14 +17,6 @@ export default function GamePage() {
 
   const playerName = searchParams.get('player') || 'Игрок';
 
-  const currentScene = (scene: Scene) => {
-    console.log(scene);
-  };
-
-  useEffect(() => {
-    console.log(phaserRef.current);
-  }, [phaserRef.current]);
-
   return (
     <div className="game-container">
       <div className="game-ui-overlay">
@@ -38,7 +30,7 @@ export default function GamePage() {
           </button>
         </div>
       </div>
-      <PhaserGame ref={phaserRef} currentActiveScene={currentScene} />
+      <PhaserGame ref={phaserRef} />
     </div>
   );
 }
