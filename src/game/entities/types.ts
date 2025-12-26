@@ -20,8 +20,11 @@ interface PlayerVisualConfig {
 interface PlayerPhysicConfig {
   colliderScaleX: number;
   colliderScaleY: number;
+  colliderOffsetX: number;
+  colliderOffsetY: number;
   maxVelocity: number;
   collideWorldBounds: boolean;
+  pushable: boolean;
   drag: number;
 }
 
@@ -34,9 +37,18 @@ export interface PlayerConfig
     PlayerPhysicConfig,
     PlayerStatsConfig {}
 
+export interface TileConfig {
+  tilemapKey: string;
+  tilesetKey: string;
+  tilesetName: string;
+}
+
 export interface BackgroundConfig {
   textureKey: string;
   animationKey: string;
+  tilemapKey: TileConfig['tilemapKey'];
+  tilesetKey: TileConfig['tilesetKey'];
+  tilesetName: TileConfig['tilesetName'];
 }
 
 export interface AnimationConfig {

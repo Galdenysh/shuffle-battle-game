@@ -7,15 +7,18 @@ import { CHARACTER_ANIMATION_DEFAULTS } from '../constants';
 export abstract class Player extends Physics.Arcade.Sprite {
   protected config: PlayerConfig;
   protected currentDirection: Direction;
+  protected lastDepthY: number;
 
   constructor(scene: Scene, x: number, y: number, config: PlayerConfig) {
     super(scene, x, y, config.textureKey);
 
     this.config = config;
     this.currentDirection = config.defaultDirection;
+    this.lastDepthY = this.y;
 
     this.setScale(config.scale || 1);
     this.setOrigin(0.5, 0.5);
+    this.setDepth(this.y);
 
     scene.add.existing(this);
     scene.physics.add.existing(this, false);
@@ -26,10 +29,25 @@ export abstract class Player extends Physics.Arcade.Sprite {
     this.playIdleAnimation();
   }
 
+  public updateDepth(): void {
+    const currentY = Math.floor(this.y);
+
+    if (currentY !== this.lastDepthY) {
+      this.setDepth(this.y);
+      this.lastDepthY = currentY;
+    }
+  }
+
   public stopMovement(): void {
     const body = this.body as Physics.Arcade.Body | null;
 
-    if (!body) return;
+    if (!body) {
+      console.warn(
+        `⚠️ Physics body не инициализирован в ${this.constructor.name}`
+      );
+
+      return;
+    }
 
     body.setVelocity(0);
 
@@ -46,7 +64,13 @@ export abstract class Player extends Physics.Arcade.Sprite {
 
     const body = this.body as Physics.Arcade.Body | null;
 
-    if (!body) return;
+    if (!body) {
+      console.warn(
+        `⚠️ Physics body не инициализирован в ${this.constructor.name}`
+      );
+
+      return;
+    }
 
     body.setVelocity(velocity.x, velocity.y);
 
@@ -75,8 +99,12 @@ export abstract class Player extends Physics.Arcade.Sprite {
   }
 
   protected addIdleAnimation(direction: Direction, prefix: string): void {
+    const animationKey = `idle_${direction}`;
+
+    if (this.scene.anims.exists(animationKey)) return;
+
     this.addAnimation({
-      key: `idle_${direction}`,
+      key: animationKey,
       prefix,
       start: 0,
       end: 3,
@@ -86,8 +114,12 @@ export abstract class Player extends Physics.Arcade.Sprite {
   }
 
   protected addWalkAnimation(direction: Direction, prefix: string): void {
+    const animationKey = `walk_${direction}`;
+
+    if (this.scene.anims.exists(animationKey)) return;
+
     this.addAnimation({
-      key: `walk_${direction}`,
+      key: animationKey,
       prefix,
       start: 0,
       end: 5,
@@ -97,14 +129,24 @@ export abstract class Player extends Physics.Arcade.Sprite {
   }
 
   protected setupPhysics(): void {
-    const body = this.body as Phaser.Physics.Arcade.Body | null;
+    const body = this.body as Physics.Arcade.Body | null;
     const width = this.width * this.config.colliderScaleX;
     const height = this.height * this.config.colliderScaleY;
+    const offsetX = (this.width - width) / 2 + this.config.colliderOffsetX;
+    const offsetY = (this.height - height) / 2 + this.config.colliderOffsetY;
 
-    if (!body) return;
+    if (!body) {
+      console.warn(
+        `⚠️ Physics body не инициализирован в ${this.constructor.name}`
+      );
 
-    body.setSize(width, height, true);
+      return;
+    }
+
+    body.setSize(Math.round(width), Math.round(height), true);
+    body.setOffset(Math.round(offsetX), Math.round(offsetY));
     body.setCollideWorldBounds(this.config.collideWorldBounds);
+    body.pushable = this.config.pushable;
     body.setMaxVelocity(this.config.maxVelocity);
     body.setDrag(this.config.drag);
   }

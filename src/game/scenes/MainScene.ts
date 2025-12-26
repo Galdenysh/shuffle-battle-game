@@ -9,6 +9,7 @@ import {
 } from '../entities';
 
 export class MainScene extends Scene {
+  private background: DanceFloor;
   private player: Player;
   private inputManager: InputManager;
   private playerController: PlayerController;
@@ -20,8 +21,15 @@ export class MainScene extends Scene {
   preload() {
     this.load.spritesheet(
       'background_anim',
-      'assets/dance_floor_spritesheet_720x1280px_49f.png',
+      'assets/environment/dance_floor_spritesheet_720x1280px_49f.png',
       { frameWidth: 720, frameHeight: 1280 }
+    );
+
+    this.load.image('collision_tiles', 'assets/environment/tileset_dev.png');
+
+    this.load.tilemapTiledJSON(
+      'collision_map',
+      'assets/environment/tilemap.json'
     );
 
     this.load.atlas(
@@ -38,9 +46,15 @@ export class MainScene extends Scene {
   }
 
   create() {
-    new DanceFloor(this, 0, 0);
+    this.background = new DanceFloor(this, 0, 0);
 
     this.player = CharacterFactory.create('nomadmechanic_man', this, 400, 800);
+
+    const wallsLayer = this.background.getWallsLayer();
+
+    if (wallsLayer) {
+      this.physics.add.collider(this.player, wallsLayer);
+    }
 
     this.inputManager = new InputManager(this, ControlScheme.BOTH);
 
@@ -54,5 +68,6 @@ export class MainScene extends Scene {
 
   update() {
     this.playerController.update();
+    this.player.updateDepth();
   }
 }

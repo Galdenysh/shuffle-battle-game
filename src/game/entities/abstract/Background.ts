@@ -1,13 +1,15 @@
-import { GameObjects, Scene } from 'phaser';
-import type { AnimationConfig, BackgroundConfig } from '../types';
+import { GameObjects, Scene, Tilemaps } from 'phaser';
+import type { AnimationConfig, BackgroundConfig, TileConfig } from '../types';
 
 export abstract class Background extends GameObjects.Sprite {
   protected config: BackgroundConfig;
+  protected defaultScene: Scene;
 
   constructor(scene: Scene, x: number, y: number, config: BackgroundConfig) {
     super(scene, x, y, config.textureKey);
 
     this.config = config;
+    this.defaultScene = scene;
 
     const scaleX = scene.cameras.main.width / this.width;
     const scaleY = scene.cameras.main.height / this.height;
@@ -19,6 +21,7 @@ export abstract class Background extends GameObjects.Sprite {
     scene.add.existing(this);
 
     this.setupAnimations();
+    this.setupPhysic();
     this.play(config.animationKey);
   }
 
@@ -35,5 +38,17 @@ export abstract class Background extends GameObjects.Sprite {
     });
   }
 
+  protected addTileset(config: TileConfig): {
+    map: Tilemaps.Tilemap;
+    tileset: Tilemaps.Tileset | null;
+  } {
+    const map = this.defaultScene.make.tilemap({ key: config.tilemapKey });
+    const tileset = map.addTilesetImage(config.tilesetName, config.tilesetKey);
+
+    return { map, tileset };
+  }
+
   protected abstract setupAnimations(): void;
+
+  protected abstract setupPhysic(): void;
 }
