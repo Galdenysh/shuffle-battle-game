@@ -19,13 +19,16 @@ export class MainScene extends Scene {
   }
 
   preload() {
+    this.load.image('background', 'assets/environment/background.png');
+    this.load.image('foreground', 'assets/environment/foreground.png');
+
     this.load.spritesheet(
       'background_anim',
-      'assets/environment/dance_floor_spritesheet_720x1280px_49f.png',
+      'assets/environment/spritesheet_720x1280px_24f.png',
       { frameWidth: 720, frameHeight: 1280 }
     );
 
-    this.load.image('collision_tiles', 'assets/environment/tileset_dev.png');
+    this.load.image('collision_tiles', 'assets/environment/tileset.png');
 
     this.load.tilemapTiledJSON(
       'collision_map',

@@ -5,7 +5,9 @@ import { BACKGROUND_ANIMATION_DEFAULTS } from '../constants';
 
 export class DanceFloor extends Background {
   private static readonly DEFAULT_CONFIG: BackgroundConfig = {
-    textureKey: 'background_anim',
+    textureSritesheetKey: 'background_anim',
+    textureBackgroundKey: 'background',
+    textureForegroundKey: 'foreground',
     animationKey: 'dance_floor_anim',
     tilemapKey: 'collision_map',
     tilesetKey: 'collision_tiles',
@@ -31,13 +33,25 @@ export class DanceFloor extends Background {
     return this.wallsLayer;
   }
 
+  protected setupBackground(): void {
+    this.addImage(this.config.textureBackgroundKey).setDepth(-100);
+  }
+
+  protected setupForeground(): void {
+    this.addImage(this.config.textureForegroundKey).setDepth(2000);
+  }
+
   protected setupAnimations(): void {
-    this.addAnimation({
+    const anim = this.addAnimation({
       key: this.config.animationKey,
       start: 0,
-      end: 48,
+      end: 23,
       ...BACKGROUND_ANIMATION_DEFAULTS,
     });
+
+    // if (anim) {
+    //   anim.
+    // }
   }
 
   protected setupPhysic(): void {

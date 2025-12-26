@@ -1,4 +1,4 @@
-import { GameObjects, Scene, Tilemaps } from 'phaser';
+import { Animations, GameObjects, Scene, Tilemaps } from 'phaser';
 import type { AnimationConfig, BackgroundConfig, TileConfig } from '../types';
 
 export abstract class Background extends GameObjects.Sprite {
@@ -6,7 +6,7 @@ export abstract class Background extends GameObjects.Sprite {
   protected defaultScene: Scene;
 
   constructor(scene: Scene, x: number, y: number, config: BackgroundConfig) {
-    super(scene, x, y, config.textureKey);
+    super(scene, x, y, config.textureSritesheetKey);
 
     this.config = config;
     this.defaultScene = scene;
@@ -20,18 +20,29 @@ export abstract class Background extends GameObjects.Sprite {
 
     scene.add.existing(this);
 
+    this.setupBackground();
+    this.setupForeground();
     this.setupAnimations();
     this.setupPhysic();
     this.play(config.animationKey);
   }
 
-  protected addAnimation(config: AnimationConfig): void {
-    this.scene.anims.create({
+  protected addImage(textureKey: string): GameObjects.Image {
+    return this.scene.add.image(0, 0, textureKey).setOrigin(0, 0);
+  }
+
+  protected addAnimation(
+    config: AnimationConfig
+  ): false | Animations.Animation {
+    return this.scene.anims.create({
       key: config.key,
-      frames: this.scene.anims.generateFrameNumbers(this.config.textureKey, {
-        start: config.start,
-        end: config.end,
-      }),
+      frames: this.scene.anims.generateFrameNumbers(
+        this.config.textureSritesheetKey,
+        {
+          start: config.start,
+          end: config.end,
+        }
+      ),
       frameRate: config.frameRate,
       repeat: config.repeat ?? -1,
       yoyo: config.yoyo ?? false,
@@ -47,6 +58,10 @@ export abstract class Background extends GameObjects.Sprite {
 
     return { map, tileset };
   }
+
+  protected abstract setupBackground(): void;
+
+  protected abstract setupForeground(): void;
 
   protected abstract setupAnimations(): void;
 

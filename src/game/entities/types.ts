@@ -44,7 +44,9 @@ export interface TileConfig {
 }
 
 export interface BackgroundConfig {
-  textureKey: string;
+  textureSritesheetKey: string;
+  textureBackgroundKey: string;
+  textureForegroundKey: string;
   animationKey: string;
   tilemapKey: TileConfig['tilemapKey'];
   tilesetKey: TileConfig['tilesetKey'];
