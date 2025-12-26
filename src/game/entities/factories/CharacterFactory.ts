@@ -1,6 +1,6 @@
 import type { Scene } from 'phaser';
 import { Player } from '../abstract';
-import { NetrunnerWoman } from '../characters';
+import { NetrunnerWoman, NomadmechanicMan } from '../characters';
 import type { FactoryCharacterConfig } from '../types';
 
 export class CharacterFactory {
@@ -18,18 +18,18 @@ export class CharacterFactory {
     };
 
     switch (type) {
-      case 'netrunner':
-        return this.createNetrunner(scene, baseConfig, custom);
+      case 'netrunner_woman':
+        return this.createNetrunnerWoman(scene, baseConfig, custom);
 
-      // case 'hoodie':
-      //     return this.createHoodie(scene, baseConfig);
+      case 'nomadmechanic_man':
+          return this.createNomadmechanicMan(scene, baseConfig);
 
       default:
         console.warn(
           `Unknown character type: ${type}, using netrunner as fallback`
         );
 
-        return this.createNetrunner(scene, baseConfig, custom);
+        return this.createNetrunnerWoman(scene, baseConfig, custom);
     }
   }
 
@@ -42,11 +42,19 @@ export class CharacterFactory {
     );
   }
 
-  private static createNetrunner(
+  private static createNetrunnerWoman(
     scene: Scene,
     config: FactoryCharacterConfig,
     customConfig?: FactoryCharacterConfig['custom']
   ): NetrunnerWoman {
     return new NetrunnerWoman(scene, config.x, config.y, customConfig);
+  }
+
+    private static createNomadmechanicMan(
+    scene: Scene,
+    config: FactoryCharacterConfig,
+    customConfig?: FactoryCharacterConfig['custom']
+  ): NomadmechanicMan {
+    return new NomadmechanicMan(scene, config.x, config.y, customConfig);
   }
 }

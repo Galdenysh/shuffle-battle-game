@@ -9,11 +9,11 @@ export enum Direction {
   NORTH_WEST = 'north_west',
 }
 
-export type CharacterType = 'netrunner' | 'hoodie';
+export type CharacterType = 'netrunner_woman' | 'nomadmechanic_man';
 
 interface PlayerVisualConfig {
   textureKey: string;
-  defaultAnimationKey: string;
+  defaultDirection: Direction;
   scale: number;
 }
 

@@ -12,13 +12,13 @@ export class PlayerController {
   }
 
   public update(): void {
+    const direction = this.getDirectionFromInput();
+
     if (!this.input.isMoving) {
-      this.player.stop();
+      this.player.stopMovement();
 
       return;
     }
-
-    const direction = this.getDirectionFromInput();
 
     this.player.move(direction);
   }
@@ -39,4 +39,3 @@ export class PlayerController {
     return Direction.SOUTH;
   }
 }
-

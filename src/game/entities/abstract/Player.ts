@@ -12,6 +12,7 @@ export abstract class Player extends Physics.Arcade.Sprite {
     super(scene, x, y, config.textureKey);
 
     this.config = config;
+    this.currentDirection = config.defaultDirection;
 
     this.setScale(config.scale || 1);
     this.setOrigin(0.5, 0.5);
@@ -19,9 +20,20 @@ export abstract class Player extends Physics.Arcade.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this, false);
 
+    this.setupIdleAnimations();
     this.setupWalkAnimations();
     this.setupPhysics();
-    this.play(config.defaultAnimationKey);
+    this.playIdleAnimation();
+  }
+
+  public stopMovement(): void {
+    const body = this.body as Physics.Arcade.Body | null;
+
+    if (!body) return;
+
+    body.setVelocity(0);
+
+    this.playIdleAnimation();
   }
 
   public move(direction: Direction): void {
@@ -62,10 +74,24 @@ export abstract class Player extends Physics.Arcade.Sprite {
     });
   }
 
+  protected addIdleAnimation(direction: Direction, prefix: string): void {
+    this.addAnimation({
+      key: `idle_${direction}`,
+      prefix,
+      start: 0,
+      end: 3,
+      frameRate: 6,
+      ...CHARACTER_ANIMATION_DEFAULTS,
+    });
+  }
+
   protected addWalkAnimation(direction: Direction, prefix: string): void {
     this.addAnimation({
       key: `walk_${direction}`,
       prefix,
+      start: 0,
+      end: 5,
+      frameRate: 8,
       ...CHARACTER_ANIMATION_DEFAULTS,
     });
   }
@@ -83,7 +109,13 @@ export abstract class Player extends Physics.Arcade.Sprite {
     body.setDrag(this.config.drag);
   }
 
+  protected abstract setupIdleAnimations(): void;
+
   protected abstract setupWalkAnimations(): void;
+
+  private playIdleAnimation(): void {
+    this.play(`idle_${this.currentDirection}`, true);
+  }
 
   private playWalkAnimation(): void {
     this.play(`walk_${this.currentDirection}`, true);

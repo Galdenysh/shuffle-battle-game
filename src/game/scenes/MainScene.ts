@@ -14,7 +14,7 @@ export class MainScene extends Scene {
   private playerController: PlayerController;
 
   constructor() {
-    super({ key: 'MainScene', visible: false });
+    super('MainScene');
   }
 
   preload() {
@@ -29,12 +29,18 @@ export class MainScene extends Scene {
       'assets/characters/netrunner_woman/texture.png',
       'assets/characters/netrunner_woman/texture.json'
     );
+
+    this.load.atlas(
+      'character_nomadmechanic_man',
+      'assets/characters/nomadmechanic_man/texture.png',
+      'assets/characters/nomadmechanic_man/texture.json'
+    );
   }
 
   create() {
     new DanceFloor(this, 0, 0);
 
-    this.player = CharacterFactory.create('netrunner', this, 400, 800);
+    this.player = CharacterFactory.create('nomadmechanic_man', this, 400, 800);
 
     this.inputManager = new InputManager(this, ControlScheme.BOTH);
 
