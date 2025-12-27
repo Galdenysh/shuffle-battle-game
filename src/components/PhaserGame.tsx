@@ -1,6 +1,6 @@
 'use client';
 
-import { EventBus } from '@/game/EventBus';
+import { EventBus } from '@/game/core';
 import StartGame from '@/game/main';
 import type { Game, Scene } from 'phaser';
 import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';

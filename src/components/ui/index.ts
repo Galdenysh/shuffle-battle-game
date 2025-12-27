@@ -1,1 +1,1 @@
-export * from './sparkles';
+export * from './SparklesCore';

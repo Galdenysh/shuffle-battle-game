@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useId } from 'react';
+import type { FC } from 'react';
 import { useEffect, useState } from 'react';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
 import type { Container, SingleOrMultiple } from '@tsparticles/engine';
@@ -20,7 +21,7 @@ type ParticlesProps = {
   particleDensity?: number;
 };
 
-export const SparklesCore = (props: ParticlesProps) => {
+export const SparklesCore: FC<ParticlesProps> = (props) => {
   const {
     id,
     className,

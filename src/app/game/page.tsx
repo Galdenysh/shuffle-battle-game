@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
-import type { Scene } from 'phaser';
 import type { RefPhaserGame } from '@/components/PhaserGame';
 
 const PhaserGame = dynamic(() => import('@/components/PhaserGame'), {

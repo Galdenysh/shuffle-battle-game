@@ -1,7 +1,8 @@
 import React from 'react';
+import type { FC } from 'react';
 import { cn } from '@/lib/utils';
 
-export const ErrorIcon = () => (
+export const ErrorIcon: FC = () => (
   <svg
     className={cn('w-4 h-4 flex-shrink-0')}
     fill="currentColor"

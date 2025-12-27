@@ -4,9 +4,9 @@ import React, { useState } from 'react';
 import type { ChangeEvent, MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { BackgroundParticles, ErrorIcon } from './components';
 import { cn } from '@/lib/utils';
 import { PLAYER_NAME_LENGTH } from './constants';
+import { BackgroundParticles, ErrorIcon } from './components';
 
 export default function MarketingPage() {
   const router = useRouter();
