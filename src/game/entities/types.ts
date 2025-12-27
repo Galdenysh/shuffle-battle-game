@@ -51,6 +51,7 @@ export interface BackgroundConfig {
   tilemapKey: TileConfig['tilemapKey'];
   tilesetKey: TileConfig['tilesetKey'];
   tilesetName: TileConfig['tilesetName'];
+  animationDepth: number;
 }
 
 export interface AnimationConfig {

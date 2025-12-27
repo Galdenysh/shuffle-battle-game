@@ -1,10 +1,11 @@
 import { Scene } from 'phaser';
 import { Player } from '../abstract';
 import { CharacterType, Direction, PlayerConfig } from '../types';
+import { ASSET_KEYS } from '@/game/constants';
 
 export class NetrunnerWoman extends Player {
   private static readonly DEFAULT_CONFIG: PlayerConfig = {
-    textureKey: 'character_netrunner_woman',
+    textureKey: ASSET_KEYS.CHAR_NETRUNNER_WOMAN,
     defaultDirection: Direction.SOUTH,
     scale: 4,
     colliderScaleX: 0.3,
@@ -46,13 +47,7 @@ export class NetrunnerWoman extends Player {
     return 'netrunner_woman';
   }
 
-  protected setupIdleAnimations(): void {
-    // Object.entries(NetrunnerWoman.WALK_DIRECTION_PREFIXES).forEach(
-    //   ([direction, prefix]) => {
-    //     this.addWalkAnimation(direction as Direction, prefix);
-    //   }
-    // );
-  }
+  protected setupIdleAnimations(): void {}
 
   protected setupWalkAnimations(): void {
     Object.entries(NetrunnerWoman.WALK_DIRECTION_PREFIXES).forEach(

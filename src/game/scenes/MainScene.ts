@@ -7,6 +7,7 @@ import {
   Player,
   PlayerController,
 } from '../entities';
+import { AssetLoader } from '../core';
 
 export class MainScene extends Scene {
   private background: DanceFloor;
@@ -19,33 +20,12 @@ export class MainScene extends Scene {
   }
 
   preload() {
-    this.load.image('background', 'assets/environment/background.png');
-    this.load.image('foreground', 'assets/environment/foreground.png');
+    this.setupLoading();
 
-    this.load.spritesheet(
-      'background_anim',
-      'assets/environment/spritesheet_720x1280px_24f.png',
-      { frameWidth: 720, frameHeight: 1280 }
-    );
-
-    this.load.image('collision_tiles', 'assets/environment/tileset.png');
-
-    this.load.tilemapTiledJSON(
-      'collision_map',
-      'assets/environment/tilemap.json'
-    );
-
-    this.load.atlas(
-      'character_netrunner_woman',
-      'assets/characters/netrunner_woman/texture.png',
-      'assets/characters/netrunner_woman/texture.json'
-    );
-
-    this.load.atlas(
-      'character_nomadmechanic_man',
-      'assets/characters/nomadmechanic_man/texture.png',
-      'assets/characters/nomadmechanic_man/texture.json'
-    );
+    AssetLoader.preload(this, {
+      environmentName: 'dance_floor',
+      charactersNameList: ['nomadmechanic_man'],
+    });
   }
 
   create() {
@@ -65,12 +45,22 @@ export class MainScene extends Scene {
       this.player,
       this.inputManager
     );
-
-    this.game.events.emit('scene-visible');
   }
 
   update() {
     this.playerController.update();
     this.player.updateDepth();
+  }
+
+  setupLoading() {
+    this.load.on('progress', (value: number) => {
+      console.log(`${Math.round(value * 100)}%`);
+    });
+
+    this.load.on('complete', () => {
+      console.log('✅ Все ассеты загружены!');
+
+      this.game.events.emit('scene-visible');
+    });
   }
 }

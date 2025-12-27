@@ -1,4 +1,4 @@
-import { Animations, GameObjects, Scene, Tilemaps } from 'phaser';
+import { GameObjects, Scene, Tilemaps } from 'phaser';
 import type { AnimationConfig, BackgroundConfig, TileConfig } from '../types';
 
 export abstract class Background extends GameObjects.Sprite {
@@ -23,6 +23,7 @@ export abstract class Background extends GameObjects.Sprite {
     this.setupBackground();
     this.setupForeground();
     this.setupAnimations();
+    this.setDepth(config.animationDepth);
     this.setupPhysic();
     this.play(config.animationKey);
   }
@@ -31,10 +32,8 @@ export abstract class Background extends GameObjects.Sprite {
     return this.scene.add.image(0, 0, textureKey).setOrigin(0, 0);
   }
 
-  protected addAnimation(
-    config: AnimationConfig
-  ): false | Animations.Animation {
-    return this.scene.anims.create({
+  protected addAnimation(config: AnimationConfig): void {
+    this.scene.anims.create({
       key: config.key,
       frames: this.scene.anims.generateFrameNumbers(
         this.config.textureSritesheetKey,
@@ -59,9 +58,9 @@ export abstract class Background extends GameObjects.Sprite {
     return { map, tileset };
   }
 
-  protected abstract setupBackground(): void;
+  protected setupForeground(): void {}
 
-  protected abstract setupForeground(): void;
+  protected abstract setupBackground(): void;
 
   protected abstract setupAnimations(): void;
 

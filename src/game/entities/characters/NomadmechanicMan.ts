@@ -1,10 +1,11 @@
 import { Scene } from 'phaser';
 import { Player } from '../abstract';
 import { CharacterType, Direction, PlayerConfig } from '../types';
+import { ASSET_KEYS } from '@/game/constants';
 
 export class NomadmechanicMan extends Player {
   private static readonly DEFAULT_CONFIG: PlayerConfig = {
-    textureKey: 'character_nomadmechanic_man',
+    textureKey: ASSET_KEYS.CHAR_NOMAD_MECHANIC_MAN,
     defaultDirection: Direction.SOUTH,
     scale: 4,
     colliderScaleX: 0.3,

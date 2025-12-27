@@ -2,16 +2,18 @@ import type { Scene, Tilemaps } from 'phaser';
 import { Background } from '../abstract';
 import { BackgroundConfig } from '../types';
 import { BACKGROUND_ANIMATION_DEFAULTS } from '../constants';
+import { ASSET_KEYS } from '@/game/constants';
 
 export class DanceFloor extends Background {
   private static readonly DEFAULT_CONFIG: BackgroundConfig = {
-    textureSritesheetKey: 'background_anim',
-    textureBackgroundKey: 'background',
-    textureForegroundKey: 'foreground',
+    textureSritesheetKey: ASSET_KEYS.ENV_BACKGROUND_ANIM,
+    textureBackgroundKey: ASSET_KEYS.ENV_BACKGROUND,
+    textureForegroundKey: ASSET_KEYS.ENV_FOREGROUND,
     animationKey: 'dance_floor_anim',
-    tilemapKey: 'collision_map',
-    tilesetKey: 'collision_tiles',
-    tilesetName: 'tileset',
+    tilemapKey: ASSET_KEYS.ENV_COLLISION_MAP,
+    tilesetKey: ASSET_KEYS.ENV_COLLISION_TILES,
+    tilesetName: 'tileset', // Берется из tilemap.json
+    animationDepth: 0,
   };
 
   private wallsLayer: Tilemaps.TilemapLayer | null;
@@ -42,16 +44,12 @@ export class DanceFloor extends Background {
   }
 
   protected setupAnimations(): void {
-    const anim = this.addAnimation({
+    this.addAnimation({
       key: this.config.animationKey,
       start: 0,
       end: 23,
       ...BACKGROUND_ANIMATION_DEFAULTS,
     });
-
-    // if (anim) {
-    //   anim.
-    // }
   }
 
   protected setupPhysic(): void {
