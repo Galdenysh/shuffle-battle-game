@@ -5,6 +5,9 @@ export abstract class Background extends GameObjects.Sprite {
   protected config: BackgroundConfig;
   protected defaultScene: Scene;
 
+  private missingAnimCache = new Map<string, number>();
+  private readonly CACHE_TTL = 5000;
+
   constructor(scene: Scene, x: number, y: number, config: BackgroundConfig) {
     super(scene, x, y, config.textureSritesheetKey);
 
@@ -25,7 +28,7 @@ export abstract class Background extends GameObjects.Sprite {
     this.setupAnimations();
     this.setDepth(config.animationDepth);
     this.setupPhysic();
-    this.play(config.animationKey);
+    this.playSafe(config.animationKey, true);
   }
 
   protected addImage(textureKey: string): GameObjects.Image {
@@ -65,4 +68,33 @@ export abstract class Background extends GameObjects.Sprite {
   protected abstract setupAnimations(): void;
 
   protected abstract setupPhysic(): void;
+
+  private playSafe(key: string, ignoreIfPlaying?: boolean): void {
+    const cachedTime = this.missingAnimCache.get(key);
+
+    if (cachedTime !== undefined) {
+      if (Date.now() - cachedTime < this.CACHE_TTL) {
+        this.anims.stop();
+
+        return;
+      }
+
+      this.missingAnimCache.delete(key);
+    }
+
+    if (!this.scene.anims.exists(key)) {
+      if (cachedTime === undefined) {
+        console.warn(
+          `⚠️ Анимация ${key} не обнаружена для ${this.constructor.name}`
+        );
+      }
+
+      this.missingAnimCache.set(key, Date.now());
+      this.anims.stop();
+
+      return;
+    }
+
+    this.play(key, ignoreIfPlaying);
+  }
 }

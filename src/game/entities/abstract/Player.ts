@@ -9,6 +9,9 @@ export abstract class Player extends Physics.Arcade.Sprite {
   protected currentDirection: Direction;
   protected lastDepthY: number;
 
+  private missingAnimCache = new Map<string, number>();
+  private readonly CACHE_TTL = 5000;
+
   constructor(scene: Scene, x: number, y: number, config: PlayerConfig) {
     super(scene, x, y, config.textureKey);
 
@@ -98,32 +101,42 @@ export abstract class Player extends Physics.Arcade.Sprite {
     });
   }
 
-  protected addIdleAnimation(direction: Direction, prefix: string): void {
+  protected addIdleAnimation(config: {
+    direction: Direction;
+    prefix: string;
+    start?: number;
+    end?: number;
+    frameRate?: number;
+  }): void {
+    const { direction, prefix, start, end, frameRate } = config;
     const animationKey = `idle_${direction}`;
-
-    if (this.scene.anims.exists(animationKey)) return;
 
     this.addAnimation({
       key: animationKey,
       prefix,
-      start: 0,
-      end: 3,
-      frameRate: 6,
+      start: start ?? 0,
+      end: end ?? 3,
+      frameRate: frameRate ?? 6,
       ...CHARACTER_ANIMATION_DEFAULTS,
     });
   }
 
-  protected addWalkAnimation(direction: Direction, prefix: string): void {
+  protected addWalkAnimation(config: {
+    direction: Direction;
+    prefix: string;
+    start?: number;
+    end?: number;
+    frameRate?: number;
+  }): void {
+    const { direction, prefix, start, end, frameRate } = config;
     const animationKey = `walk_${direction}`;
-
-    if (this.scene.anims.exists(animationKey)) return;
 
     this.addAnimation({
       key: animationKey,
       prefix,
-      start: 0,
-      end: 5,
-      frameRate: 8,
+      start: start ?? 0,
+      end: end ?? 5,
+      frameRate: frameRate ?? 8,
       ...CHARACTER_ANIMATION_DEFAULTS,
     });
   }
@@ -156,11 +169,40 @@ export abstract class Player extends Physics.Arcade.Sprite {
   protected abstract setupWalkAnimations(): void;
 
   private playIdleAnimation(): void {
-    this.play(`idle_${this.currentDirection}`, true);
+    this.playSafe(`idle_${this.currentDirection}`, true);
   }
 
   private playWalkAnimation(): void {
-    this.play(`walk_${this.currentDirection}`, true);
+    this.playSafe(`walk_${this.currentDirection}`, true);
+  }
+
+  private playSafe(key: string, ignoreIfPlaying?: boolean): void {
+    const cachedTime = this.missingAnimCache.get(key);
+
+    if (cachedTime !== undefined) {
+      if (Date.now() - cachedTime < this.CACHE_TTL) {
+        this.anims.stop();
+
+        return;
+      }
+
+      this.missingAnimCache.delete(key);
+    }
+
+    if (!this.scene.anims.exists(key)) {
+      if (cachedTime === undefined) {
+        console.warn(
+          `⚠️ Анимация ${key} не обнаружена для ${this.constructor.name}`
+        );
+      }
+
+      this.missingAnimCache.set(key, Date.now());
+      this.anims.stop();
+
+      return;
+    }
+
+    this.play(key, ignoreIfPlaying);
   }
 
   private calculateVelocity(

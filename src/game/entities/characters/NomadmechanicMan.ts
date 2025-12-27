@@ -61,7 +61,7 @@ export class NomadmechanicMan extends Player {
   protected setupIdleAnimations(): void {
     Object.entries(NomadmechanicMan.IDLE_DIRECTION_PREFIXES).forEach(
       ([direction, prefix]) => {
-        this.addIdleAnimation(direction as Direction, prefix);
+        this.addIdleAnimation({ direction: direction as Direction, prefix });
       }
     );
   }
@@ -69,7 +69,7 @@ export class NomadmechanicMan extends Player {
   protected setupWalkAnimations(): void {
     Object.entries(NomadmechanicMan.WALK_DIRECTION_PREFIXES).forEach(
       ([direction, prefix]) => {
-        this.addWalkAnimation(direction as Direction, prefix);
+        this.addWalkAnimation({ direction: direction as Direction, prefix });
       }
     );
   }
