@@ -28,6 +28,7 @@ export abstract class Player extends Physics.Arcade.Sprite {
 
     this.setupIdleAnimations();
     this.setupWalkAnimations();
+    this.setupRunningManStepAnimations();
     this.setupPhysics();
     this.playIdleAnimation();
   }
@@ -78,6 +79,22 @@ export abstract class Player extends Physics.Arcade.Sprite {
     body.setVelocity(velocity.x, velocity.y);
 
     this.playWalkAnimation();
+  }
+
+  public runningManStep(): void {
+    const body = this.body as Physics.Arcade.Body | null;
+
+    if (!body) {
+      console.warn(
+        `⚠️ Physics body не инициализирован в ${this.constructor.name}`
+      );
+
+      return;
+    }
+
+    body.setVelocity(0);
+
+    this.playRunningManStepAnimation();
   }
 
   protected addAnimation(
@@ -141,6 +158,26 @@ export abstract class Player extends Physics.Arcade.Sprite {
     });
   }
 
+  protected addRunningManStepAnimation(config: {
+    direction: Direction;
+    prefix: string;
+    start?: number;
+    end?: number;
+    frameRate?: number;
+  }): void {
+    const { direction, prefix, start, end, frameRate } = config;
+    const animationKey = `runningMan_${direction}`;
+
+    this.addAnimation({
+      key: animationKey,
+      prefix,
+      start: start ?? 0,
+      end: end ?? 5,
+      frameRate: frameRate ?? 8,
+      ...CHARACTER_ANIMATION_DEFAULTS,
+    });
+  }
+
   protected setupPhysics(): void {
     const body = this.body as Physics.Arcade.Body | null;
     const width = this.width * this.config.colliderScaleX;
@@ -168,12 +205,18 @@ export abstract class Player extends Physics.Arcade.Sprite {
 
   protected abstract setupWalkAnimations(): void;
 
+  protected abstract setupRunningManStepAnimations(): void;
+
   private playIdleAnimation(): void {
     this.playSafe(`idle_${this.currentDirection}`, true);
   }
 
   private playWalkAnimation(): void {
     this.playSafe(`walk_${this.currentDirection}`, true);
+  }
+
+  private playRunningManStepAnimation(): void {
+    this.playSafe(`runningMan_${this.currentDirection}`, true);
   }
 
   private playSafe(key: string, ignoreIfPlaying?: boolean): void {

@@ -56,4 +56,6 @@ export class NetrunnerWoman extends Player {
       }
     );
   }
+
+  protected setupRunningManStepAnimations(): void {}
 }

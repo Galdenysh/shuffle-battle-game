@@ -14,6 +14,12 @@ export class PlayerController {
   public update(): void {
     const direction = this.getDirectionFromInput();
 
+    if (this.input.isRunningManStepActive) {
+      this.player.runningManStep();
+
+      return;
+    }
+
     if (!this.input.isMoving) {
       this.player.stopMovement();
 

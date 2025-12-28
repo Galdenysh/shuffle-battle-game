@@ -41,6 +41,20 @@ export class NomadmechanicMan extends Player {
     south_east: 'walking-6-frames/south-east/frame_',
   } as const;
 
+  private static readonly RUNNING_MAN_DIRECTION_PREFIXES: Record<
+    Direction,
+    string
+  > = {
+    east: 'running-6-frames/east/frame_',
+    north_east: 'running-6-frames/north-east/frame_',
+    north: 'running-6-frames/north/frame_',
+    north_west: 'running-6-frames/north-west/frame_',
+    west: 'running-6-frames/west/frame_',
+    south_west: 'running-6-frames/south-west/frame_',
+    south: 'running-6-frames/south/frame_',
+    south_east: 'running-6-frames/south-east/frame_',
+  } as const;
+
   constructor(
     scene: Scene,
     x: number,
@@ -70,6 +84,14 @@ export class NomadmechanicMan extends Player {
     Object.entries(NomadmechanicMan.WALK_DIRECTION_PREFIXES).forEach(
       ([direction, prefix]) => {
         this.addWalkAnimation({ direction: direction as Direction, prefix });
+      }
+    );
+  }
+
+  protected setupRunningManStepAnimations(): void {
+    Object.entries(NomadmechanicMan.RUNNING_MAN_DIRECTION_PREFIXES).forEach(
+      ([direction, prefix]) => {
+        this.addRunningManStepAnimation({ direction: direction as Direction, prefix });
       }
     );
   }
