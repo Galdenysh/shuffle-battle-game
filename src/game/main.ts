@@ -86,31 +86,6 @@ const StartGame = (parent: Types.Core.GameConfig['parent']) => {
       ...config.scale,
       zoom: dpr > 1 ? 1 / dpr : 1,
     },
-
-    callbacks: {
-      postBoot: (game: Game) => {
-        if (!parent) return;
-
-        let container: HTMLElement | null = null;
-
-        if (typeof parent === 'string') {
-          const element = document.getElementById(parent);
-
-          if (!element) return;
-
-          container = document.getElementById(parent);
-        } else {
-          container = parent;
-        }
-
-        if (!container) return;
-
-        game.events.once('scene-visible', () => {
-          container.style.opacity = '1';
-          container.style.pointerEvents = 'auto';
-        });
-      },
-    },
   };
 
   return new Game(finalConfig);

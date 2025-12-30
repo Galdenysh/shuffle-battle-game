@@ -5,10 +5,10 @@ import type { ReactNode } from 'react';
 
 export function GameLayoutClient({ children }: { children: ReactNode }) {
   useEffect(() => {
-    document.body.style.overflow = 'hidden'; // Блокируем скролл во время игры
+    document.body.classList.add('no-scroll'); // Блокируем скролл во время игры
 
     return () => {
-      document.body.style.overflow = 'auto';
+      document.body.classList.remove('no-scroll');
     };
   }, []);
 

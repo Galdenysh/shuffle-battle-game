@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import { Input } from 'phaser';
 import type { Scene, Types } from 'phaser';
 import { ControlScheme } from '../types';
 import { SpecialMoveType } from '../types';
@@ -12,9 +12,9 @@ export class InputManager {
 
   // ===== СПЕЦПРИЁМЫ =====
 
-  private keyR: Phaser.Input.Keyboard.Key | null = null;
-  private keyT: Phaser.Input.Keyboard.Key | null = null;
-  private keyY: Phaser.Input.Keyboard.Key | null = null;
+  private keyR: Input.Keyboard.Key | null = null;
+  private keyT: Input.Keyboard.Key | null = null;
+  private keyY: Input.Keyboard.Key | null = null;
 
   private _activeSpecialMove: SpecialMoveType | null = null;
   private specialMoveStartTime: number = 0;
@@ -65,18 +65,18 @@ export class InputManager {
       this.controlScheme === ControlScheme.BOTH
     ) {
       this.wasdKeys = keyboard.addKeys({
-        up: Phaser.Input.Keyboard.KeyCodes.W,
-        down: Phaser.Input.Keyboard.KeyCodes.S,
-        left: Phaser.Input.Keyboard.KeyCodes.A,
-        right: Phaser.Input.Keyboard.KeyCodes.D,
+        up: Input.Keyboard.KeyCodes.W,
+        down: Input.Keyboard.KeyCodes.S,
+        left: Input.Keyboard.KeyCodes.A,
+        right: Input.Keyboard.KeyCodes.D,
       }) as WASDKeys;
     }
 
     // ===== СПЕЦПРИЁМЫ =====
 
-    this.keyR = keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
-    this.keyT = keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.T);
-    this.keyY = keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Y);
+    this.keyR = keyboard.addKey(Input.Keyboard.KeyCodes.R);
+    this.keyT = keyboard.addKey(Input.Keyboard.KeyCodes.T);
+    this.keyY = keyboard.addKey(Input.Keyboard.KeyCodes.Y);
 
     this.keyR.on('down', () =>
       this.activateSpecialMove(SpecialMoveType.RUNNING_MAN_STEP)

@@ -1,5 +1,6 @@
 'use client';
 
+import { EMIT_EVENT } from '@/game/constants';
 import { EventBus } from '@/game/core';
 import StartGame from '@/game/main';
 import type { Game, Scene } from 'phaser';
@@ -10,13 +11,14 @@ export type RefPhaserGame = {
   scene: Scene | null;
 };
 
-type PhaserGameProps = {
+interface PhaserGameProps {
   currentActiveScene?: (scene_instance: Scene) => void;
-};
+}
 
 const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
   function PhaserGame({ currentActiveScene }, ref) {
-    const gameRef = useRef<Game | null>(null!);
+    const gameRef = useRef<Game | null>(null);
+    const containerRef = useRef<HTMLDivElement | null>(null);
 
     useLayoutEffect(() => {
       if (gameRef.current === null) {
@@ -31,6 +33,8 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
 
       return () => {
         if (gameRef.current) {
+          EventBus.removeAllListeners();
+
           gameRef.current.destroy(true);
 
           if (gameRef.current !== null) {
@@ -40,8 +44,21 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
       };
     }, [ref]);
 
+    // Обработка scene-visible
     useEffect(() => {
-      EventBus.on('current-scene-ready', (scene_instance: Scene) => {
+      const container = containerRef.current;
+
+      if (!container) return;
+
+      EventBus.once(EMIT_EVENT.SCENE_VISIBLE, () => {
+        container.classList.remove('opacity-0', 'pointer-events-none');
+        container.classList.add('opacity-100', 'pointer-events-auto');
+      });
+    }, []);
+
+    // Обработка current-scene-ready
+    useEffect(() => {
+      EventBus.once(EMIT_EVENT.CURRENT_SCENE_READY, (scene_instance: Scene) => {
         if (currentActiveScene && typeof currentActiveScene === 'function') {
           currentActiveScene(scene_instance);
         }
@@ -52,20 +69,13 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
           ref.current = { game: gameRef.current, scene: scene_instance };
         }
       });
-
-      return () => {
-        EventBus.removeListener('current-scene-ready');
-      };
     }, [currentActiveScene, ref]);
 
     return (
       <div
         id="phaser-game"
-        style={{
-          opacity: 0,
-          transition: 'opacity 0.3s',
-          pointerEvents: 'none',
-        }}
+        className="opacity-0 transition-opacity duration-300 pointer-events-none"
+        ref={containerRef}
       ></div>
     );
   }

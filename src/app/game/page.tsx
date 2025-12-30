@@ -4,12 +4,19 @@ import React, { useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import type { RefPhaserGame } from '@/components/PhaserGame';
-import { ControlButtons } from '@/components/ui';
 
 const PhaserGame = dynamic(() => import('@/components/PhaserGame'), {
   ssr: false,
-  loading: () => <p>Загрузка...</p>,
+  loading: () => <div>Загрузка...</div>,
 });
+
+const GameButtons = dynamic(
+  () => import('./components').then((mod) => mod.GameButtons),
+  {
+    ssr: false,
+    loading: () => <div>Загрузка...</div>,
+  }
+);
 
 export default function GamePage() {
   const searchParams = useSearchParams();
@@ -30,7 +37,7 @@ export default function GamePage() {
           </button>
         </div>
       </div>
-      <ControlButtons onMove={() => {}} isVisible={true} />
+      <GameButtons />
       <PhaserGame ref={phaserRef} />
     </div>
   );
