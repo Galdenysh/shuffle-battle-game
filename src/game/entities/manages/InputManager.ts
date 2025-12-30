@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import type { Scene, Types } from 'phaser';
 import { ControlScheme } from '../types';
+import { SpecialMoveType } from '../types';
 import type { WASDKeys } from '../types';
 
 export class InputManager {
@@ -9,19 +10,42 @@ export class InputManager {
   private wasdKeys: WASDKeys | null = null;
   private controlScheme: ControlScheme;
 
-  private runningManStepKey: Phaser.Input.Keyboard.Key | null = null;
-  private _isRunningManStepActive: boolean = false;
-  private runningManStepStartTime: number = 0;
-  private runningManStepDuration: number = 750;
+  // ===== СПЕЦПРИЁМЫ =====
+
+  private keyR: Phaser.Input.Keyboard.Key | null = null;
+  private keyT: Phaser.Input.Keyboard.Key | null = null;
+  private keyY: Phaser.Input.Keyboard.Key | null = null;
+
+  private _activeSpecialMove: SpecialMoveType | null = null;
+  private specialMoveStartTime: number = 0;
+  private specialMoveDurations: Record<SpecialMoveType, number> = {
+    [SpecialMoveType.RUNNING_MAN_STEP]: 750,
+    [SpecialMoveType.T_STEP_LEFT]: 375,
+    [SpecialMoveType.T_STEP_RIGHT]: 375,
+  };
 
   constructor(scene: Scene, scheme: ControlScheme = ControlScheme.BOTH) {
     this.scene = scene;
     this.controlScheme = scheme;
 
     this.setupInputs();
-    this.calculateRunningManStepDuration('runningMan_south');
 
-    this.scene.events.on('update', this.checkRunningManTimeout.bind(this));
+    this.calculateSpecialMoveDuration(
+      SpecialMoveType.RUNNING_MAN_STEP,
+      'runningMan_south'
+    );
+
+    this.calculateSpecialMoveDuration(
+      SpecialMoveType.T_STEP_LEFT,
+      'tStepLeft_south'
+    );
+
+    this.calculateSpecialMoveDuration(
+      SpecialMoveType.T_STEP_RIGHT,
+      'tStepRight_south'
+    );
+
+    this.scene.events.on('update', this.checkSpecialMoveTimeout.bind(this));
   }
 
   private setupInputs(): void {
@@ -48,12 +72,23 @@ export class InputManager {
       }) as WASDKeys;
     }
 
-    // Спецприемы
-    this.runningManStepKey = keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+    // ===== СПЕЦПРИЁМЫ =====
 
-    this.runningManStepKey.on('down', () => {
-      this.activateRunningManStep();
-    });
+    this.keyR = keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+    this.keyT = keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.T);
+    this.keyY = keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Y);
+
+    this.keyR.on('down', () =>
+      this.activateSpecialMove(SpecialMoveType.RUNNING_MAN_STEP)
+    );
+
+    this.keyT.on('down', () =>
+      this.activateSpecialMove(SpecialMoveType.T_STEP_LEFT)
+    );
+
+    this.keyY.on('down', () =>
+      this.activateSpecialMove(SpecialMoveType.T_STEP_RIGHT)
+    );
   }
 
   public get horizontal(): number {
@@ -83,7 +118,19 @@ export class InputManager {
   }
 
   public get isRunningManStepActive(): boolean {
-    return this._isRunningManStepActive;
+    return this._activeSpecialMove === SpecialMoveType.RUNNING_MAN_STEP;
+  }
+
+  public get isTStepLeftActive(): boolean {
+    return this._activeSpecialMove === SpecialMoveType.T_STEP_LEFT;
+  }
+
+  public get isTStepRightActive(): boolean {
+    return this._activeSpecialMove === SpecialMoveType.T_STEP_RIGHT;
+  }
+
+  public get activeSpecialMove(): SpecialMoveType | null {
+    return this._activeSpecialMove;
   }
 
   public get activeScheme(): ControlScheme {
@@ -93,31 +140,39 @@ export class InputManager {
     return ControlScheme.WASD;
   }
 
-  private activateRunningManStep(): void {
-    if (this._isRunningManStepActive) return;
+  private activateSpecialMove(moveType: SpecialMoveType): void {
+    if (this._activeSpecialMove !== null) return;
 
-    this._isRunningManStepActive = true;
-    this.runningManStepStartTime = this.scene.time.now;
+    this._activeSpecialMove = moveType;
+    this.specialMoveStartTime = this.scene.time.now;
   }
 
-  private checkRunningManTimeout(): void {
-    if (!this._isRunningManStepActive) return;
+  private checkSpecialMoveTimeout(): void {
+    if (this._activeSpecialMove === null) return;
 
     const currentTime = this.scene.time.now;
+    const duration = this.specialMoveDurations[this._activeSpecialMove];
 
-    if (
-      currentTime - this.runningManStepStartTime >=
-      this.runningManStepDuration
-    ) {
-      this._isRunningManStepActive = false;
+    if (currentTime - this.specialMoveStartTime >= duration) {
+      this._activeSpecialMove = null;
     }
   }
 
-  private calculateRunningManStepDuration(key: string): void {
-    const anim = this.scene.anims.get(key);
+  private calculateSpecialMoveDuration(
+    moveType: SpecialMoveType,
+    animationKey: string
+  ): void {
+    const anim = this.scene.anims.get(animationKey);
 
-    if (!anim) return;
+    if (!anim) {
+      console.warn(
+        `⚠️ Анимация ${animationKey} не найдена для ${moveType} в ${this.constructor.name}`
+      );
 
-    this.runningManStepDuration = (anim.frames.length / anim.frameRate) * 1000;
+      return;
+    }
+
+    this.specialMoveDurations[moveType] =
+      (anim.frames.length / anim.frameRate) * 1000;
   }
 }

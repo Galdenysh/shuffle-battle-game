@@ -4,6 +4,7 @@ import React, { useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import type { RefPhaserGame } from '@/components/PhaserGame';
+import { ControlButtons } from '@/components/ui';
 
 const PhaserGame = dynamic(() => import('@/components/PhaserGame'), {
   ssr: false,
@@ -29,6 +30,7 @@ export default function GamePage() {
           </button>
         </div>
       </div>
+      <ControlButtons onMove={() => {}} isVisible={true} />
       <PhaserGame ref={phaserRef} />
     </div>
   );

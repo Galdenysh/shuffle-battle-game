@@ -29,6 +29,8 @@ export abstract class Player extends Physics.Arcade.Sprite {
     this.setupIdleAnimations();
     this.setupWalkAnimations();
     this.setupRunningManStepAnimations();
+    this.setupTStepLeftAnimations();
+    this.setupTStepRightAnimations();
     this.setupPhysics();
     this.playIdleAnimation();
   }
@@ -95,6 +97,56 @@ export abstract class Player extends Physics.Arcade.Sprite {
     body.setVelocity(0);
 
     this.playRunningManStepAnimation();
+  }
+
+  public tStepLeft(direction: Direction): void {
+    this.currentDirection = direction;
+
+    const rotatedDirection = this.rotateDirection90Left(direction);
+
+    const velocity = this.calculateVelocity(
+      rotatedDirection,
+      this.config.speedWalking
+    );
+
+    const body = this.body as Physics.Arcade.Body | null;
+
+    if (!body) {
+      console.warn(
+        `⚠️ Physics body не инициализирован в ${this.constructor.name}`
+      );
+
+      return;
+    }
+
+    body.setVelocity(velocity.x / 2, velocity.y / 2);
+
+    this.playTStepLeftAnimation();
+  }
+
+  public tStepRight(direction: Direction): void {
+    this.currentDirection = direction;
+
+    const rotatedDirection = this.rotateDirection90Right(direction);
+
+    const velocity = this.calculateVelocity(
+      rotatedDirection,
+      this.config.speedWalking
+    );
+
+    const body = this.body as Physics.Arcade.Body | null;
+
+    if (!body) {
+      console.warn(
+        `⚠️ Physics body не инициализирован в ${this.constructor.name}`
+      );
+
+      return;
+    }
+
+    body.setVelocity(velocity.x / 2, velocity.y / 2);
+
+    this.playTStepRightAnimation();
   }
 
   protected addAnimation(
@@ -178,6 +230,46 @@ export abstract class Player extends Physics.Arcade.Sprite {
     });
   }
 
+  protected addTStepLeftAnimation(config: {
+    direction: Direction;
+    prefix: string;
+    start?: number;
+    end?: number;
+    frameRate?: number;
+  }): void {
+    const { direction, prefix, start, end, frameRate } = config;
+    const animationKey = `tStepLeft_${direction}`;
+
+    this.addAnimation({
+      key: animationKey,
+      prefix,
+      start: start ?? 0,
+      end: end ?? 5,
+      frameRate: frameRate ?? 16,
+      ...CHARACTER_ANIMATION_DEFAULTS,
+    });
+  }
+
+  protected addTStepRightAnimation(config: {
+    direction: Direction;
+    prefix: string;
+    start?: number;
+    end?: number;
+    frameRate?: number;
+  }): void {
+    const { direction, prefix, start, end, frameRate } = config;
+    const animationKey = `tStepRight_${direction}`;
+
+    this.addAnimation({
+      key: animationKey,
+      prefix,
+      start: start ?? 0,
+      end: end ?? 5,
+      frameRate: frameRate ?? 16,
+      ...CHARACTER_ANIMATION_DEFAULTS,
+    });
+  }
+
   protected setupPhysics(): void {
     const body = this.body as Physics.Arcade.Body | null;
     const width = this.width * this.config.colliderScaleX;
@@ -207,6 +299,10 @@ export abstract class Player extends Physics.Arcade.Sprite {
 
   protected abstract setupRunningManStepAnimations(): void;
 
+  protected abstract setupTStepLeftAnimations(): void;
+
+  protected abstract setupTStepRightAnimations(): void;
+
   private playIdleAnimation(): void {
     this.playSafe(`idle_${this.currentDirection}`, true);
   }
@@ -217,6 +313,14 @@ export abstract class Player extends Physics.Arcade.Sprite {
 
   private playRunningManStepAnimation(): void {
     this.playSafe(`runningMan_${this.currentDirection}`, true);
+  }
+
+  private playTStepLeftAnimation(): void {
+    this.playSafe(`tStepLeft_${this.currentDirection}`, true);
+  }
+
+  private playTStepRightAnimation(): void {
+    this.playSafe(`tStepRight_${this.currentDirection}`, true);
   }
 
   private playSafe(key: string, ignoreIfPlaying?: boolean): void {
@@ -264,5 +368,51 @@ export abstract class Player extends Physics.Arcade.Sprite {
     };
 
     return velocityMap[direction] || { x: 0, y: 0 };
+  }
+
+  private rotateDirection90Left(direction: Direction): Direction {
+    switch (direction) {
+      case Direction.NORTH:
+        return Direction.WEST;
+      case Direction.NORTH_EAST:
+        return Direction.NORTH_WEST;
+      case Direction.EAST:
+        return Direction.NORTH;
+      case Direction.SOUTH_EAST:
+        return Direction.NORTH_EAST;
+      case Direction.SOUTH:
+        return Direction.EAST;
+      case Direction.SOUTH_WEST:
+        return Direction.SOUTH_EAST;
+      case Direction.WEST:
+        return Direction.SOUTH;
+      case Direction.NORTH_WEST:
+        return Direction.SOUTH_WEST;
+      default:
+        return direction;
+    }
+  }
+
+  private rotateDirection90Right(direction: Direction): Direction {
+    switch (direction) {
+      case Direction.NORTH:
+        return Direction.EAST;
+      case Direction.NORTH_EAST:
+        return Direction.SOUTH_EAST;
+      case Direction.EAST:
+        return Direction.SOUTH;
+      case Direction.SOUTH_EAST:
+        return Direction.SOUTH_WEST;
+      case Direction.SOUTH:
+        return Direction.WEST;
+      case Direction.SOUTH_WEST:
+        return Direction.NORTH_WEST;
+      case Direction.WEST:
+        return Direction.NORTH;
+      case Direction.NORTH_WEST:
+        return Direction.NORTH_EAST;
+      default:
+        return direction;
+    }
   }
 }

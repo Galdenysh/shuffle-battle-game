@@ -20,39 +20,67 @@ export class NomadmechanicMan extends Player {
   };
 
   private static readonly IDLE_DIRECTION_PREFIXES: Record<Direction, string> = {
-    east: 'breathing-idle/east/frame_',
-    north_east: 'breathing-idle/north-east/frame_',
-    north: 'breathing-idle/north/frame_',
-    north_west: 'breathing-idle/north-west/frame_',
-    west: 'breathing-idle/west/frame_',
-    south_west: 'breathing-idle/south-west/frame_',
-    south: 'breathing-idle/south/frame_',
-    south_east: 'breathing-idle/south-east/frame_',
+    east: 'idle/east/frame_',
+    north_east: 'idle/north-east/frame_',
+    north: 'idle/north/frame_',
+    north_west: 'idle/north-west/frame_',
+    west: 'idle/west/frame_',
+    south_west: 'idle/south-west/frame_',
+    south: 'idle/south/frame_',
+    south_east: 'idle/south-east/frame_',
   } as const;
 
   private static readonly WALK_DIRECTION_PREFIXES: Record<Direction, string> = {
-    east: 'walking-6-frames/east/frame_',
-    north_east: 'walking-6-frames/north-east/frame_',
-    north: 'walking-6-frames/north/frame_',
-    north_west: 'walking-6-frames/north-west/frame_',
-    west: 'walking-6-frames/west/frame_',
-    south_west: 'walking-6-frames/south-west/frame_',
-    south: 'walking-6-frames/south/frame_',
-    south_east: 'walking-6-frames/south-east/frame_',
+    east: 'walking/east/frame_',
+    north_east: 'walking/north-east/frame_',
+    north: 'walking/north/frame_',
+    north_west: 'walking/north-west/frame_',
+    west: 'walking/west/frame_',
+    south_west: 'walking/south-west/frame_',
+    south: 'walking/south/frame_',
+    south_east: 'walking/south-east/frame_',
   } as const;
 
   private static readonly RUNNING_MAN_DIRECTION_PREFIXES: Record<
     Direction,
     string
   > = {
-    east: 'running-6-frames/east/frame_',
-    north_east: 'running-6-frames/north-east/frame_',
-    north: 'running-6-frames/north/frame_',
-    north_west: 'running-6-frames/north-west/frame_',
-    west: 'running-6-frames/west/frame_',
-    south_west: 'running-6-frames/south-west/frame_',
-    south: 'running-6-frames/south/frame_',
-    south_east: 'running-6-frames/south-east/frame_',
+    east: 'running/east/frame_',
+    north_east: 'running/north-east/frame_',
+    north: 'running/north/frame_',
+    north_west: 'running/north-west/frame_',
+    west: 'running/west/frame_',
+    south_west: 'running/south-west/frame_',
+    south: 'running/south/frame_',
+    south_east: 'running/south-east/frame_',
+  } as const;
+
+  private static readonly T_STEP_LEFT_DIRECTION_PREFIXES: Record<
+    Direction,
+    string
+  > = {
+    east: 't-step-left/east/frame_',
+    north_east: 't-step-left/north-east/frame_',
+    north: 't-step-left/north/frame_',
+    north_west: 't-step-left/north-west/frame_',
+    west: 't-step-left/west/frame_',
+    south_west: 't-step-left/south-west/frame_',
+    south: 't-step-left/south/frame_',
+    south_east: 't-step-left/south-east/frame_',
+  } as const;
+
+  private static readonly T_STEP_RIGHT_DIRECTION_PREFIXES: Record<
+    Direction,
+    string
+  > = {
+    east: 't-step-right/east/frame_',
+    north_east: 't-step-right/north-east/frame_',
+    north: 't-step-right/north/frame_',
+    north_west: 't-step-right/north-west/frame_',
+    west: 't-step-right/west/frame_',
+    south_west: 't-step-right/south-west/frame_',
+    south: 't-step-right/south/frame_',
+    south_east: 't-step-right/south-east/frame_',
   } as const;
 
   constructor(
@@ -91,7 +119,32 @@ export class NomadmechanicMan extends Player {
   protected setupRunningManStepAnimations(): void {
     Object.entries(NomadmechanicMan.RUNNING_MAN_DIRECTION_PREFIXES).forEach(
       ([direction, prefix]) => {
-        this.addRunningManStepAnimation({ direction: direction as Direction, prefix });
+        this.addRunningManStepAnimation({
+          direction: direction as Direction,
+          prefix,
+        });
+      }
+    );
+  }
+
+  protected setupTStepLeftAnimations(): void {
+    Object.entries(NomadmechanicMan.T_STEP_LEFT_DIRECTION_PREFIXES).forEach(
+      ([direction, prefix]) => {
+        this.addTStepLeftAnimation({
+          direction: direction as Direction,
+          prefix,
+        });
+      }
+    );
+  }
+
+  protected setupTStepRightAnimations(): void {
+    Object.entries(NomadmechanicMan.T_STEP_RIGHT_DIRECTION_PREFIXES).forEach(
+      ([direction, prefix]) => {
+        this.addTStepRightAnimation({
+          direction: direction as Direction,
+          prefix,
+        });
       }
     );
   }

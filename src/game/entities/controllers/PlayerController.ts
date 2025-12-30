@@ -5,6 +5,7 @@ import { Direction } from '../types';
 export class PlayerController {
   private player: Player;
   private input: InputManager;
+  private lastDirection: Direction = Direction.SOUTH;
 
   constructor(player: Player, input: InputManager) {
     this.player = player;
@@ -12,10 +13,24 @@ export class PlayerController {
   }
 
   public update(): void {
-    const direction = this.getDirectionFromInput();
+    const currentDirection = this.getDirectionFromInput();
+
+    if (this.input.isMoving) this.lastDirection = currentDirection;
 
     if (this.input.isRunningManStepActive) {
       this.player.runningManStep();
+
+      return;
+    }
+
+    if (this.input.isTStepLeftActive) {
+      this.player.tStepLeft(this.lastDirection);
+
+      return;
+    }
+
+    if (this.input.isTStepRightActive) {
+      this.player.tStepRight(this.lastDirection);
 
       return;
     }
@@ -26,7 +41,7 @@ export class PlayerController {
       return;
     }
 
-    this.player.move(direction);
+    this.player.move(currentDirection);
   }
 
   private getDirectionFromInput(): Direction {
@@ -42,6 +57,6 @@ export class PlayerController {
     if (v < 0) return Direction.NORTH;
     if (v > 0) return Direction.SOUTH;
 
-    return Direction.SOUTH;
+    return this.lastDirection;
   }
 }

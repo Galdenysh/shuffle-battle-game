@@ -85,3 +85,9 @@ export enum ControlScheme {
   WASD = 'wasd',
   BOTH = 'both',
 }
+
+export enum SpecialMoveType {
+  RUNNING_MAN_STEP = 'runningManStep',
+  T_STEP_LEFT = 'tStepLeft',
+  T_STEP_RIGHT = 'tStepRight',
+}
