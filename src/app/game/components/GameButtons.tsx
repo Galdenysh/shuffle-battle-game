@@ -18,6 +18,8 @@ export const GameButtons: FC = () => {
     EventBus.once(EMIT_EVENT.SCENE_VISIBLE, () => {
       setVisible(true);
     });
+
+    EventBus.ready(); // Вынести логику в page
   }, []);
 
   return (

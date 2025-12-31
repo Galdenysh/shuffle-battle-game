@@ -5,18 +5,18 @@ import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import type { RefPhaserGame } from '@/components/PhaserGame';
 
-const PhaserGame = dynamic(() => import('@/components/PhaserGame'), {
-  ssr: false,
-  loading: () => <div>Загрузка...</div>,
-});
-
 const GameButtons = dynamic(
   () => import('./components').then((mod) => mod.GameButtons),
   {
     ssr: false,
-    loading: () => <div>Загрузка...</div>,
+    loading: () => <div>Загрузка UI...</div>,
   }
 );
+
+const PhaserGame = dynamic(() => import('@/components/PhaserGame'), {
+  ssr: false,
+  loading: () => <div>Загрузка игры...</div>,
+});
 
 export default function GamePage() {
   const searchParams = useSearchParams();
