@@ -165,20 +165,16 @@ export default function MarketingPage() {
               buttonClasses.disabled
             )}
           >
-            {isLoading ? (
-              <>
-                <div
-                  className={cn(
-                    'w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin'
-                  )}
-                />
-                Запуск игры...
-              </>
-            ) : (
-              <>
-                <span className={cn('text-2xl')}>🎮</span>
-                <span className={cn('uppercase')}>Начать игру</span>
-              </>
+            <span className={cn('text-2xl')}>🎮</span>
+            <span className={cn(isLoading ? '' : 'uppercase')}>
+              {isLoading ? 'Запуск игры...' : 'Начать игру'}
+            </span>
+            {isLoading && (
+              <div
+                className={cn(
+                  'text-2xl w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin'
+                )}
+              />
             )}
           </motion.button>
         </motion.form>
