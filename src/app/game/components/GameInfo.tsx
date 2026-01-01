@@ -12,7 +12,7 @@ const GameInfo: FC = () => {
   return (
     <div
       className={cn(
-        'absolute top-1 left-1 z-50 px-1.5 py-1.5 bg-black/50 backdrop-blur-sm border border-purple-500/30 rounded-sm text-purple-300/90 font-mono text-xs shadow-[0_0_4px_rgba(147,51,234,0.15)] flex items-center gap-1.5 min-w-fit'
+        'absolute top-1 left-1 z-100 px-1.5 py-1.5 bg-black/50 backdrop-blur-sm border border-purple-500/30 rounded-sm text-purple-300/90 font-mono text-xs shadow-[0_0_4px_rgba(147,51,234,0.15)] flex items-center gap-1.5 min-w-fit'
       )}
     >
       <div className="flex items-center gap-1">

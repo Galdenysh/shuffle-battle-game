@@ -16,14 +16,27 @@ export class MainScene extends Scene {
   private inputManager: InputManager;
   private playerController: PlayerController;
 
+  private handleAbility: ((ability: string) => void) | null;
+
   constructor() {
     super('MainScene');
   }
 
   init() {
-    EventBus.on(EMIT_EVENT.ABILITY_TRIGGERED, (ability: string) =>
-      console.log(ability)
-    );
+    this.handleAbility = (ability: string) => console.log(ability);
+
+    EventBus.on(EMIT_EVENT.ABILITY_TRIGGERED, this.handleAbility);
+
+    const cleanup = () => {
+      if (this.handleAbility) {
+        EventBus.off(EMIT_EVENT.ABILITY_TRIGGERED, this.handleAbility);
+
+        this.handleAbility = null;
+      }
+    };
+
+    this.events.once('shutdown', cleanup);
+    this.events.once('destroy', cleanup);
   }
 
   preload() {

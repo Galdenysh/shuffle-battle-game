@@ -13,10 +13,11 @@ export type RefPhaserGame = {
 
 interface PhaserGameProps {
   currentActiveScene?: (scene_instance: Scene) => void;
+  onReady?: (ready: boolean) => void;
 }
 
 const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
-  function PhaserGame({ currentActiveScene }, ref) {
+  function PhaserGame({ currentActiveScene, onReady }, ref) {
     const gameRef = useRef<Game | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -33,8 +34,6 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
 
       return () => {
         if (gameRef.current) {
-          EventBus.removeAllListeners();
-
           gameRef.current.destroy(true);
 
           if (gameRef.current !== null) {
@@ -50,15 +49,21 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
 
       if (!container) return;
 
-      EventBus.once(EMIT_EVENT.SCENE_VISIBLE, () => {
+      const handleVisible = () => {
         container.classList.remove('opacity-0', 'pointer-events-none');
         container.classList.add('opacity-100', 'pointer-events-auto');
-      });
+      };
+
+      EventBus.once(EMIT_EVENT.SCENE_VISIBLE, handleVisible);
+
+      return () => {
+        EventBus.off(EMIT_EVENT.SCENE_VISIBLE, handleVisible);
+      };
     }, []);
 
     // Обработка current-scene-ready
     useEffect(() => {
-      EventBus.once(EMIT_EVENT.CURRENT_SCENE_READY, (scene_instance: Scene) => {
+      const handleSceneReady = (scene_instance: Scene) => {
         if (currentActiveScene && typeof currentActiveScene === 'function') {
           currentActiveScene(scene_instance);
         }
@@ -68,13 +73,37 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
         } else if (ref) {
           ref.current = { game: gameRef.current, scene: scene_instance };
         }
-      });
+      };
+
+      EventBus.once(EMIT_EVENT.CURRENT_SCENE_READY, handleSceneReady);
+
+      return () => {
+        EventBus.off(EMIT_EVENT.CURRENT_SCENE_READY, handleSceneReady);
+      };
     }, [currentActiveScene, ref]);
+
+    useEffect(() => {
+      let rafId1: number;
+      let rafId2: number;
+
+      rafId1 = requestAnimationFrame(() => {
+        rafId2 = requestAnimationFrame(() => {
+          onReady?.(true);
+        });
+      });
+
+      return () => {
+        cancelAnimationFrame(rafId1);
+        cancelAnimationFrame(rafId2);
+
+        onReady?.(false);
+      };
+    }, [onReady]);
 
     return (
       <div
         id="phaser-game"
-        className="opacity-0 transition-opacity duration-300 pointer-events-none"
+        className="z-10 opacity-0 transition-opacity duration-300 pointer-events-none"
         ref={containerRef}
       ></div>
     );

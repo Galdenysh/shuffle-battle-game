@@ -1,24 +1,47 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import type { RefPhaserGame } from '@/components/PhaserGame';
 import { cn } from '@/lib/utils';
 import { GameInfo } from './components';
-// import { BackgroundBeams } from '@/components/ui';
+import { BackgroundBeams } from '@/components/ui';
 
 const GameButtons = dynamic(() => import('./components/GameButtons'), {
   ssr: false,
-  loading: () => <div>Загрузка UI...</div>,
+  loading: () => <div style={{ zIndex: 10 }}>Загрузка UI...</div>,
 });
 
 const PhaserGame = dynamic(() => import('@/components/PhaserGame'), {
   ssr: false,
-  loading: () => <div>Загрузка игры...</div>,
+  loading: () => <div style={{ zIndex: 10 }}>Загрузка игры...</div>,
 });
 
 export default function GamePage() {
   const phaserRef = useRef<RefPhaserGame | null>(null);
+
+  const [buttonsReady, setButtonsReady] = useState(false);
+  const [gameReady, setGameReady] = useState(false);
+
+  const handleReadyButtons = useCallback((ready: boolean) => {
+    setButtonsReady(ready);
+  }, []);
+
+  const handleReadyGame = useCallback((ready: boolean) => {
+    setGameReady(ready);
+  }, []);
+
+  useEffect(() => {
+    if (buttonsReady && gameReady) {
+      import('@/game/core')
+        .then(({ EventBus }) => {
+          EventBus.ready();
+        })
+        .catch((error) => {
+          console.error('❌ Ошибка загрузки EventBus:', error);
+        });
+    }
+  }, [buttonsReady, gameReady]);
 
   return (
     <div
@@ -27,10 +50,14 @@ export default function GamePage() {
       )}
     >
       <GameInfo />
-      <GameButtons />
-      <PhaserGame ref={phaserRef} />
+      <GameButtons onReady={handleReadyButtons} />
+      <PhaserGame onReady={handleReadyGame} ref={phaserRef} />
 
-      {/* <BackgroundBeams /> */}
+      <BackgroundBeams
+        className={cn(
+          'opacity-60 mix-blend-screen backdrop-blur-[1px] bg-gradient-to-br from-cyan-500/10 via-purple-500/5 to-pink-500/10 contrast-125 saturate-150'
+        )}
+      />
     </div>
   );
 }

@@ -6,7 +6,9 @@ import { Controls } from '@/components/ui';
 import { EMIT_EVENT } from '@/game/constants';
 import { EventBus } from '@/game/core';
 
-const GameButtons: FC = () => {
+const GameButtons: FC<{ onReady?: (ready: boolean) => void }> = ({
+  onReady,
+}) => {
   const [visible, setVisible] = useState<boolean>(false);
 
   const handleAbilityPress = (abilityName: string) => {
@@ -15,12 +17,34 @@ const GameButtons: FC = () => {
 
   // Обработка scene-visible
   useEffect(() => {
-    EventBus.once(EMIT_EVENT.SCENE_VISIBLE, () => {
+    const handleVisible = () => {
       setVisible(true);
+    };
+
+    EventBus.once(EMIT_EVENT.SCENE_VISIBLE, handleVisible);
+
+    return () => {
+      EventBus.off(EMIT_EVENT.SCENE_VISIBLE, handleVisible);
+    };
+  }, []);
+
+  useEffect(() => {
+    let rafId1: number;
+    let rafId2: number;
+
+    rafId1 = requestAnimationFrame(() => {
+      rafId2 = requestAnimationFrame(() => {
+        onReady?.(true);
+      });
     });
 
-    EventBus.ready(); // TODO: Вынести логику в page
-  }, []);
+    return () => {
+      cancelAnimationFrame(rafId1);
+      cancelAnimationFrame(rafId2);
+
+      onReady?.(false);
+    };
+  }, [onReady]);
 
   return (
     <Controls
