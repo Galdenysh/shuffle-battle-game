@@ -1,7 +1,8 @@
 import { Scene } from 'phaser';
 import { Player } from '../abstract';
-import { CharacterType, Direction, PlayerConfig } from '../types';
+import { CharacterType, PlayerConfig } from '../types';
 import { ASSET_KEYS } from '@/game/constants';
+import { Direction } from '@/types';
 
 export class NomadmechanicMan extends Player {
   private static readonly DEFAULT_CONFIG: PlayerConfig = {

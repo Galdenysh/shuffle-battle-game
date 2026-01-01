@@ -1,0 +1,131 @@
+'use client';
+
+import { BASE_HEIGHT, BASE_WIDTH } from '@/game/constants';
+import { cn } from '@/lib/utils';
+import React, { useRef, useState } from 'react';
+import type { FC } from 'react';
+import { Abilities, Direction } from '@/types';
+import ControlButton from './ControlButton';
+import ArrowIcons from './ArrowIcons';
+
+interface ControlsProps {
+  isVisible: boolean;
+  handleMovePress: (moveName: string, mode: string) => void;
+  handleAbilityPress: (abilityName: string) => void;
+}
+
+const containerClasses = {
+  base: 'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex items-end justify-between p-2 transition-opacity duration-1200',
+  visible: 'opacity-100 pointer-events-auto',
+  hidden: 'opacity-0 pointer-events-none',
+} as const;
+
+const movesClasses = {
+  base: 'grid grid-cols-3 grid-rows-3 gap-2',
+} as const;
+
+const abilitiesClasses = {
+  base: 'flex flex-col gap-2',
+} as const;
+
+const Controls: FC<ControlsProps> = ({
+  isVisible,
+  handleMovePress,
+  handleAbilityPress,
+}) => {
+  const buttonRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const [isMoveMode, setIsMoveMode] = useState(true);
+
+  const moves: Array<{
+    id: Direction | 'center';
+    label: string;
+  }> = [
+    { id: Direction.NORTH_WEST, label: 'North West' },
+    { id: Direction.NORTH, label: 'North' },
+    { id: Direction.NORTH_EAST, label: 'North East' },
+    { id: Direction.WEST, label: 'West' },
+    { id: 'center', label: 'Center' },
+    { id: Direction.EAST, label: 'East' },
+    { id: Direction.SOUTH_WEST, label: 'South West' },
+    { id: Direction.SOUTH, label: 'South' },
+    { id: Direction.SOUTH_EAST, label: 'South East' },
+  ];
+
+  const abilities: Array<{
+    id: Abilities;
+    label: string;
+  }> = [
+    { id: Abilities.RUNNING_MAN, label: 'RM' },
+    { id: Abilities.T_STEP, label: 'T-Step' },
+  ];
+
+  const handleToggleMode = () => {
+    setIsMoveMode(!isMoveMode);
+  };
+
+  return (
+    <div
+      className={cn(
+        containerClasses.base,
+        isVisible ? containerClasses.visible : containerClasses.hidden
+      )}
+      style={{ width: `${BASE_WIDTH}px`, height: `${BASE_HEIGHT}px` }}
+    >
+      <div className={cn(movesClasses.base)}>
+        {moves.map((move, index) => {
+          const isCenter = move.id === 'center';
+
+          return (
+            <ControlButton
+              key={move.label}
+              isToggleOn={isCenter ? !isMoveMode : undefined}
+              icon={
+                <ArrowIcons
+                  direction={move.id as Direction}
+                  isToggleOn={!isMoveMode}
+                  showToggleIcon={isCenter}
+                />
+              }
+              aria-label={move.label}
+              onClick={(e) => {
+                e.preventDefault();
+
+                if (!isCenter) {
+                  handleMovePress(
+                    move.id,
+                    isMoveMode ? 'move_mode' : 'ability_mode'
+                  );
+                } else {
+                  handleToggleMode();
+                }
+              }}
+              ref={(el) => {
+                buttonRefs.current[index] = el;
+              }}
+            />
+          );
+        })}
+      </div>
+      <div className={cn(abilitiesClasses.base)}>
+        {abilities.map((ability, index) => (
+          <ControlButton
+            key={ability.label}
+            label={ability.label}
+            onClick={(e) => {
+              e.preventDefault();
+
+              handleAbilityPress(ability.id);
+            }}
+            ref={(el) => {
+              buttonRefs.current[index] = el;
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
+Controls.displayName = 'Controls';
+
+export default Controls;

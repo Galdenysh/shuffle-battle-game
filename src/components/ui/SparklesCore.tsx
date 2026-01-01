@@ -1,3 +1,5 @@
+// https://ui.aceternity.com/components/sparkles
+
 'use client';
 
 import React, { useId } from 'react';
@@ -21,7 +23,7 @@ interface ParticlesProps {
   particleDensity?: number;
 }
 
-export const SparklesCore: FC<ParticlesProps> = (props) => {
+const SparklesCore: FC<ParticlesProps> = (props) => {
   const {
     id,
     className,
@@ -437,3 +439,7 @@ export const SparklesCore: FC<ParticlesProps> = (props) => {
     </motion.div>
   );
 };
+
+SparklesCore.displayName = 'SparklesCore';
+
+export default SparklesCore;

@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import type { FC } from 'react';
-import { ControlButtons } from '@/components/ui';
+import { Controls } from '@/components/ui';
 import { EMIT_EVENT } from '@/game/constants';
 import { EventBus } from '@/game/core';
 
-export const GameButtons: FC = () => {
+const GameButtons: FC = () => {
   const [visible, setVisible] = useState<boolean>(false);
 
   const handleAbilityPress = (abilityName: string) => {
@@ -19,14 +19,18 @@ export const GameButtons: FC = () => {
       setVisible(true);
     });
 
-    EventBus.ready(); // Вынести логику в page
+    EventBus.ready(); // TODO: Вынести логику в page
   }, []);
 
   return (
-    <ControlButtons
+    <Controls
       isVisible={visible}
       handleMovePress={() => {}}
       handleAbilityPress={handleAbilityPress}
     />
   );
 };
+
+GameButtons.displayName = 'GameButtons';
+
+export default GameButtons;

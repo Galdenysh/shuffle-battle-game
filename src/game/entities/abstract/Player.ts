@@ -1,8 +1,8 @@
 import { Physics } from 'phaser';
 import type { Scene } from 'phaser';
-import { Direction } from '../types';
 import type { AnimationConfig, PlayerConfig } from '../types';
 import { CHARACTER_ANIMATION_DEFAULTS } from '../constants';
+import { Direction } from '@/types';
 
 export abstract class Player extends Physics.Arcade.Sprite {
   protected config: PlayerConfig;

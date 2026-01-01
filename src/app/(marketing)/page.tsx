@@ -8,6 +8,20 @@ import { cn } from '@/lib/utils';
 import { PLAYER_NAME_LENGTH } from './constants';
 import { BackgroundParticles, ErrorIcon } from './components';
 
+const inputClasses = {
+  base: 'w-full px-5 py-4 bg-black/50 border-2 border-purple-500/50 rounded-xl text-white text-lg placeholder-gray-500 transition-all',
+  focus:
+    'focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30',
+} as const;
+
+const buttonClasses = {
+  base: 'w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white text-xl font-bold shadow-lg shadow-purple-500/30 transition-all flex items-center justify-center gap-3',
+  hover: 'hover:from-purple-700 hover:to-pink-700',
+  focus:
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black',
+  disabled: 'disabled:opacity-70 disabled:cursor-not-allowed',
+} as const;
+
 export default function MarketingPage() {
   const router = useRouter();
 
@@ -109,9 +123,7 @@ export default function MarketingPage() {
                 maxLength={PLAYER_NAME_LENGTH}
                 aria-invalid={!!error}
                 aria-describedby={error ? 'playerNameError' : undefined}
-                className={cn(
-                  'w-full px-5 py-4 bg-black/50 border-2 border-purple-500/50 rounded-xl text-white text-lg placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30 transition-all'
-                )}
+                className={cn(inputClasses.base, inputClasses.focus)}
               />
 
               <div
@@ -147,7 +159,10 @@ export default function MarketingPage() {
             onClick={handleStartGame}
             disabled={isLoading}
             className={cn(
-              'w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-xl text-white text-xl font-bold shadow-lg shadow-purple-500/30 disabled:opacity-70 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-3'
+              buttonClasses.base,
+              buttonClasses.hover,
+              buttonClasses.focus,
+              buttonClasses.disabled
             )}
           >
             {isLoading ? (

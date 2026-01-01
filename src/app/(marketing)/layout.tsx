@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 export default function MarketingLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <>

@@ -1,6 +1,6 @@
+import { Direction } from '@/types';
 import { Player } from '../abstract';
 import { InputManager } from '../manages';
-import { Direction } from '../types';
 
 export class PlayerController {
   private player: Player;

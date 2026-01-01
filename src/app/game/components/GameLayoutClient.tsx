@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import type { ReactNode } from 'react';
+import type { FC, ReactNode } from 'react';
 
-export function GameLayoutClient({ children }: { children: ReactNode }) {
+const GameLayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
   useEffect(() => {
     document.body.classList.add('no-scroll'); // Блокируем скролл во время игры
 
@@ -12,6 +12,9 @@ export function GameLayoutClient({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  return <div className="game-fullscreen">{children}</div>;
-}
+  return <div>{children}</div>;
+};
 
+GameLayoutClient.displayName = 'GameLayoutClient';
+
+export default GameLayoutClient;

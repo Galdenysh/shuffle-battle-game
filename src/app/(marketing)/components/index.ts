@@ -1,2 +1,2 @@
-export * from './BackgroundParticles';
-export * from './ErrorIcon';
+export { default as BackgroundParticles } from './BackgroundParticles';
+export { default as ErrorIcon } from './ErrorIcon';

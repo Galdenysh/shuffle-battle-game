@@ -4,7 +4,7 @@ import React, { memo } from 'react';
 import { SparklesCore } from '@/components/ui';
 import { cn } from '@/lib/utils';
 
-export const BackgroundParticles = memo(function BackgroundParticles() {
+const BackgroundParticles = memo(() => {
   return (
     <SparklesCore
       background="transparent"
@@ -16,3 +16,7 @@ export const BackgroundParticles = memo(function BackgroundParticles() {
     />
   );
 });
+
+BackgroundParticles.displayName = 'BackgroundParticles';
+
+export default BackgroundParticles;
