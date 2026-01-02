@@ -15,7 +15,9 @@ export class InputManager {
   private keyR: Input.Keyboard.Key | null = null;
   private keyT: Input.Keyboard.Key | null = null;
   private keyY: Input.Keyboard.Key | null = null;
+  private keyF: Input.Keyboard.Key | null = null;
 
+  private _isAbilityMode: boolean = false;
   private _activeSpecialMove: SpecialMoveType | null = null;
   private specialMoveStartTime: number = 0;
   private specialMoveDurations: Record<SpecialMoveType, number> = {
@@ -77,6 +79,7 @@ export class InputManager {
     this.keyR = keyboard.addKey(Input.Keyboard.KeyCodes.R);
     this.keyT = keyboard.addKey(Input.Keyboard.KeyCodes.T);
     this.keyY = keyboard.addKey(Input.Keyboard.KeyCodes.Y);
+    this.keyF = keyboard.addKey(Input.Keyboard.KeyCodes.F);
 
     this.keyR.on('down', () =>
       this.activateSpecialMove(SpecialMoveType.RUNNING_MAN_STEP)
@@ -89,6 +92,8 @@ export class InputManager {
     this.keyY.on('down', () =>
       this.activateSpecialMove(SpecialMoveType.T_STEP_RIGHT)
     );
+
+    this.keyF.on('down', () => this.toggleAbilityMode());
   }
 
   public get horizontal(): number {
@@ -107,10 +112,6 @@ export class InputManager {
     if (this.cursors?.down.isDown || this.wasdKeys?.down.isDown) value += 1;
 
     return Math.max(-1, Math.min(1, value));
-  }
-
-  public get direction(): Phaser.Math.Vector2 {
-    return new Phaser.Math.Vector2(this.horizontal, this.vertical).normalize();
   }
 
   public get isMoving(): boolean {
@@ -133,6 +134,10 @@ export class InputManager {
     return this._activeSpecialMove;
   }
 
+  public get isAbilityMode(): boolean {
+    return this._isAbilityMode;
+  }
+
   public get activeScheme(): ControlScheme {
     if (this.cursors && this.wasdKeys) return ControlScheme.BOTH;
     if (this.cursors) return ControlScheme.ARROWS;
@@ -140,7 +145,12 @@ export class InputManager {
     return ControlScheme.WASD;
   }
 
+  private toggleAbilityMode(): void {
+    this._isAbilityMode = !this._isAbilityMode;
+  }
+
   private activateSpecialMove(moveType: SpecialMoveType): void {
+    if (!this.vertical && !this.horizontal) return;
     if (this._activeSpecialMove !== null) return;
 
     this._activeSpecialMove = moveType;

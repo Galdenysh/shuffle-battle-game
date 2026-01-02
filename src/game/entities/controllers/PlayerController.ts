@@ -5,6 +5,7 @@ import { InputManager } from '../manages';
 export class PlayerController {
   private player: Player;
   private input: InputManager;
+  private fixedDirection: Direction;
   private lastDirection: Direction = Direction.SOUTH;
 
   constructor(player: Player, input: InputManager) {
@@ -17,31 +18,35 @@ export class PlayerController {
 
     if (this.input.isMoving) this.lastDirection = currentDirection;
 
+    this.fixedDirection = this.input.activeSpecialMove
+      ? this.fixedDirection ?? this.lastDirection
+      : this.lastDirection;
+
     if (this.input.isRunningManStepActive) {
-      this.player.runningManStep();
+      this.player.runningManStep(this.fixedDirection);
 
       return;
     }
 
     if (this.input.isTStepLeftActive) {
-      this.player.tStepLeft(this.lastDirection);
+      this.player.tStepLeft(this.fixedDirection);
 
       return;
     }
 
     if (this.input.isTStepRightActive) {
-      this.player.tStepRight(this.lastDirection);
+      this.player.tStepRight(this.fixedDirection);
 
       return;
     }
 
-    if (!this.input.isMoving) {
+    if (!this.input.isMoving || this.input.isAbilityMode) {
       this.player.stopMovement();
 
       return;
     }
 
-    this.player.move(currentDirection);
+    if (!this.input.isAbilityMode) this.player.move(currentDirection);
   }
 
   private getDirectionFromInput(): Direction {

@@ -83,7 +83,9 @@ export abstract class Player extends Physics.Arcade.Sprite {
     this.playWalkAnimation();
   }
 
-  public runningManStep(): void {
+  public runningManStep(direction: Direction): void {
+    this.currentDirection = direction;
+
     const body = this.body as Physics.Arcade.Body | null;
 
     if (!body) {
@@ -100,12 +102,12 @@ export abstract class Player extends Physics.Arcade.Sprite {
   }
 
   public tStepLeft(direction: Direction): void {
-    this.currentDirection = direction;
+    const rotatedDirection = this.rotateDirection90Right(direction);
 
-    const rotatedDirection = this.rotateDirection90Left(direction);
+    this.currentDirection = rotatedDirection;
 
     const velocity = this.calculateVelocity(
-      rotatedDirection,
+      direction,
       this.config.speedWalking
     );
 
@@ -125,12 +127,12 @@ export abstract class Player extends Physics.Arcade.Sprite {
   }
 
   public tStepRight(direction: Direction): void {
-    this.currentDirection = direction;
+    const rotatedDirection = this.rotateDirection90Left(direction);
 
-    const rotatedDirection = this.rotateDirection90Right(direction);
+    this.currentDirection = rotatedDirection;
 
     const velocity = this.calculateVelocity(
-      rotatedDirection,
+      direction,
       this.config.speedWalking
     );
 

@@ -56,7 +56,8 @@ const Controls: FC<ControlsProps> = ({
     label: string;
   }> = [
     { id: Abilities.RUNNING_MAN, label: 'RM' },
-    { id: Abilities.T_STEP, label: 'T-Step' },
+    { id: Abilities.T_STEP_LEFT, label: 'T(L)' },
+    { id: Abilities.T_STEP_RIGHT, label: 'T(R)' },
   ];
 
   const handleToggleMode = () => {
