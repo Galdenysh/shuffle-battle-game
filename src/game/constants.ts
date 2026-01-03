@@ -4,11 +4,11 @@ export const BASE_WIDTH = 360;
 export const BASE_HEIGHT = 640;
 
 export const EMIT_EVENT = {
-  SCENE_VISIBLE: 'scene_visible',
+  SCENE_VISIBLE: 'scene-visible',
   CURRENT_SCENE_READY: 'current-scene-ready',
-  MOVE_TRIGGERED: 'move_triggered',
-  ABILITY_TRIGGERED: 'ability_triggered',
-  CONTROL_MODE_TRIGGERED: 'control_mode_triggered',
+  MOVE_TRIGGERED: 'move-triggered',
+  ABILITY_TRIGGERED: 'ability-triggered',
+  CONTROL_MODE_TRIGGERED: 'control-mode-triggered',
 };
 
 export const ASSET_KEYS = {

@@ -3,15 +3,14 @@ import type { Scene, Types } from 'phaser';
 import { ControlScheme } from '../types';
 import type { WASDKeys } from '../types';
 import { TouchManager } from './TouchManager';
-import { Abilities, Direction } from '@/types';
+import { Abilities, ControlMode, Direction } from '@/types';
 
 export class InputManager {
   private scene: Scene;
   private cursors: Types.Input.Keyboard.CursorKeys | null = null;
   private wasdKeys: WASDKeys | null = null;
+  private touchManager: TouchManager | null = null;
   private controlScheme: ControlScheme;
-
-  private touchManager: TouchManager;
 
   // ===== СПЕЦПРИЁМЫ =====
 
@@ -93,7 +92,7 @@ export class InputManager {
       this.activateSpecialMove(Abilities.T_STEP_RIGHT)
     );
 
-    this.keyF.on('down', () => this.toggleAbilityMode());
+    this.keyF.on('down', () => this.toggleAbilityMode()); // TODO: добавить синхронизацию с кнопкой react
 
     // TODO: добавить метод destroy для отписки от on 'down'
   }
@@ -110,6 +109,7 @@ export class InputManager {
     // ===== СПЕЦПРИЁМЫ =====
 
     const abilitiesKeys = this.touchManager.touchAbilitiesKeys;
+    const modeKey = this.touchManager.touchModeKey;
 
     abilitiesKeys[Abilities.RUNNING_MAN].on('down', () =>
       this.activateSpecialMove(Abilities.RUNNING_MAN)
@@ -122,6 +122,10 @@ export class InputManager {
     abilitiesKeys[Abilities.T_STEP_RIGHT].on('down', () =>
       this.activateSpecialMove(Abilities.T_STEP_RIGHT)
     );
+
+    modeKey.on('change-mode', () => {
+      this.setAbilityMode(modeKey.controlMode);
+    });
   }
 
   public get horizontal(): number {
@@ -167,14 +171,37 @@ export class InputManager {
   }
 
   public get activeScheme(): ControlScheme {
-    if (this.cursors && this.wasdKeys) return ControlScheme.BOTH;
-    if (this.cursors) return ControlScheme.ARROWS;
+    if (this.cursors && this.wasdKeys && this.touchManager) {
+      return ControlScheme.ALL;
+    }
+
+    if (this.cursors && this.wasdKeys && !this.touchManager) {
+      return ControlScheme.BOTH;
+    }
+
+    if (this.cursors && !this.wasdKeys && !this.touchManager) {
+      return ControlScheme.ARROWS;
+    }
+
+    if (!this.cursors && !this.wasdKeys && this.touchManager) {
+      return ControlScheme.TOUCH;
+    }
 
     return ControlScheme.WASD;
   }
 
   private toggleAbilityMode(): void {
     this._isAbilityMode = !this._isAbilityMode;
+  }
+
+  private setAbilityMode(mode: ControlMode | null): void {
+    if (!mode) return;
+
+    if (mode === ControlMode.ABILITY_MODE) {
+      this._isAbilityMode = true;
+    } else {
+      this._isAbilityMode = false;
+    }
   }
 
   private activateSpecialMove(moveType: Abilities): void {

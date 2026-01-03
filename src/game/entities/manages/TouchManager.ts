@@ -13,19 +13,27 @@ class TouchKey extends Events.EventEmitter {
   }
 }
 
+class TouchModeKey extends TouchKey {
+  public controlMode: ControlMode | null = null;
+
+  constructor() {
+    super();
+  }
+}
+
 export class TouchManager {
   private scene: Scene;
 
   private _touchMoveKeys: Record<Direction, TouchKey>;
   private _touchAbilitiesKeys: Record<Abilities, TouchKey>;
-
-  private _mode: ControlMode = ControlMode.MOVE_MODE;
+  private _touchModeKey: TouchModeKey;
 
   constructor(scene: Scene) {
     this.scene = scene;
 
     this._touchMoveKeys = this.createMoveKeys();
     this._touchAbilitiesKeys = this.createAbilityKeys();
+    this._touchModeKey = new TouchModeKey();
 
     this.setupEventListeners();
   }
@@ -38,8 +46,8 @@ export class TouchManager {
     return this._touchAbilitiesKeys;
   }
 
-  public get mode() {
-    return this._mode;
+  public get touchModeKey() {
+    return this._touchModeKey;
   }
 
   private createMoveKeys(): Record<Direction, TouchKey> {
@@ -104,7 +112,11 @@ export class TouchManager {
   }
 
   private handleMode(mode: ControlMode): void {
-    this._mode = mode;
+    const key = this._touchModeKey;
+
+    key.controlMode = mode;
+
+    key.emit('change-mode');
   }
 
   private cleanup(): void {
