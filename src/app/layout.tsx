@@ -32,7 +32,7 @@ export default function RootLayout({
       <body
         className={cn(
           inter.className,
-          'fixed top-0 left-0 size-full touch-none'
+          'fixed inset-0 size-full touch-none'
         )}
       >
         {children}
