@@ -8,11 +8,14 @@ interface ControlButtonProps {
   icon?: ReactNode;
   'aria-label'?: string;
   onClick?: HTMLAttributes<HTMLButtonElement>['onClick'];
+  onTouchStart?: HTMLAttributes<HTMLButtonElement>['onTouchStart'];
+  onTouchEnd?: HTMLAttributes<HTMLButtonElement>['onTouchEnd'];
+  onTouchCancel?: HTMLAttributes<HTMLButtonElement>['onTouchCancel'];
   ref?: RefCallback<HTMLButtonElement>;
 }
 
 const buttonClasses = {
-  base: 'relative min-w-12 min-h-12 py-1 px-2 text-white text-lg font-mono font-bold uppercase tracking-wider border-2 rounded-none flex items-center justify-center transition-all duration-300 overflow-visible cursor-pointer',
+  base: 'relative min-w-12 min-h-12 py-1 px-2 text-white text-lg font-mono font-bold uppercase tracking-wider border-2 rounded-none flex items-center justify-center transition-all duration-300 overflow-visible cursor-pointer touch-none select-none',
   baseLightOff:
     'bg-gradient-to-r from-cyan-500/50 via-purple-500/50 to-pink-500/50 border-white shadow-[0_0_20px_rgba(0,255,255,0.6)]',
   baseLightOn:
@@ -30,6 +33,9 @@ const ControlButton: FC<ControlButtonProps> = ({
   icon,
   'aria-label': ariaLabel,
   onClick,
+  onTouchStart,
+  onTouchEnd,
+  onTouchCancel,
   ref,
 }) => {
   return (
@@ -44,30 +50,33 @@ const ControlButton: FC<ControlButtonProps> = ({
       )}
       aria-label={ariaLabel}
       onClick={onClick}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      onTouchCancel={onTouchCancel}
       ref={ref}
     >
       <div
         className={cn(
           'absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-cyan-500',
-          'opacity-0 group-hover:opacity-100 transition-opacity duration-150'
+          'opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-150'
         )}
       />
       <div
         className={cn(
           'absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 border-cyan-500',
-          'opacity-0 group-hover:opacity-100 transition-opacity duration-150'
+          'opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-150'
         )}
       />
       <div
         className={cn(
           'absolute -bottom-1 -left-1 w-3 h-3 border-b-2 border-l-2 border-cyan-500',
-          'opacity-0 group-hover:opacity-100 transition-opacity duration-150'
+          'opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-150'
         )}
       />
       <div
         className={cn(
           'absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-cyan-500',
-          'opacity-0 group-hover:opacity-100 transition-opacity duration-150'
+          'opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-150'
         )}
       />
 

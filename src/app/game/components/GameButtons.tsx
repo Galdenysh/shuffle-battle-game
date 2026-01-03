@@ -11,8 +11,16 @@ const GameButtons: FC<{ onReady?: (ready: boolean) => void }> = ({
 }) => {
   const [visible, setVisible] = useState<boolean>(false);
 
-  const handleAbilityPress = (abilityName: string) => {
-    EventBus.emit(EMIT_EVENT.ABILITY_TRIGGERED, abilityName);
+  const handleMovePress = (
+    moveName: string,
+    mode: string,
+    isActive: boolean
+  ) => {
+    EventBus.emit(EMIT_EVENT.MOVE_TRIGGERED, moveName, mode, isActive);
+  };
+
+  const handleAbilityPress = (abilityName: string, isActive: boolean) => {
+    EventBus.emit(EMIT_EVENT.ABILITY_TRIGGERED, abilityName, isActive);
   };
 
   // Обработка scene-visible
@@ -49,7 +57,7 @@ const GameButtons: FC<{ onReady?: (ready: boolean) => void }> = ({
   return (
     <Controls
       isVisible={visible}
-      handleMovePress={() => {}}
+      handleMovePress={handleMovePress}
       handleAbilityPress={handleAbilityPress}
     />
   );

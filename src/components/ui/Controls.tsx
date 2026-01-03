@@ -10,8 +10,8 @@ import ArrowIcons from './ArrowIcons';
 
 interface ControlsProps {
   isVisible: boolean;
-  handleMovePress: (moveName: string, mode: string) => void;
-  handleAbilityPress: (abilityName: string) => void;
+  handleMovePress: (moveName: string, mode: string, isActive: boolean) => void;
+  handleAbilityPress: (abilityName: string, isActive: boolean) => void;
 }
 
 const containerClasses = {
@@ -64,6 +64,22 @@ const Controls: FC<ControlsProps> = ({
     setIsMoveMode(!isMoveMode);
   };
 
+  const handleMove = (
+    moveName: string,
+    isCenter: boolean,
+    isActive: boolean
+  ) => {
+    if (!isCenter) {
+      handleMovePress(
+        moveName,
+        isMoveMode ? 'move_mode' : 'ability_mode',
+        isActive
+      );
+    } else {
+      handleToggleMode();
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -88,18 +104,9 @@ const Controls: FC<ControlsProps> = ({
                 />
               }
               aria-label={move.label}
-              onClick={(e) => {
-                e.preventDefault();
-
-                if (!isCenter) {
-                  handleMovePress(
-                    move.id,
-                    isMoveMode ? 'move_mode' : 'ability_mode'
-                  );
-                } else {
-                  handleToggleMode();
-                }
-              }}
+              onTouchStart={() => handleMove(move.id, isCenter, true)}
+              onTouchEnd={() => handleMove(move.id, isCenter, false)}
+              onTouchCancel={() => handleMove(move.id, isCenter, false)}
               ref={(el) => {
                 buttonRefs.current[index] = el;
               }}
@@ -112,11 +119,9 @@ const Controls: FC<ControlsProps> = ({
           <ControlButton
             key={ability.label}
             label={ability.label}
-            onClick={(e) => {
-              e.preventDefault();
-
-              handleAbilityPress(ability.id);
-            }}
+            onTouchStart={() => handleAbilityPress(ability.id, true)}
+            onTouchEnd={() => handleAbilityPress(ability.id, false)}
+            onTouchCancel={() => handleAbilityPress(ability.id, false)}
             ref={(el) => {
               buttonRefs.current[index] = el;
             }}

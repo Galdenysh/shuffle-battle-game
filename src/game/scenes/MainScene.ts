@@ -16,18 +16,33 @@ export class MainScene extends Scene {
   private inputManager: InputManager;
   private playerController: PlayerController;
 
-  private handleAbility: ((ability: string) => void) | null;
+  private handleMove:
+    | ((move: string, mode: string, isActive: boolean) => void)
+    | null;
+
+  private handleAbility: ((ability: string, isActive: boolean) => void) | null;
 
   constructor() {
     super('MainScene');
   }
 
   init() {
-    this.handleAbility = (ability: string) => console.log(ability);
+    this.handleMove = (move: string, mode: string, isActive: boolean) =>
+      console.log(move, mode, isActive);
 
+    this.handleAbility = (ability: string, isActive: boolean) =>
+      console.log(ability, isActive);
+
+    EventBus.on(EMIT_EVENT.MOVE_TRIGGERED, this.handleMove);
     EventBus.on(EMIT_EVENT.ABILITY_TRIGGERED, this.handleAbility);
 
     const cleanup = () => {
+      if (this.handleMove) {
+        EventBus.off(EMIT_EVENT.MOVE_TRIGGERED, this.handleMove);
+
+        this.handleMove = null;
+      }
+
       if (this.handleAbility) {
         EventBus.off(EMIT_EVENT.ABILITY_TRIGGERED, this.handleAbility);
 
