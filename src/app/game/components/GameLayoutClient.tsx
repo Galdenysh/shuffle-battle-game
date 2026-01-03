@@ -15,19 +15,10 @@ const GameLayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
     };
   }, []);
 
-  // Если это двойной тап — блокируем стандартное поведение
+  // Блокируем стандартные жесты
   useEffect(() => {
-    let lastTap = 0;
-
     const handleTouchStart = (e: TouchEvent) => {
-      const now = Date.now();
-      const DOUBLE_TAP_THRESHOLD = 300;
-
-      if (now - lastTap < DOUBLE_TAP_THRESHOLD) {
-        if (e.cancelable) e.preventDefault();
-      }
-
-      lastTap = now;
+      e.preventDefault();
     };
 
     document.addEventListener('touchstart', handleTouchStart, {

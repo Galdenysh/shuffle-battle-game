@@ -1,15 +1,17 @@
 'use client';
 
-import { BASE_HEIGHT, BASE_WIDTH } from '@/game/constants';
-import { cn } from '@/lib/utils';
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import type { FC } from 'react';
-import { Abilities, ControlMode, Direction } from '@/types';
 import ControlButton from './ControlButton';
 import ArrowIcons from './ArrowIcons';
+import { BASE_HEIGHT, BASE_WIDTH } from '@/game/constants';
+import { cn } from '@/lib/utils';
+import { Abilities, ControlMode, Direction } from '@/types';
 
 interface ControlsProps {
   isVisible: boolean;
+  isAbilityMode: boolean;
+  onModeChange: (isAbilityMode: boolean) => void;
   handleMovePress: (moveName: Direction, isActive: boolean) => void;
   handleAbilityPress: (abilityName: Abilities, isActive: boolean) => void;
   handleModePress: (mode: ControlMode) => void;
@@ -31,12 +33,13 @@ const abilitiesClasses = {
 
 const Controls: FC<ControlsProps> = ({
   isVisible,
+  isAbilityMode,
+  onModeChange,
   handleMovePress,
   handleAbilityPress,
   handleModePress,
 }) => {
   const buttonRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const [isMoveMode, setIsMoveMode] = useState(true);
 
   const moves: Array<{
     id: Direction | 'center';
@@ -66,12 +69,12 @@ const Controls: FC<ControlsProps> = ({
     if (moveName !== 'center') {
       handleMovePress(moveName, isActive);
     } else if (isActive) {
-      const isNewMoveMode = !isMoveMode;
+      const isNewAbilityMode = !isAbilityMode;
 
-      setIsMoveMode(isNewMoveMode);
+      onModeChange(isNewAbilityMode);
 
       handleModePress(
-        isNewMoveMode ? ControlMode.MOVE_MODE : ControlMode.ABILITY_MODE
+        isNewAbilityMode ? ControlMode.ABILITY_MODE : ControlMode.MOVE_MODE
       );
     }
   };
@@ -93,15 +96,17 @@ const Controls: FC<ControlsProps> = ({
           return (
             <ControlButton
               key={move.label}
-              isToggleOn={isCenter ? !isMoveMode : undefined}
+              isToggleOn={isCenter ? isAbilityMode : undefined}
               icon={
                 <ArrowIcons
                   direction={moveDirection}
-                  isToggleOn={!isMoveMode}
+                  isToggleOn={isAbilityMode}
                   showToggleIcon={isCenter}
                 />
               }
               aria-label={move.label}
+              onMouseDown={() => handleMove(move.id, true)}
+              onMouseUp={() => handleMove(move.id, false)}
               onTouchStart={() => handleMove(move.id, true)}
               onTouchEnd={() => handleMove(move.id, false)}
               onTouchCancel={() => handleMove(move.id, false)}
@@ -117,6 +122,8 @@ const Controls: FC<ControlsProps> = ({
           <ControlButton
             key={ability.label}
             label={ability.label}
+            onMouseDown={() => handleAbilityPress(ability.id, true)}
+            onMouseUp={() => handleAbilityPress(ability.id, false)}
             onTouchStart={() => handleAbilityPress(ability.id, true)}
             onTouchEnd={() => handleAbilityPress(ability.id, false)}
             onTouchCancel={() => handleAbilityPress(ability.id, false)}

@@ -10,7 +10,8 @@ import { Abilities, ControlMode, Direction } from '@/types';
 const GameButtons: FC<{ onReady?: (ready: boolean) => void }> = ({
   onReady,
 }) => {
-  const [visible, setVisible] = useState<boolean>(false);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
+  const [isAbilityMode, setIsAbilityMode] = useState<boolean>(false);
 
   const handleMovePress = (moveName: Direction, isActive: boolean) => {
     EventBus.emit(EMIT_EVENT.MOVE_TRIGGERED, moveName, isActive);
@@ -24,10 +25,27 @@ const GameButtons: FC<{ onReady?: (ready: boolean) => void }> = ({
     EventBus.emit(EMIT_EVENT.CONTROL_MODE_TRIGGERED, mode);
   };
 
+  const handleAbilityMode = (newIsAbilityMode: boolean) => {
+    setIsAbilityMode(newIsAbilityMode);
+  };
+
+  // Синхронизация с touch кнопкой
+  useEffect(() => {
+    const handleModeTriggered = (mode: ControlMode) => {
+      setIsAbilityMode(mode === ControlMode.ABILITY_MODE);
+    };
+
+    EventBus.on(EMIT_EVENT.CONTROL_MODE_TRIGGERED, handleModeTriggered);
+
+    return () => {
+      EventBus.off(EMIT_EVENT.CONTROL_MODE_TRIGGERED, handleModeTriggered);
+    };
+  }, []);
+
   // Обработка scene-visible
   useEffect(() => {
     const handleVisible = () => {
-      setVisible(true);
+      setIsVisible(true);
     };
 
     EventBus.once(EMIT_EVENT.SCENE_VISIBLE, handleVisible);
@@ -57,7 +75,9 @@ const GameButtons: FC<{ onReady?: (ready: boolean) => void }> = ({
 
   return (
     <Controls
-      isVisible={visible}
+      isVisible={isVisible}
+      isAbilityMode={isAbilityMode}
+      onModeChange={handleAbilityMode}
       handleMovePress={handleMovePress}
       handleAbilityPress={handleAbilityPress}
       handleModePress={handleModePress}

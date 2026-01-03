@@ -24,9 +24,9 @@ class TouchModeKey extends Events.EventEmitter {
 export class TouchManager {
   private scene: Scene;
 
-  private _touchMoveKeys: Record<Direction, TouchKey>;
-  private _touchAbilitiesKeys: Record<Abilities, TouchKey>;
-  private _touchModeKey: TouchModeKey;
+  private _touchMoveKeys: Record<Direction, TouchKey> | null = null;
+  private _touchAbilitiesKeys: Record<Abilities, TouchKey> | null = null;
+  private _touchModeKey: TouchModeKey | null = null;
 
   constructor(scene: Scene) {
     this.scene = scene;
@@ -36,6 +36,31 @@ export class TouchManager {
     this._touchModeKey = new TouchModeKey();
 
     this.setupEventListeners();
+  }
+
+  public destroy() {
+    if (this._touchMoveKeys) {
+      Object.values(this._touchMoveKeys).forEach((key) => key.destroy());
+    }
+
+    if (this._touchAbilitiesKeys) {
+      Object.values(this._touchAbilitiesKeys).forEach((key) => key.destroy());
+    }
+
+    if (this._touchModeKey) {
+      this._touchModeKey.destroy();
+    }
+
+    EventBus.off(EMIT_EVENT.MOVE_TRIGGERED, this.handleMove, this);
+    EventBus.off(EMIT_EVENT.ABILITY_TRIGGERED, this.handleAbility, this);
+    EventBus.off(EMIT_EVENT.CONTROL_MODE_TRIGGERED, this.handleMode, this);
+
+    this.scene.events.off('shutdown', this.destroy, this);
+    this.scene.events.off('destroy', this.destroy, this);
+
+    this._touchMoveKeys = null;
+    this._touchAbilitiesKeys = null;
+    this._touchModeKey = null;
   }
 
   public get touchMoveKeys() {
@@ -71,16 +96,18 @@ export class TouchManager {
   }
 
   private setupEventListeners(): void {
-    EventBus.on(EMIT_EVENT.MOVE_TRIGGERED, this.handleMove.bind(this));
-    EventBus.on(EMIT_EVENT.ABILITY_TRIGGERED, this.handleAbility.bind(this));
-    EventBus.on(EMIT_EVENT.CONTROL_MODE_TRIGGERED, this.handleMode.bind(this));
+    EventBus.on(EMIT_EVENT.MOVE_TRIGGERED, this.handleMove, this);
+    EventBus.on(EMIT_EVENT.ABILITY_TRIGGERED, this.handleAbility, this);
+    EventBus.on(EMIT_EVENT.CONTROL_MODE_TRIGGERED, this.handleMode, this);
 
-    this.scene.events.once('shutdown', this.cleanup.bind(this));
-    this.scene.events.once('destroy', this.cleanup.bind(this));
+    this.scene.events.once('shutdown', this.destroy, this);
+    this.scene.events.once('destroy', this.destroy, this);
   }
 
   private handleMove(direction: Direction, isActive: boolean): void {
-    const key = this._touchMoveKeys[direction];
+    const key = this._touchMoveKeys?.[direction];
+
+    if (!key) return;
 
     if (isActive && !key.isDown) {
       key.isDown = true;
@@ -96,7 +123,9 @@ export class TouchManager {
   }
 
   private handleAbility(ability: Abilities, isActive: boolean): void {
-    const key = this._touchAbilitiesKeys[ability];
+    const key = this._touchAbilitiesKeys?.[ability];
+
+    if (!key) return;
 
     if (isActive && !key.isDown) {
       key.isDown = true;
@@ -114,17 +143,10 @@ export class TouchManager {
   private handleMode(mode: ControlMode): void {
     const key = this._touchModeKey;
 
+    if (!key) return;
+
     key.controlMode = mode;
 
     key.emit('change-mode');
-  }
-
-  private cleanup(): void {
-    Object.values(this._touchMoveKeys).forEach((key) => key.destroy());
-    Object.values(this._touchAbilitiesKeys).forEach((key) => key.destroy());
-
-    EventBus.off(EMIT_EVENT.MOVE_TRIGGERED, this.handleMove.bind(this));
-    EventBus.off(EMIT_EVENT.ABILITY_TRIGGERED, this.handleAbility.bind(this));
-    EventBus.off(EMIT_EVENT.CONTROL_MODE_TRIGGERED, this.handleMode.bind(this));
   }
 }

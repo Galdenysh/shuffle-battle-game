@@ -9,6 +9,10 @@ const GameInfo: FC = () => {
   const searchParams = useSearchParams();
   const playerName = searchParams.get('player') || 'Игрок';
 
+  const handleExit = () => {
+    window.location.href = '/';
+  };
+
   return (
     <div
       className={cn(
@@ -24,7 +28,8 @@ const GameInfo: FC = () => {
       </div>
       <div className="h-3 w-px bg-purple-600/50" />
       <button
-        onClick={() => (window.location.href = '/')}
+        onClick={handleExit}
+        onTouchStart={handleExit}
         className={cn(
           'px-2 py-0.5 min-h-8 bg-gray-900/70 backdrop-blur-xs border border-purple-500/30 rounded-sm text-purple-300 font-mono text-[10px] cursor-pointer transition-all duration-150',
           'hover:text-purple-200 hover:border-purple-400/70 hover:bg-purple-900/30',

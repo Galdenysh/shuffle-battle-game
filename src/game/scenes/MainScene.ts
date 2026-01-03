@@ -20,6 +20,10 @@ export class MainScene extends Scene {
     super('MainScene');
   }
 
+  init() {
+    this.inputManager = new InputManager(this, ControlScheme.ALL);
+  }
+
   preload() {
     this.setupLoading();
 
@@ -40,8 +44,6 @@ export class MainScene extends Scene {
       this.physics.add.collider(this.player, wallsLayer);
     }
 
-    this.inputManager = new InputManager(this, ControlScheme.ALL);
-
     this.playerController = new PlayerController(
       this.player,
       this.inputManager
@@ -53,6 +55,12 @@ export class MainScene extends Scene {
   update() {
     this.playerController.update();
     this.player.updateDepth();
+  }
+
+  shutdown() {
+    if (this.inputManager) {
+      this.inputManager.destroy();
+    }
   }
 
   setupLoading() {

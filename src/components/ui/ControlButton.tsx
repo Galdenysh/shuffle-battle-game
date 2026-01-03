@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type {
   FC,
   HTMLAttributes,
+  MouseEvent,
   ReactNode,
   RefCallback,
   TouchEvent,
@@ -13,7 +14,8 @@ interface ControlButtonProps {
   label?: string;
   icon?: ReactNode;
   'aria-label'?: string;
-  onClick?: HTMLAttributes<HTMLButtonElement>['onClick'];
+  onMouseDown?: HTMLAttributes<HTMLButtonElement>['onMouseDown'];
+  onMouseUp?: HTMLAttributes<HTMLButtonElement>['onMouseUp'];
   onTouchStart?: HTMLAttributes<HTMLButtonElement>['onTouchStart'];
   onTouchEnd?: HTMLAttributes<HTMLButtonElement>['onTouchEnd'];
   onTouchCancel?: HTMLAttributes<HTMLButtonElement>['onTouchCancel'];
@@ -38,13 +40,24 @@ const ControlButton: FC<ControlButtonProps> = ({
   label,
   icon,
   'aria-label': ariaLabel,
-  onClick,
+  onMouseDown,
+  onMouseUp,
   onTouchStart,
   onTouchEnd,
   onTouchCancel,
   ref,
 }) => {
   const [isPressed, setIsPressed] = useState(false);
+
+  const handleMouseDown = (e: MouseEvent<HTMLButtonElement>) => {
+    setIsPressed(true);
+    onMouseDown?.(e);
+  };
+
+  const handleMouseUp = (e: MouseEvent<HTMLButtonElement>) => {
+    setIsPressed(false);
+    onMouseUp?.(e);
+  };
 
   const handleTouchStart = (e: TouchEvent<HTMLButtonElement>) => {
     setIsPressed(true);
@@ -72,7 +85,8 @@ const ControlButton: FC<ControlButtonProps> = ({
         'group'
       )}
       aria-label={ariaLabel}
-      onClick={onClick}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchCancel}

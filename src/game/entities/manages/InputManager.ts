@@ -4,6 +4,8 @@ import { ControlScheme } from '../types';
 import type { WASDKeys } from '../types';
 import { TouchManager } from './TouchManager';
 import { Abilities, ControlMode } from '@/types';
+import { EventBus } from '@/game/core';
+import { EMIT_EVENT } from '@/game/constants';
 
 export class InputManager {
   private scene: Scene;
@@ -27,7 +29,7 @@ export class InputManager {
     [Abilities.RUNNING_MAN]: 750,
     [Abilities.T_STEP_LEFT]: 375,
     [Abilities.T_STEP_RIGHT]: 375,
-  };
+  }; // (anim.frames.length / anim.frameRate) * 1000;
 
   constructor(scene: Scene, scheme: ControlScheme = ControlScheme.ALL) {
     this.scene = scene;
@@ -35,20 +37,30 @@ export class InputManager {
 
     this.setupInputs();
     this.setupTouch();
-
-    this.calculateSpecialMoveDuration(
-      Abilities.RUNNING_MAN,
-      'runningMan_south'
-    ); // TODO: убрать из InputManager
-
-    this.calculateSpecialMoveDuration(Abilities.T_STEP_LEFT, 'tStepLeft_south'); // TODO: убрать из InputManager
-
-    this.calculateSpecialMoveDuration(
-      Abilities.T_STEP_RIGHT,
-      'tStepRight_south'
-    ); // TODO: убрать из InputManager
+    this.bindSceneEvents();
 
     this.scene.events.on('update', this.checkSpecialMoveTimeout.bind(this));
+  }
+
+  public destroy(): void {
+    if (this.scene.input.keyboard) {
+      [this.keyR, this.keyT, this.keyY, this.keyF].forEach((key) => {
+        if (key) {
+          this.scene.input.keyboard?.removeKey(key.keyCode); // Phaser сам очистит обработчики
+        }
+      });
+    }
+
+    if (this.touchManager) {
+      this.touchManager.destroy(); // TouchManager сам очистит обработчики
+    }
+
+    this.unbindSceneEvents();
+
+    this.keyR = this.keyT = this.keyY = this.keyF = null;
+    this.cursors = null;
+    this.wasdKeys = null;
+    this.touchManager = null;
   }
 
   private setupInputs(): void {
@@ -92,9 +104,15 @@ export class InputManager {
       this.activateSpecialMove(Abilities.T_STEP_RIGHT)
     );
 
-    this.keyF.on('down', () => this.toggleAbilityMode()); // TODO: добавить синхронизацию с кнопкой react
+    this.keyF.on('down', () => {
+      this.toggleAbilityMode();
 
-    // TODO: добавить метод destroy для отписки от on 'down'
+      const mode: ControlMode = this._isAbilityMode
+        ? ControlMode.ABILITY_MODE
+        : ControlMode.MOVE_MODE;
+
+      EventBus.emit(EMIT_EVENT.CONTROL_MODE_TRIGGERED, mode);
+    });
   }
 
   private setupTouch(): void {
@@ -110,6 +128,8 @@ export class InputManager {
 
     const abilitiesKeys = this.touchManager.touchAbilitiesKeys;
     const modeKey = this.touchManager.touchModeKey;
+
+    if (!abilitiesKeys || !modeKey) return;
 
     abilitiesKeys[Abilities.RUNNING_MAN].on('down', () =>
       this.activateSpecialMove(Abilities.RUNNING_MAN)
@@ -128,14 +148,25 @@ export class InputManager {
     });
   }
 
+  private bindSceneEvents(): void {
+    this.scene.events.once('shutdown', this.destroy, this);
+    this.scene.events.once('destroy', this.destroy, this);
+  }
+
+  private unbindSceneEvents(): void {
+    this.scene.events.off('shutdown', this.destroy, this);
+    this.scene.events.off('destroy', this.destroy, this);
+  }
+
   public get horizontal(): number {
     let value = 0;
-
     const touchMoveKeys = this.touchManager?.touchMoveKeys;
 
+    // Keyboard
     if (this.cursors?.left.isDown || this.wasdKeys?.left.isDown) value -= 1;
     if (this.cursors?.right.isDown || this.wasdKeys?.right.isDown) value += 1;
 
+    // Touch
     if (touchMoveKeys?.west.isDown) value -= 1;
     if (touchMoveKeys?.east.isDown) value += 1;
     if (touchMoveKeys?.north_west.isDown) value -= 1;
@@ -148,12 +179,13 @@ export class InputManager {
 
   public get vertical(): number {
     let value = 0;
-
     const touchMoveKeys = this.touchManager?.touchMoveKeys;
 
+    // Keyboard
     if (this.cursors?.up.isDown || this.wasdKeys?.up.isDown) value -= 1;
     if (this.cursors?.down.isDown || this.wasdKeys?.down.isDown) value += 1;
 
+    // Touch
     if (touchMoveKeys?.north.isDown) value -= 1;
     if (touchMoveKeys?.south.isDown) value += 1;
     if (touchMoveKeys?.north_west.isDown) value -= 1;
@@ -239,23 +271,5 @@ export class InputManager {
     if (currentTime - this.specialMoveStartTime >= duration) {
       this._activeSpecialMove = null;
     }
-  }
-
-  private calculateSpecialMoveDuration(
-    moveType: Abilities,
-    animationKey: string
-  ): void {
-    const anim = this.scene.anims.get(animationKey);
-
-    if (!anim) {
-      console.warn(
-        `⚠️ Анимация ${animationKey} не найдена для ${moveType} в ${this.constructor.name}`
-      );
-
-      return;
-    }
-
-    this.specialMoveDurations[moveType] =
-      (anim.frames.length / anim.frameRate) * 1000;
   }
 }
