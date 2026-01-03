@@ -84,7 +84,7 @@ const LoadingScreen: FC<LoadingScreenProps> = ({
   return (
     <motion.div
       className={cn(
-        'fixed inset-0 z-50 flex flex-col items-center justify-center bg-transparent text-white'
+        'fixed inset-0 z-50 flex flex-col items-center justify-center'
       )}
       initial={{ opacity: 1 }}
       animate={{ opacity: isLoading ? 1 : 0 }}
@@ -94,13 +94,15 @@ const LoadingScreen: FC<LoadingScreenProps> = ({
       <div className="relative z-10 flex flex-col items-center justify-start space-y-8 w-80 h-50 mx-auto px-4">
         {/* Прогресс-бар */}
         <div className="w-full space-y-4">
-          <div className="flex justify-between text-sm text-gray-300">
-            <span>{message}</span>
-            <span>{Math.round(progress)}%</span>
+          <div className="flex justify-between font-mono text-xs">
+            <span className="text-purple-300/90">{message}</span>
+            <span className="text-purple-100/90 font-medium">
+              {Math.round(progress)}%
+            </span>
           </div>
-          <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-gray-900/70 border border-purple-500/30 rounded-full overflow-hidden backdrop-blur-xs">
             <motion.div
-              className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full"
+              className="h-full bg-gradient-to-r from-purple-600 via-purple-500 to-purple-400 rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
               transition={{ type: 'spring', stiffness: 50 }}
@@ -113,7 +115,7 @@ const LoadingScreen: FC<LoadingScreenProps> = ({
           {[0, 1, 2].map((i) => (
             <motion.div
               key={i}
-              className="w-3 h-3 bg-cyan-400 rounded-full"
+              className="w-3 h-3 bg-purple-400 rounded-full"
               animate={{
                 scale: [1, 1.5, 1],
                 opacity: [0.5, 1, 0.5],
@@ -131,11 +133,11 @@ const LoadingScreen: FC<LoadingScreenProps> = ({
         <AnimatePresence mode="wait">
           <motion.div
             key={currentTipIndex}
+            className="text-center text-purple-300/90 text-sm font-mono"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
-            className="text-center text-gray-400 text-sm"
           >
             <p>{getCurrentTip()}</p>
           </motion.div>

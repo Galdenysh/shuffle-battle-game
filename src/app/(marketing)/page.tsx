@@ -9,16 +9,16 @@ import { PLAYER_NAME_LENGTH } from './constants';
 import { BackgroundParticles, ErrorIcon } from './components';
 
 const inputClasses = {
-  base: 'w-full px-5 py-4 bg-black/50 border-2 border-purple-500/50 rounded-xl text-white text-lg placeholder-gray-500 transition-all',
+  base: 'w-full h-14 px-5 bg-black/50 backdrop-blur-sm border-2 border-purple-500/30 rounded text-purple-100/90 font-mono text-base placeholder-purple-400/70 transition-all',
   focus:
-    'focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/30',
+    'focus:outline-none focus:border-purple-400/70 focus:ring-2 focus:ring-purple-500/30',
 } as const;
 
 const buttonClasses = {
-  base: 'w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white text-xl font-bold shadow-lg shadow-purple-500/30 transition-all flex items-center justify-center gap-3',
-  hover: 'hover:from-purple-700 hover:to-pink-700',
-  focus:
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-black',
+  base: 'w-full h-14 px-5 bg-gray-900/70 backdrop-blur-xs border-2 border-purple-500/30 rounded text-purple-300 font-mono text-base cursor-pointer transition-all duration-150 flex items-center justify-center gap-3',
+  hover:
+    'hover:text-purple-200 hover:border-purple-400/70 hover:bg-purple-900/30',
+  focus: 'focus-visible:outline-none focus-visible:border-purple-600/70',
   disabled: 'disabled:opacity-70 disabled:cursor-not-allowed',
 } as const;
 
@@ -78,35 +78,35 @@ export default function MarketingPage() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className={cn('text-center mb-10')}
+          className={cn('text-center mb-12')}
         >
           <h1 className={cn('text-5xl md:text-6xl font-bold mb-4')}>
             <span
               className={cn(
-                'bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent uppercase'
+                'bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent uppercase font-mono'
               )}
             >
               Shuffle Battle
             </span>
           </h1>
-          <p className={cn('text-lg text-gray-300')}>
+          <p className={cn('text-lg text-purple-400/80 font-mono')}>
             Твой танцевальный вызов начинается здесь
           </p>
         </motion.div>
 
         {/* Карточка с формой */}
         <motion.form
-          initial={{ opacity: 0, scale: 0.9 }}
+          className={cn(
+            'bg-black/50 backdrop-blur-sm rounded-lg p-8 border-2 border-purple-500/30 shadow-[0_0_8px_rgba(147,51,234,0.15)]'
+          )}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className={cn(
-            'bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 shadow-2xl'
-          )}
         >
           <div className={cn('mb-8')}>
             <label
               htmlFor="playerName"
-              className={cn('block text-lg font-medium mb-3 text-gray-200')}
+              className={cn('block text-lg font-mono mb-4 text-purple-300/90')}
             >
               Введи своё игровое имя
             </label>
@@ -114,21 +114,21 @@ export default function MarketingPage() {
             <div className={cn('relative')}>
               <input
                 id="playerName"
+                className={cn(inputClasses.base, inputClasses.focus)}
                 type="text"
                 value={playerName}
                 onChange={handleNameChange}
-                placeholder="Например: ShuffleMaster"
+                placeholder="Например ShuffleMaster"
                 autoFocus
                 autoComplete="off"
                 maxLength={PLAYER_NAME_LENGTH}
                 aria-invalid={!!error}
                 aria-describedby={error ? 'playerNameError' : undefined}
-                className={cn(inputClasses.base, inputClasses.focus)}
               />
 
               <div
                 className={cn(
-                  'mt-2 flex gap-2 text-sm text-right',
+                  'mt-3 flex gap-2 text-sm text-left',
                   error ? 'justify-between' : 'justify-end'
                 )}
               >
@@ -138,14 +138,16 @@ export default function MarketingPage() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className={cn('text-red-400 flex items-center gap-1')}
+                    className={cn(
+                      'text-red-400 flex items-center gap-2 font-mono'
+                    )}
                   >
                     <ErrorIcon />
                     <span>{error}</span>
                   </motion.div>
                 )}
 
-                <div className={cn('text-gray-400 text-right')}>
+                <div className={cn('text-purple-300/90 text-right font-mono')}>
                   {playerName.length}/{PLAYER_NAME_LENGTH}
                 </div>
               </div>
@@ -165,14 +167,14 @@ export default function MarketingPage() {
               buttonClasses.disabled
             )}
           >
-            <span className={cn('text-2xl')}>🎮</span>
+            <span className={cn('text-2xl')}>⏵</span>
             <span className={cn(isLoading ? '' : 'uppercase')}>
               {isLoading ? 'Запуск игры...' : 'Начать игру'}
             </span>
             {isLoading && (
               <div
                 className={cn(
-                  'text-2xl w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin'
+                  'w-5 h-5 border-2 border-purple-300 border-t-transparent rounded-full animate-spin'
                 )}
               />
             )}
