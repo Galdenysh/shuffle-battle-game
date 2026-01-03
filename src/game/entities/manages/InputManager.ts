@@ -11,6 +11,8 @@ export class InputManager {
   private wasdKeys: WASDKeys | null = null;
   private controlScheme: ControlScheme;
 
+  private touchManager: TouchManager;
+
   // ===== СПЕЦПРИЁМЫ =====
 
   private keyR: Input.Keyboard.Key | null = null;
@@ -103,7 +105,23 @@ export class InputManager {
 
     if (!isTouchEnabled) return;
 
-    new TouchManager(this.scene);
+    this.touchManager = new TouchManager(this.scene);
+
+    // ===== СПЕЦПРИЁМЫ =====
+
+    const abilitiesKeys = this.touchManager.touchAbilitiesKeys;
+
+    abilitiesKeys[Abilities.RUNNING_MAN].on('down', () =>
+      this.activateSpecialMove(Abilities.RUNNING_MAN)
+    );
+
+    abilitiesKeys[Abilities.T_STEP_LEFT].on('down', () =>
+      this.activateSpecialMove(Abilities.T_STEP_LEFT)
+    );
+
+    abilitiesKeys[Abilities.T_STEP_RIGHT].on('down', () =>
+      this.activateSpecialMove(Abilities.T_STEP_RIGHT)
+    );
   }
 
   public get horizontal(): number {
