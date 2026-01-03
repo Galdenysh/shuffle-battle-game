@@ -13,7 +13,7 @@ class TouchKey extends Events.EventEmitter {
   }
 }
 
-class TouchModeKey extends TouchKey {
+class TouchModeKey extends Events.EventEmitter {
   public controlMode: ControlMode | null = null;
 
   constructor() {

@@ -3,7 +3,7 @@ import type { Scene, Types } from 'phaser';
 import { ControlScheme } from '../types';
 import type { WASDKeys } from '../types';
 import { TouchManager } from './TouchManager';
-import { Abilities, ControlMode, Direction } from '@/types';
+import { Abilities, ControlMode } from '@/types';
 
 export class InputManager {
   private scene: Scene;
@@ -131,8 +131,17 @@ export class InputManager {
   public get horizontal(): number {
     let value = 0;
 
+    const touchMoveKeys = this.touchManager?.touchMoveKeys;
+
     if (this.cursors?.left.isDown || this.wasdKeys?.left.isDown) value -= 1;
     if (this.cursors?.right.isDown || this.wasdKeys?.right.isDown) value += 1;
+
+    if (touchMoveKeys?.west.isDown) value -= 1;
+    if (touchMoveKeys?.east.isDown) value += 1;
+    if (touchMoveKeys?.north_west.isDown) value -= 1;
+    if (touchMoveKeys?.north_east.isDown) value += 1;
+    if (touchMoveKeys?.south_west.isDown) value -= 1;
+    if (touchMoveKeys?.south_east.isDown) value += 1;
 
     return Math.max(-1, Math.min(1, value));
   }
@@ -140,8 +149,17 @@ export class InputManager {
   public get vertical(): number {
     let value = 0;
 
+    const touchMoveKeys = this.touchManager?.touchMoveKeys;
+
     if (this.cursors?.up.isDown || this.wasdKeys?.up.isDown) value -= 1;
     if (this.cursors?.down.isDown || this.wasdKeys?.down.isDown) value += 1;
+
+    if (touchMoveKeys?.north.isDown) value -= 1;
+    if (touchMoveKeys?.south.isDown) value += 1;
+    if (touchMoveKeys?.north_west.isDown) value -= 1;
+    if (touchMoveKeys?.north_east.isDown) value -= 1;
+    if (touchMoveKeys?.south_west.isDown) value += 1;
+    if (touchMoveKeys?.south_east.isDown) value += 1;
 
     return Math.max(-1, Math.min(1, value));
   }
