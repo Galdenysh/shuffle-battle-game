@@ -1,8 +1,9 @@
 import { Input } from 'phaser';
 import type { Scene, Types } from 'phaser';
 import { ControlScheme } from '../types';
-import { SpecialMoveType } from '../types';
 import type { WASDKeys } from '../types';
+import { TouchManager } from './TouchManager';
+import { Abilities, Direction } from '@/types';
 
 export class InputManager {
   private scene: Scene;
@@ -18,34 +19,33 @@ export class InputManager {
   private keyF: Input.Keyboard.Key | null = null;
 
   private _isAbilityMode: boolean = false;
-  private _activeSpecialMove: SpecialMoveType | null = null;
+  private _activeSpecialMove: Abilities | null = null;
   private specialMoveStartTime: number = 0;
-  private specialMoveDurations: Record<SpecialMoveType, number> = {
-    [SpecialMoveType.RUNNING_MAN_STEP]: 750,
-    [SpecialMoveType.T_STEP_LEFT]: 375,
-    [SpecialMoveType.T_STEP_RIGHT]: 375,
+
+  private specialMoveDurations: Record<Abilities, number> = {
+    [Abilities.RUNNING_MAN]: 750,
+    [Abilities.T_STEP_LEFT]: 375,
+    [Abilities.T_STEP_RIGHT]: 375,
   };
 
-  constructor(scene: Scene, scheme: ControlScheme = ControlScheme.BOTH) {
+  constructor(scene: Scene, scheme: ControlScheme = ControlScheme.ALL) {
     this.scene = scene;
     this.controlScheme = scheme;
 
     this.setupInputs();
+    this.setupTouch();
 
     this.calculateSpecialMoveDuration(
-      SpecialMoveType.RUNNING_MAN_STEP,
+      Abilities.RUNNING_MAN,
       'runningMan_south'
-    );
+    ); // TODO: убрать из InputManager
+
+    this.calculateSpecialMoveDuration(Abilities.T_STEP_LEFT, 'tStepLeft_south'); // TODO: убрать из InputManager
 
     this.calculateSpecialMoveDuration(
-      SpecialMoveType.T_STEP_LEFT,
-      'tStepLeft_south'
-    );
-
-    this.calculateSpecialMoveDuration(
-      SpecialMoveType.T_STEP_RIGHT,
+      Abilities.T_STEP_RIGHT,
       'tStepRight_south'
-    );
+    ); // TODO: убрать из InputManager
 
     this.scene.events.on('update', this.checkSpecialMoveTimeout.bind(this));
   }
@@ -57,14 +57,16 @@ export class InputManager {
 
     if (
       this.controlScheme === ControlScheme.ARROWS ||
-      this.controlScheme === ControlScheme.BOTH
+      this.controlScheme === ControlScheme.BOTH ||
+      this.controlScheme === ControlScheme.ALL
     ) {
       this.cursors = keyboard.createCursorKeys();
     }
 
     if (
       this.controlScheme === ControlScheme.WASD ||
-      this.controlScheme === ControlScheme.BOTH
+      this.controlScheme === ControlScheme.BOTH ||
+      this.controlScheme === ControlScheme.ALL
     ) {
       this.wasdKeys = keyboard.addKeys({
         up: Input.Keyboard.KeyCodes.W,
@@ -81,19 +83,27 @@ export class InputManager {
     this.keyY = keyboard.addKey(Input.Keyboard.KeyCodes.Y);
     this.keyF = keyboard.addKey(Input.Keyboard.KeyCodes.F);
 
-    this.keyR.on('down', () =>
-      this.activateSpecialMove(SpecialMoveType.RUNNING_MAN_STEP)
-    );
+    this.keyR.on('down', () => this.activateSpecialMove(Abilities.RUNNING_MAN));
 
-    this.keyT.on('down', () =>
-      this.activateSpecialMove(SpecialMoveType.T_STEP_LEFT)
-    );
+    this.keyT.on('down', () => this.activateSpecialMove(Abilities.T_STEP_LEFT));
 
     this.keyY.on('down', () =>
-      this.activateSpecialMove(SpecialMoveType.T_STEP_RIGHT)
+      this.activateSpecialMove(Abilities.T_STEP_RIGHT)
     );
 
     this.keyF.on('down', () => this.toggleAbilityMode());
+
+    // TODO: добавить метод destroy для отписки от on 'down'
+  }
+
+  private setupTouch(): void {
+    const isTouchEnabled =
+      this.controlScheme === ControlScheme.TOUCH ||
+      this.controlScheme === ControlScheme.ALL;
+
+    if (!isTouchEnabled) return;
+
+    new TouchManager(this.scene);
   }
 
   public get horizontal(): number {
@@ -119,18 +129,18 @@ export class InputManager {
   }
 
   public get isRunningManStepActive(): boolean {
-    return this._activeSpecialMove === SpecialMoveType.RUNNING_MAN_STEP;
+    return this._activeSpecialMove === Abilities.RUNNING_MAN;
   }
 
   public get isTStepLeftActive(): boolean {
-    return this._activeSpecialMove === SpecialMoveType.T_STEP_LEFT;
+    return this._activeSpecialMove === Abilities.T_STEP_LEFT;
   }
 
   public get isTStepRightActive(): boolean {
-    return this._activeSpecialMove === SpecialMoveType.T_STEP_RIGHT;
+    return this._activeSpecialMove === Abilities.T_STEP_RIGHT;
   }
 
-  public get activeSpecialMove(): SpecialMoveType | null {
+  public get activeSpecialMove(): Abilities | null {
     return this._activeSpecialMove;
   }
 
@@ -149,7 +159,7 @@ export class InputManager {
     this._isAbilityMode = !this._isAbilityMode;
   }
 
-  private activateSpecialMove(moveType: SpecialMoveType): void {
+  private activateSpecialMove(moveType: Abilities): void {
     if (!this.vertical && !this.horizontal) return;
     if (this._activeSpecialMove !== null) return;
 
@@ -169,7 +179,7 @@ export class InputManager {
   }
 
   private calculateSpecialMoveDuration(
-    moveType: SpecialMoveType,
+    moveType: Abilities,
     animationKey: string
   ): void {
     const anim = this.scene.anims.get(animationKey);

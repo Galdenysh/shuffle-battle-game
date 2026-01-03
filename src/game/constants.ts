@@ -8,6 +8,7 @@ export const EMIT_EVENT = {
   CURRENT_SCENE_READY: 'current-scene-ready',
   MOVE_TRIGGERED: 'move_triggered',
   ABILITY_TRIGGERED: 'ability_triggered',
+  CONTROL_MODE_TRIGGERED: 'control_mode_triggered',
 };
 
 export const ASSET_KEYS = {

@@ -1,5 +1,11 @@
-import React from 'react';
-import type { FC, HTMLAttributes, ReactNode, RefCallback } from 'react';
+import React, { useState } from 'react';
+import type {
+  FC,
+  HTMLAttributes,
+  ReactNode,
+  RefCallback,
+  TouchEvent,
+} from 'react';
 import { cn } from '@/lib/utils';
 
 interface ControlButtonProps {
@@ -20,9 +26,9 @@ const buttonClasses = {
     'bg-gradient-to-r from-cyan-500/50 via-purple-500/50 to-pink-500/50 border-white shadow-[0_0_20px_rgba(0,255,255,0.6)]',
   baseLightOn:
     'bg-gradient-to-r from-cyan-400/70 via-purple-400/70 to-pink-400/70 border-cyan-200 shadow-[0_0_30px_rgba(0,255,255,0.8),0_0_20px_rgba(255,0,255,0.6),inset_0_0_15px_rgba(255,255,255,0.3)]',
+  activeOn: 'scale-95 shadow-inner',
   focus:
     'focus-visible:outline-none focus-visible:border-cyan-300 focus-visible:shadow-[0_0_0_2px_rgba(0,255,255,0.8),0_0_40px_rgba(0,255,255,0.6)]',
-  active: 'active:scale-95',
   disabled:
     'disabled:opacity-50 disabled:cursor-not-allowed disabled:grayscale',
 } as const;
@@ -38,45 +44,62 @@ const ControlButton: FC<ControlButtonProps> = ({
   onTouchCancel,
   ref,
 }) => {
+  const [isPressed, setIsPressed] = useState(false);
+
+  const handleTouchStart = (e: TouchEvent<HTMLButtonElement>) => {
+    setIsPressed(true);
+    onTouchStart?.(e);
+  };
+
+  const handleTouchEnd = (e: TouchEvent<HTMLButtonElement>) => {
+    setIsPressed(false);
+    onTouchEnd?.(e);
+  };
+
+  const handleTouchCancel = (e: TouchEvent<HTMLButtonElement>) => {
+    setIsPressed(false);
+    onTouchCancel?.(e);
+  };
+
   return (
     <button
       className={cn(
         buttonClasses.base,
         isToggleOn ? buttonClasses.baseLightOn : buttonClasses.baseLightOff,
-        buttonClasses.active,
+        isPressed ? buttonClasses.activeOn : '',
         buttonClasses.focus,
         buttonClasses.disabled,
         'group'
       )}
       aria-label={ariaLabel}
       onClick={onClick}
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
-      onTouchCancel={onTouchCancel}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchCancel}
       ref={ref}
     >
       <div
         className={cn(
-          'absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-cyan-500',
-          'opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-150'
+          'absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-cyan-500 transition-opacity duration-150',
+          isPressed ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
         )}
       />
       <div
         className={cn(
-          'absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 border-cyan-500',
-          'opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-150'
+          'absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 border-cyan-500 transition-opacity duration-150',
+          isPressed ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
         )}
       />
       <div
         className={cn(
-          'absolute -bottom-1 -left-1 w-3 h-3 border-b-2 border-l-2 border-cyan-500',
-          'opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-150'
+          'absolute -bottom-1 -left-1 w-3 h-3 border-b-2 border-l-2 border-cyan-500 transition-opacity duration-150',
+          isPressed ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
         )}
       />
       <div
         className={cn(
-          'absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-cyan-500',
-          'opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-150'
+          'absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-cyan-500 transition-opacity duration-150',
+          isPressed ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
         )}
       />
 

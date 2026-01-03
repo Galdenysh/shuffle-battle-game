@@ -1,4 +1,4 @@
-import type { Direction } from "@/types";
+import type { Direction } from '@/types';
 
 export type CharacterType = 'netrunner_woman' | 'nomadmechanic_man';
 
@@ -75,10 +75,6 @@ export enum ControlScheme {
   ARROWS = 'arrows',
   WASD = 'wasd',
   BOTH = 'both',
-}
-
-export enum SpecialMoveType {
-  RUNNING_MAN_STEP = 'runningManStep',
-  T_STEP_LEFT = 'tStepLeft',
-  T_STEP_RIGHT = 'tStepRight',
+  TOUCH = 'touch',
+  ALL = 'all',
 }

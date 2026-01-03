@@ -4,14 +4,15 @@ import { BASE_HEIGHT, BASE_WIDTH } from '@/game/constants';
 import { cn } from '@/lib/utils';
 import React, { useRef, useState } from 'react';
 import type { FC } from 'react';
-import { Abilities, Direction } from '@/types';
+import { Abilities, ControlMode, Direction } from '@/types';
 import ControlButton from './ControlButton';
 import ArrowIcons from './ArrowIcons';
 
 interface ControlsProps {
   isVisible: boolean;
-  handleMovePress: (moveName: string, mode: string, isActive: boolean) => void;
-  handleAbilityPress: (abilityName: string, isActive: boolean) => void;
+  handleMovePress: (moveName: Direction, isActive: boolean) => void;
+  handleAbilityPress: (abilityName: Abilities, isActive: boolean) => void;
+  handleModePress: (mode: ControlMode) => void;
 }
 
 const containerClasses = {
@@ -32,6 +33,7 @@ const Controls: FC<ControlsProps> = ({
   isVisible,
   handleMovePress,
   handleAbilityPress,
+  handleModePress,
 }) => {
   const buttonRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const [isMoveMode, setIsMoveMode] = useState(true);
@@ -60,23 +62,17 @@ const Controls: FC<ControlsProps> = ({
     { id: Abilities.T_STEP_RIGHT, label: 'T(R)' },
   ];
 
-  const handleToggleMode = () => {
-    setIsMoveMode(!isMoveMode);
-  };
+  const handleMove = (moveName: Direction | 'center', isActive: boolean) => {
+    if (moveName !== 'center') {
+      handleMovePress(moveName, isActive);
+    } else if (isActive) {
+      const isNewMoveMode = !isMoveMode;
 
-  const handleMove = (
-    moveName: string,
-    isCenter: boolean,
-    isActive: boolean
-  ) => {
-    if (!isCenter) {
-      handleMovePress(
-        moveName,
-        isMoveMode ? 'move_mode' : 'ability_mode',
-        isActive
+      setIsMoveMode(isNewMoveMode);
+
+      handleModePress(
+        isNewMoveMode ? ControlMode.MOVE_MODE : ControlMode.ABILITY_MODE
       );
-    } else {
-      handleToggleMode();
     }
   };
 
@@ -91,6 +87,8 @@ const Controls: FC<ControlsProps> = ({
       <div className={cn(movesClasses.base)}>
         {moves.map((move, index) => {
           const isCenter = move.id === 'center';
+          const moveDirection =
+            move.id !== 'center' ? move.id : Direction.NORTH;
 
           return (
             <ControlButton
@@ -98,15 +96,15 @@ const Controls: FC<ControlsProps> = ({
               isToggleOn={isCenter ? !isMoveMode : undefined}
               icon={
                 <ArrowIcons
-                  direction={move.id as Direction}
+                  direction={moveDirection}
                   isToggleOn={!isMoveMode}
                   showToggleIcon={isCenter}
                 />
               }
               aria-label={move.label}
-              onTouchStart={() => handleMove(move.id, isCenter, true)}
-              onTouchEnd={() => handleMove(move.id, isCenter, false)}
-              onTouchCancel={() => handleMove(move.id, isCenter, false)}
+              onTouchStart={() => handleMove(move.id, true)}
+              onTouchEnd={() => handleMove(move.id, false)}
+              onTouchCancel={() => handleMove(move.id, false)}
               ref={(el) => {
                 buttonRefs.current[index] = el;
               }}

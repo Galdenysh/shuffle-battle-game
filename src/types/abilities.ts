@@ -3,3 +3,8 @@ export enum Abilities {
   T_STEP_LEFT = 't_step_left',
   T_STEP_RIGHT = 't_step_right',
 }
+
+export enum ControlMode {
+  MOVE_MODE = 'move_mode',
+  ABILITY_MODE = 'ability_mode',
+}
