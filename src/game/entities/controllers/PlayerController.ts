@@ -1,27 +1,39 @@
 import { Abilities, Direction } from '@/types';
 import { Player } from '../abstract';
-import { ComboManager, InputManager } from '../manages';
+import { ComboManager, ComboSystem, InputManager } from '../manages';
 import type { AbilityRecord, Combo } from '../types';
+import { combos } from '@/game/config';
 
 export class PlayerController {
-  private player: Player;
-  private input: InputManager;
+  private player: Player | null = null;
+  private input: InputManager | null = null;
   private fixedDirection: Direction;
   private lastDirection: Direction = Direction.SOUTH;
   private abilityStartTime: number = -1;
   private abilityHistory: AbilityRecord[] = [];
+  private comboSystem: ComboSystem;
   private comboManager: ComboManager;
+
+  private comboListener: (
+    combo: Combo,
+    score: number,
+    records: AbilityRecord[]
+  ) => void;
 
   constructor(player: Player, input: InputManager) {
     this.player = player;
     this.input = input;
 
-    this.comboManager = new ComboManager();
+    this.comboSystem = new ComboSystem(combos);
+    this.comboManager = new ComboManager(this.comboSystem);
 
-    this.comboManager.addComboListener(this.onComboAchieved.bind(this));
+    this.comboListener = this.onComboAchieved.bind(this);
+    this.comboManager.addComboListener(this.comboListener);
   }
 
   public update(): void {
+    if (!this.input || !this.player) return;
+
     const currentDirection = this.getDirectionFromInput();
     const currentGameTime = this.player.scene.time.now;
 
@@ -74,7 +86,19 @@ export class PlayerController {
     if (!this.input.isStopMode) this.player.move(currentDirection);
   }
 
+  public destroy(): void {
+    if (this.comboManager && this.comboListener) {
+      this.comboManager.removeComboListener(this.comboListener);
+    }
+
+    this.abilityHistory = [];
+    this.player = null;
+    this.input = null;
+  }
+
   private getDirectionFromInput(): Direction {
+    if (!this.input) return Direction.SOUTH;
+
     const h = this.input.horizontal;
     const v = this.input.vertical;
 
@@ -107,20 +131,18 @@ export class PlayerController {
     this.comboManager.processAbilityHistory(this.abilityHistory);
   }
 
-  private onComboAchieved(
-    combo: Combo,
-    score: number,
-    records: AbilityRecord[]
-  ): void {
-    this.removeUsedAbilities(records.length);
+  private onComboAchieved(combo: Combo, score: number): void {
+    this.clearAbilityRecord();
     this.showComboEffect(combo, score);
   }
 
-  private removeUsedAbilities(count: number): void {
-    this.abilityHistory = this.abilityHistory.slice(0, -count);
+  private clearAbilityRecord(): void {
+    this.abilityHistory.length = 0;
   }
 
   private showComboEffect(combo: Combo, score: number): void {
+    if (!this.player) return;
+
     const scene = this.player.scene;
 
     const text = scene.add

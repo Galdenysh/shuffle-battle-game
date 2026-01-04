@@ -3,13 +3,14 @@ import type { AbilityRecord, Combo } from '../types';
 
 export class ComboManager {
   private comboSystem: ComboSystem;
-  private currentScore: number = 0;
+  private _currentScore: number = 0;
+  
   private comboListeners: Array<
     (combo: Combo, score: number, records: AbilityRecord[]) => void
   > = [];
 
-  constructor() {
-    this.comboSystem = new ComboSystem();
+  constructor(comboSystem: ComboSystem) {
+    this.comboSystem = comboSystem;
   }
 
   /**
@@ -23,14 +24,13 @@ export class ComboManager {
       const currentTime = matchedRecords[matchedRecords.length - 1].timestamp;
       const score = this.comboSystem.onComboSuccess(combo, currentTime);
 
-      this.currentScore += score;
+      this._currentScore += score;
 
-      // Уведомляем слушателей
       this.notifyComboListeners(combo, score, matchedRecords);
 
       console.log(`🎉 Комбо "${combo.name}"! +${score} очков`);
-      console.log(`Цепочка: ${this.comboSystem.getComboChain()}`);
-      console.log(`Всего очков: ${this.getCurrentScore()}`);
+      console.log(`Цепочка: ${this.comboSystem.comboChain}`);
+      console.log(`Всего очков: ${this.currentScore}`);
     }
   }
 
@@ -46,19 +46,19 @@ export class ComboManager {
 
   public reset(): void {
     this.comboSystem.resetComboChain();
-    this.currentScore = 0;
+    this._currentScore = 0;
   }
 
-  public getCurrentScore(): number {
-    return this.currentScore;
+  public get currentScore(): number {
+    return this._currentScore;
   }
 
-  public getComboChain(): number {
-    return this.comboSystem.getComboChain();
+  public get comboChain(): number {
+    return this.comboSystem.comboChain;
   }
 
-  public getAllCombos(): Combo[] {
-    return this.comboSystem.getAllCombos();
+  public get allCombos(): Combo[] {
+    return this.comboSystem.allCombos;
   }
 
   private notifyComboListeners(
