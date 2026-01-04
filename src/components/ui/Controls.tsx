@@ -10,8 +10,8 @@ import { Abilities, ControlMode, Direction } from '@/types';
 
 interface ControlsProps {
   isVisible: boolean;
-  isAbilityMode: boolean;
-  onModeChange: (isAbilityMode: boolean) => void;
+  isStopMode: boolean;
+  onModeChange: (isStopMode: boolean) => void;
   handleMovePress: (moveName: Direction, isActive: boolean) => void;
   handleAbilityPress: (abilityName: Abilities, isActive: boolean) => void;
   handleModePress: (mode: ControlMode) => void;
@@ -33,7 +33,7 @@ const abilitiesClasses = {
 
 const Controls: FC<ControlsProps> = ({
   isVisible,
-  isAbilityMode,
+  isStopMode,
   onModeChange,
   handleMovePress,
   handleAbilityPress,
@@ -69,12 +69,12 @@ const Controls: FC<ControlsProps> = ({
     if (moveName !== 'center') {
       handleMovePress(moveName, isActive);
     } else if (isActive) {
-      const isNewAbilityMode = !isAbilityMode;
+      const isNewAbilityMode = !isStopMode;
 
       onModeChange(isNewAbilityMode);
 
       handleModePress(
-        isNewAbilityMode ? ControlMode.ABILITY_MODE : ControlMode.MOVE_MODE
+        isNewAbilityMode ? ControlMode.STOP_MODE : ControlMode.MOVE_MODE
       );
     }
   };
@@ -96,11 +96,11 @@ const Controls: FC<ControlsProps> = ({
           return (
             <ControlButton
               key={move.label}
-              isToggleOn={isCenter ? isAbilityMode : undefined}
+              isToggleOn={isCenter ? isStopMode : undefined}
               icon={
                 <ArrowIcons
                   direction={moveDirection}
-                  isToggleOn={isAbilityMode}
+                  isToggleOn={isStopMode}
                   showToggleIcon={isCenter}
                 />
               }

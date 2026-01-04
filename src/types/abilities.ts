@@ -6,5 +6,5 @@ export enum Abilities {
 
 export enum ControlMode {
   MOVE_MODE = 'move_mode',
-  ABILITY_MODE = 'ability_mode',
+  STOP_MODE = 'stop_mode',
 }

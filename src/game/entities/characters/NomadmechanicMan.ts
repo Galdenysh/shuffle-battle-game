@@ -117,10 +117,10 @@ export class NomadmechanicMan extends Player {
     );
   }
 
-  protected setupRunningManStepAnimations(): void {
+  protected setupRunningManAnimations(): void {
     Object.entries(NomadmechanicMan.RUNNING_MAN_DIRECTION_PREFIXES).forEach(
       ([direction, prefix]) => {
-        this.addRunningManStepAnimation({
+        this.addRunningManAnimation({
           direction: direction as Direction,
           prefix,
         });

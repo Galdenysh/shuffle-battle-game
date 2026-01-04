@@ -11,7 +11,7 @@ const GameButtons: FC<{ onReady?: (ready: boolean) => void }> = ({
   onReady,
 }) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  const [isAbilityMode, setIsAbilityMode] = useState<boolean>(false);
+  const [isStopMode, setIsAbilityMode] = useState<boolean>(false);
 
   const handleMovePress = (moveName: Direction, isActive: boolean) => {
     EventBus.emit(EMIT_EVENT.MOVE_TRIGGERED, moveName, isActive);
@@ -32,7 +32,7 @@ const GameButtons: FC<{ onReady?: (ready: boolean) => void }> = ({
   // Синхронизация с touch кнопкой
   useEffect(() => {
     const handleModeTriggered = (mode: ControlMode) => {
-      setIsAbilityMode(mode === ControlMode.ABILITY_MODE);
+      setIsAbilityMode(mode === ControlMode.STOP_MODE);
     };
 
     EventBus.on(EMIT_EVENT.CONTROL_MODE_TRIGGERED, handleModeTriggered);
@@ -76,7 +76,7 @@ const GameButtons: FC<{ onReady?: (ready: boolean) => void }> = ({
   return (
     <Controls
       isVisible={isVisible}
-      isAbilityMode={isAbilityMode}
+      isStopMode={isStopMode}
       onModeChange={handleAbilityMode}
       handleMovePress={handleMovePress}
       handleAbilityPress={handleAbilityPress}

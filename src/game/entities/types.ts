@@ -1,4 +1,4 @@
-import type { Direction } from '@/types';
+import type { Abilities, Direction } from '@/types';
 
 export type CharacterType = 'netrunner_woman' | 'nomadmechanic_man';
 
@@ -77,4 +77,21 @@ export enum ControlScheme {
   BOTH = 'both',
   TOUCH = 'touch',
   ALL = 'all',
+}
+
+export interface AbilityRecord {
+  ability: Abilities;
+  timestamp: number;
+  direction: Direction;
+}
+
+export interface Combo {
+  id: string;
+  name: string;
+  pattern: Abilities[];
+  baseScore: number;
+  difficulty: number;
+  timeLimit: number;
+  multiplier?: number;
+  description?: string;
 }

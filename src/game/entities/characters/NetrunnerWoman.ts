@@ -58,7 +58,7 @@ export class NetrunnerWoman extends Player {
     );
   }
 
-  protected setupRunningManStepAnimations(): void {}
+  protected setupRunningManAnimations(): void {}
 
   protected setupTStepLeftAnimations(): void {}
 

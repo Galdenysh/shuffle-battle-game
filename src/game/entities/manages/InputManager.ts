@@ -14,18 +14,18 @@ export class InputManager {
   private touchManager: TouchManager | null = null;
   private controlScheme: ControlScheme;
 
-  // ===== СПЕЦПРИЁМЫ =====
+  // ===== Спецприемы =====
 
   private keyR: Input.Keyboard.Key | null = null;
   private keyT: Input.Keyboard.Key | null = null;
   private keyY: Input.Keyboard.Key | null = null;
   private keyF: Input.Keyboard.Key | null = null;
 
-  private _isAbilityMode: boolean = false;
-  private _activeSpecialMove: Abilities | null = null;
-  private specialMoveStartTime: number = 0;
+  private _isStopMode: boolean = false;
+  private _activeAbility: Abilities | null = null;
+  private _abilityStartTime: number = 0;
 
-  private specialMoveDurations: Record<Abilities, number> = {
+  private abilityDurations: Record<Abilities, number> = {
     [Abilities.RUNNING_MAN]: 750,
     [Abilities.T_STEP_LEFT]: 375,
     [Abilities.T_STEP_RIGHT]: 375,
@@ -39,7 +39,7 @@ export class InputManager {
     this.setupTouch();
     this.bindSceneEvents();
 
-    this.scene.events.on('update', this.checkSpecialMoveTimeout.bind(this));
+    this.scene.events.on('update', this.checkAbilityTimeout.bind(this));
   }
 
   public destroy(): void {
@@ -89,26 +89,26 @@ export class InputManager {
       }) as WASDKeys;
     }
 
-    // ===== СПЕЦПРИЁМЫ =====
+    // ===== Спецприемы =====
 
     this.keyR = keyboard.addKey(Input.Keyboard.KeyCodes.R);
     this.keyT = keyboard.addKey(Input.Keyboard.KeyCodes.T);
     this.keyY = keyboard.addKey(Input.Keyboard.KeyCodes.Y);
     this.keyF = keyboard.addKey(Input.Keyboard.KeyCodes.F);
 
-    this.keyR.on('down', () => this.activateSpecialMove(Abilities.RUNNING_MAN));
+    this.keyR.on('down', () => this.activateAbility(Abilities.RUNNING_MAN));
 
-    this.keyT.on('down', () => this.activateSpecialMove(Abilities.T_STEP_LEFT));
+    this.keyT.on('down', () => this.activateAbility(Abilities.T_STEP_LEFT));
 
     this.keyY.on('down', () =>
-      this.activateSpecialMove(Abilities.T_STEP_RIGHT)
+      this.activateAbility(Abilities.T_STEP_RIGHT)
     );
 
     this.keyF.on('down', () => {
       this.toggleAbilityMode();
 
-      const mode: ControlMode = this._isAbilityMode
-        ? ControlMode.ABILITY_MODE
+      const mode: ControlMode = this._isStopMode
+        ? ControlMode.STOP_MODE
         : ControlMode.MOVE_MODE;
 
       EventBus.emit(EMIT_EVENT.CONTROL_MODE_TRIGGERED, mode);
@@ -124,7 +124,7 @@ export class InputManager {
 
     this.touchManager = new TouchManager(this.scene);
 
-    // ===== СПЕЦПРИЁМЫ =====
+    // ===== Спецприемы =====
 
     const abilitiesKeys = this.touchManager.touchAbilitiesKeys;
     const modeKey = this.touchManager.touchModeKey;
@@ -132,19 +132,19 @@ export class InputManager {
     if (!abilitiesKeys || !modeKey) return;
 
     abilitiesKeys[Abilities.RUNNING_MAN].on('down', () =>
-      this.activateSpecialMove(Abilities.RUNNING_MAN)
+      this.activateAbility(Abilities.RUNNING_MAN)
     );
 
     abilitiesKeys[Abilities.T_STEP_LEFT].on('down', () =>
-      this.activateSpecialMove(Abilities.T_STEP_LEFT)
+      this.activateAbility(Abilities.T_STEP_LEFT)
     );
 
     abilitiesKeys[Abilities.T_STEP_RIGHT].on('down', () =>
-      this.activateSpecialMove(Abilities.T_STEP_RIGHT)
+      this.activateAbility(Abilities.T_STEP_RIGHT)
     );
 
     modeKey.on('change-mode', () => {
-      this.setAbilityMode(modeKey.controlMode);
+      this.setStopMode(modeKey.controlMode);
     });
   }
 
@@ -200,24 +200,28 @@ export class InputManager {
     return this.horizontal !== 0 || this.vertical !== 0;
   }
 
-  public get isRunningManStepActive(): boolean {
-    return this._activeSpecialMove === Abilities.RUNNING_MAN;
+  public get isRunningManActive(): boolean {
+    return this._activeAbility === Abilities.RUNNING_MAN;
   }
 
   public get isTStepLeftActive(): boolean {
-    return this._activeSpecialMove === Abilities.T_STEP_LEFT;
+    return this._activeAbility === Abilities.T_STEP_LEFT;
   }
 
   public get isTStepRightActive(): boolean {
-    return this._activeSpecialMove === Abilities.T_STEP_RIGHT;
+    return this._activeAbility === Abilities.T_STEP_RIGHT;
   }
 
-  public get activeSpecialMove(): Abilities | null {
-    return this._activeSpecialMove;
+  public get activeAbility(): Abilities | null {
+    return this._activeAbility;
   }
 
-  public get isAbilityMode(): boolean {
-    return this._isAbilityMode;
+  public get abilityStartTime(): number {
+    return this._abilityStartTime;
+  }
+
+  public get isStopMode(): boolean {
+    return this._isStopMode;
   }
 
   public get activeScheme(): ControlScheme {
@@ -241,35 +245,35 @@ export class InputManager {
   }
 
   private toggleAbilityMode(): void {
-    this._isAbilityMode = !this._isAbilityMode;
+    this._isStopMode = !this._isStopMode;
   }
 
-  private setAbilityMode(mode: ControlMode | null): void {
+  private setStopMode(mode: ControlMode | null): void {
     if (!mode) return;
 
-    if (mode === ControlMode.ABILITY_MODE) {
-      this._isAbilityMode = true;
+    if (mode === ControlMode.STOP_MODE) {
+      this._isStopMode = true;
     } else {
-      this._isAbilityMode = false;
+      this._isStopMode = false;
     }
   }
 
-  private activateSpecialMove(moveType: Abilities): void {
+  private activateAbility(moveType: Abilities): void {
     if (!this.vertical && !this.horizontal) return;
-    if (this._activeSpecialMove !== null) return;
+    if (this._activeAbility !== null) return;
 
-    this._activeSpecialMove = moveType;
-    this.specialMoveStartTime = this.scene.time.now;
+    this._activeAbility = moveType;
+    this._abilityStartTime = this.scene.time.now;
   }
 
-  private checkSpecialMoveTimeout(): void {
-    if (this._activeSpecialMove === null) return;
+  private checkAbilityTimeout(): void {
+    if (this._activeAbility === null) return;
 
     const currentTime = this.scene.time.now;
-    const duration = this.specialMoveDurations[this._activeSpecialMove];
+    const duration = this.abilityDurations[this._activeAbility];
 
-    if (currentTime - this.specialMoveStartTime >= duration) {
-      this._activeSpecialMove = null;
+    if (currentTime - this._abilityStartTime >= duration) {
+      this._activeAbility = null;
     }
   }
 }

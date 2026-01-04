@@ -28,7 +28,7 @@ export abstract class Player extends Physics.Arcade.Sprite {
 
     this.setupIdleAnimations();
     this.setupWalkAnimations();
-    this.setupRunningManStepAnimations();
+    this.setupRunningManAnimations();
     this.setupTStepLeftAnimations();
     this.setupTStepRightAnimations();
     this.setupPhysics();
@@ -83,7 +83,7 @@ export abstract class Player extends Physics.Arcade.Sprite {
     this.playWalkAnimation();
   }
 
-  public runningManStep(direction: Direction): void {
+  public runningMan(direction: Direction): void {
     this.currentDirection = direction;
 
     const body = this.body as Physics.Arcade.Body | null;
@@ -98,7 +98,7 @@ export abstract class Player extends Physics.Arcade.Sprite {
 
     body.setVelocity(0);
 
-    this.playRunningManStepAnimation();
+    this.playRunningManAnimation();
   }
 
   public tStepLeft(direction: Direction): void {
@@ -212,7 +212,7 @@ export abstract class Player extends Physics.Arcade.Sprite {
     });
   }
 
-  protected addRunningManStepAnimation(config: {
+  protected addRunningManAnimation(config: {
     direction: Direction;
     prefix: string;
     start?: number;
@@ -299,7 +299,7 @@ export abstract class Player extends Physics.Arcade.Sprite {
 
   protected abstract setupWalkAnimations(): void;
 
-  protected abstract setupRunningManStepAnimations(): void;
+  protected abstract setupRunningManAnimations(): void;
 
   protected abstract setupTStepLeftAnimations(): void;
 
@@ -313,7 +313,7 @@ export abstract class Player extends Physics.Arcade.Sprite {
     this.playSafe(`walk_${this.currentDirection}`, true);
   }
 
-  private playRunningManStepAnimation(): void {
+  private playRunningManAnimation(): void {
     this.playSafe(`runningMan_${this.currentDirection}`, true);
   }
 
