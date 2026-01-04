@@ -3,10 +3,10 @@ import './globals.css';
 import React from 'react';
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { JetBrains_Mono } from 'next/font/google';
 import { cn } from '@/lib/utils';
 
-const inter = Inter({ subsets: ['latin'] });
+const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Shuffle Battle Game',
@@ -31,7 +31,7 @@ export default function RootLayout({
     <html lang="ru">
       <body
         className={cn(
-          inter.className,
+          jetbrainsMono.className,
           'fixed inset-0 size-full touch-none'
         )}
       >
