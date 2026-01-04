@@ -9,17 +9,22 @@ import { PLAYER_NAME_LENGTH } from './constants';
 import { BackgroundParticles, ErrorIcon } from './components';
 
 const inputClasses = {
-  base: 'w-full h-14 px-5 bg-black/50 backdrop-blur-sm border-2 border-purple-500/30 rounded text-purple-100/90 font-mono text-base placeholder-purple-400/70 transition-all',
+  base: 'w-full h-14 px-5 bg-black/60 backdrop-blur-md border-2 text-cyan-100/90 font-mono text-base tracking-wider placeholder-cyan-400/50 transition-all duration-300',
   focus:
-    'focus:outline-none focus:border-purple-400/70 focus:ring-2 focus:ring-purple-500/30',
+    'focus:outline-none focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(0,255,255,0.4),inset_0_0_10px_rgba(0,255,255,0.1)]',
+  error: 'border-red-500/70 shadow-[0_0_15px_rgba(255,0,0,0.3)]',
 } as const;
 
 const buttonClasses = {
-  base: 'w-full h-14 px-5 bg-gray-900/70 backdrop-blur-xs border-2 border-purple-500/30 rounded text-purple-300 font-mono text-base cursor-pointer transition-all duration-150 flex items-center justify-center gap-3',
+  base: 'flex items-center justify-center w-full h-14 px-5 gap-3 bg-gradient-to-r from-cyan-500/6 via-purple-500/4 to-pink-500/6 border-2 border-cyan-500/50 text-cyan-300 font-mono text-lg tracking-wider cursor-pointer transition-all duration-300',
   hover:
-    'hover:text-purple-200 hover:border-purple-400/70 hover:bg-purple-900/30',
-  focus: 'focus-visible:outline-none focus-visible:border-purple-600/70',
-  disabled: 'disabled:opacity-70 disabled:cursor-not-allowed',
+    'hover:border-cyan-300 hover:text-white hover:shadow-[0_0_25px_rgba(0,255,255,0.6),inset_0_0_20px_rgba(0,255,255,0.1)] hover:from-gray-800 hover:via-black hover:to-gray-800',
+  active:
+    'active:scale-[0.98] active:shadow-[0_0_15px_rgba(0,255,255,0.4),inset_0_0_15px_rgba(0,0,0,0.3)]',
+  focus:
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black',
+  disabled:
+    'disabled:opacity-50 disabled:cursor-not-allowed disabled:grayscale disabled:hover:border-cyan-500/50',
 } as const;
 
 export default function MarketingPage() {
@@ -66,13 +71,13 @@ export default function MarketingPage() {
   return (
     <div
       className={cn(
-        'min-h-screen bg-gradient-to-br from-gray-900 to-black text-white flex flex-col items-center justify-center p-4 overflow-hidden'
+        'flex flex-col items-center justify-center p-4 min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white'
       )}
     >
       {/* Фон */}
       <BackgroundParticles />
 
-      <div className={cn('relative z-10 w-full max-w-md mx-auto')}>
+      <div className={cn('w-full max-w-md mx-auto')}>
         {/* Заголовок */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -80,16 +85,20 @@ export default function MarketingPage() {
           transition={{ duration: 0.6 }}
           className={cn('text-center mb-12')}
         >
-          <h1 className={cn('text-5xl md:text-6xl font-bold mb-4')}>
+          <h1 className={cn('text-5xl md:text-6xl font-bold mb-6')}>
             <span
               className={cn(
-                'bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent uppercase font-mono'
+                'bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent uppercase font-mono tracking-wider drop-shadow-[0_0_10px_rgba(0,255,255,0.7)]'
               )}
             >
               Shuffle Battle
             </span>
           </h1>
-          <p className={cn('text-lg text-purple-400/80 font-mono')}>
+          <p
+            className={cn(
+              'text-xl text-purple-300/90 font-mono tracking-wider drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]'
+            )}
+          >
             Твой танцевальный вызов начинается здесь
           </p>
         </motion.div>
@@ -97,7 +106,8 @@ export default function MarketingPage() {
         {/* Карточка с формой */}
         <motion.form
           className={cn(
-            'bg-black/50 backdrop-blur-sm rounded-lg p-8 border-2 border-purple-500/30 shadow-[0_0_8px_rgba(147,51,234,0.15)]'
+            'p-8 bg-black/60 backdrop-blur-xl border-2 shadow-[0_0_40px_rgba(147,51,234,0.2),0_0_20px_rgba(0,255,255,0.1)]',
+            '[border-image:linear-gradient(to_bottom_right,theme(colors.purple.500/0.3),theme(colors.cyan.500/0.3))_1]'
           )}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -106,19 +116,25 @@ export default function MarketingPage() {
           <div className={cn('mb-8')}>
             <label
               htmlFor="playerName"
-              className={cn('block text-lg font-mono mb-4 text-purple-300/90')}
+              className={cn(
+                'block text-lg font-mono mb-4 text-cyan-300/90 tracking-wider drop-shadow-[0_0_3px_rgba(0,255,255,0.5)]'
+              )}
             >
               Введи своё игровое имя
             </label>
 
-            <div className={cn('relative')}>
+            <div>
               <input
                 id="playerName"
-                className={cn(inputClasses.base, inputClasses.focus)}
+                className={cn(
+                  inputClasses.base,
+                  error ? inputClasses.error : 'border-cyan-500/50',
+                  inputClasses.focus
+                )}
                 type="text"
                 value={playerName}
                 onChange={handleNameChange}
-                placeholder="Например ShuffleMaster"
+                placeholder="Например: SHUFFLE_MASTER"
                 autoFocus
                 autoComplete="off"
                 maxLength={PLAYER_NAME_LENGTH}
@@ -139,15 +155,19 @@ export default function MarketingPage() {
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
                     className={cn(
-                      'text-red-400 flex items-center gap-2 font-mono'
+                      'flex items-center gap-2 text-red-400 font-mono tracking-wider drop-shadow-[0_0_3px_rgba(255,0,0,0.5)]'
                     )}
                   >
                     <ErrorIcon />
-                    <span>{error}</span>
+                    {error}
                   </motion.div>
                 )}
 
-                <div className={cn('text-purple-300/90 text-right font-mono')}>
+                <div
+                  className={cn(
+                    'text-cyan-300/90 text-right font-mono tracking-wider drop-shadow-[0_0_3px_rgba(0,255,255,0.5)]'
+                  )}
+                >
                   {playerName.length}/{PLAYER_NAME_LENGTH}
                 </div>
               </div>
@@ -156,25 +176,37 @@ export default function MarketingPage() {
 
           <motion.button
             type="submit"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             onClick={handleStartGame}
             disabled={isLoading}
             className={cn(
               buttonClasses.base,
               buttonClasses.hover,
+              buttonClasses.active,
               buttonClasses.focus,
               buttonClasses.disabled
             )}
           >
-            <span className={cn('text-2xl')}>⏵</span>
-            <span className={cn(isLoading ? '' : 'uppercase')}>
+            <span
+              className={cn(
+                'text-2xl drop-shadow-[0_0_3px_rgba(0,255,255,0.6)]'
+              )}
+            >
+              ⏵
+            </span>
+            <span
+              className={cn(
+                isLoading ? '' : 'uppercase',
+                'drop-shadow-[0_0_3px_rgba(0,255,255,0.6)]'
+              )}
+            >
               {isLoading ? 'Запуск игры...' : 'Начать игру'}
             </span>
             {isLoading && (
               <div
                 className={cn(
-                  'w-5 h-5 border-2 border-purple-300 border-t-transparent rounded-full animate-spin'
+                  'w-5 h-5 border-2 border-cyan-300 border-t-transparent rounded-full animate-spin'
                 )}
               />
             )}
