@@ -188,13 +188,22 @@ export default function MarketingPage() {
               buttonClasses.disabled
             )}
           >
-            <span
-              className={cn(
-                'text-2xl drop-shadow-[0_0_3px_rgba(0,255,255,0.6)]'
-              )}
-            >
-              ⏵
-            </span>
+            {isLoading && (
+              <div
+                className={cn(
+                  'w-5 h-5 border-2 border-cyan-300 border-t-transparent rounded-full animate-spin'
+                )}
+              />
+            )}
+            {!isLoading && (
+              <span
+                className={cn(
+                  'text-2xl drop-shadow-[0_0_3px_rgba(0,255,255,0.6)]'
+                )}
+              >
+                ⏵
+              </span>
+            )}
             <span
               className={cn(
                 isLoading ? '' : 'uppercase',
@@ -203,13 +212,6 @@ export default function MarketingPage() {
             >
               {isLoading ? 'Запуск игры...' : 'Начать игру'}
             </span>
-            {isLoading && (
-              <div
-                className={cn(
-                  'w-5 h-5 border-2 border-cyan-300 border-t-transparent rounded-full animate-spin'
-                )}
-              />
-            )}
           </motion.button>
         </motion.form>
       </div>

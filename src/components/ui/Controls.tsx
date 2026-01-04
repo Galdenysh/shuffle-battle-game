@@ -24,11 +24,11 @@ const containerClasses = {
 } as const;
 
 const movesClasses = {
-  base: 'grid grid-cols-3 grid-rows-3 gap-2',
+  base: 'grid grid-cols-3 grid-rows-3 gap-3',
 } as const;
 
 const abilitiesClasses = {
-  base: 'flex flex-col gap-2',
+  base: 'flex flex-col gap-3',
 } as const;
 
 const Controls: FC<ControlsProps> = ({
