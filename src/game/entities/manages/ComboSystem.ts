@@ -4,7 +4,7 @@ export class ComboSystem {
   private combos: Combo[];
   private maxAllowedGapChain: number;
   private _comboChain: number = 0;
-  private lastComboTime: number = 0;
+  private lastComboTime: number | null = null;
 
   constructor(
     combos: Combo[],
@@ -13,7 +13,7 @@ export class ComboSystem {
     }
   ) {
     this.combos = combos;
-    this.maxAllowedGapChain = config?.maxAllowedGapChain ?? 5000;
+    this.maxAllowedGapChain = config?.maxAllowedGapChain ?? 1000;
   }
 
   /**
@@ -46,10 +46,22 @@ export class ComboSystem {
    * Обновляет цепочку комбо после успешного выполнения
    */
   public onComboSuccess(combo: Combo, currentTime: number): number {
-    if (currentTime - this.lastComboTime < this.maxAllowedGapChain) {
-      this._comboChain++;
-    } else {
+    if (currentTime < 0) return 0;
+
+    if (this.lastComboTime === null) {
       this._comboChain = 1;
+    } else {
+      const timeSinceLastCombo =
+        currentTime - combo.timeLimit - this.lastComboTime;
+
+      if (
+        timeSinceLastCombo < 0 ||
+        timeSinceLastCombo >= this.maxAllowedGapChain
+      ) {
+        this._comboChain = 1;
+      } else {
+        this._comboChain++;
+      }
     }
 
     this.lastComboTime = currentTime;

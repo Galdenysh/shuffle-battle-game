@@ -1,8 +1,9 @@
-import { Abilities, Direction } from '@/types';
+import { WEBGL } from 'phaser';
 import { Player } from '../abstract';
 import { ComboManager, ComboSystem, InputManager } from '../manages';
-import type { AbilityRecord, Combo } from '../types';
 import { combos } from '@/game/config';
+import type { AbilityRecord, Combo } from '../types';
+import { Abilities, Direction } from '@/types';
 
 export class PlayerController {
   private player: Player | null = null;
@@ -147,13 +148,20 @@ export class PlayerController {
 
     const text = scene.add
       .text(this.player.x, this.player.y - 200, `${combo.name}!\n+${score}`, {
+        fontFamily: 'JetBrains Mono',
         fontSize: '48px',
-        color: '#00d3f2',
-        stroke: '#000',
-        strokeThickness: 6,
+        fontStyle: 'bold',
+        color: '#00f3ff',
+        stroke: '#0a0a2a',
+        strokeThickness: 8,
         align: 'center',
+        letterSpacing: 4,
       })
       .setOrigin(0.5);
+
+    if (scene.renderer.type === WEBGL) {
+      text.postFX.addGlow(0x00f3ff, 3, 0, false, 0.1, 10);
+    }
 
     scene.tweens.add({
       targets: text,

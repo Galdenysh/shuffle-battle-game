@@ -24,6 +24,18 @@ const GameHUD: FC<{ onReady?: (ready: boolean) => void }> = ({ onReady }) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isStopMode, setIsAbilityMode] = useState<boolean>(false);
 
+  const [scoreData, setScoreData] = useState<{
+    totalScore: number;
+    comboChain: number;
+    deltaScore: number | null;
+    timestamp: number;
+  }>({
+    totalScore: 0,
+    comboChain: 1,
+    deltaScore: null,
+    timestamp: 0,
+  });
+
   const handleMovePress = (moveName: Direction, isActive: boolean) => {
     EventBus.emit(EmitEvents.MOVE_TRIGGERED, { moveName, isActive });
   };
@@ -74,7 +86,12 @@ const GameHUD: FC<{ onReady?: (ready: boolean) => void }> = ({ onReady }) => {
       { deltaScore, totalScore, comboChain }: ScoreChangedEvent['data'],
       timestamp?: number
     ) => {
-      console.log(deltaScore, totalScore, comboChain, timestamp);
+      setScoreData({
+        totalScore,
+        comboChain,
+        deltaScore,
+        timestamp: timestamp ?? 0,
+      });
     };
 
     EventBus.on(EmitEvents.SCORE_CHANGED, handleScore);
@@ -110,7 +127,12 @@ const GameHUD: FC<{ onReady?: (ready: boolean) => void }> = ({ onReady }) => {
       )}
       style={{ width: `${BASE_WIDTH}px`, height: `${BASE_HEIGHT}px` }}
     >
-      <ScoreDisplay totalScore={100} comboChain={1} />
+      <ScoreDisplay
+        totalScore={scoreData.totalScore}
+        deltaScore={scoreData.deltaScore}
+        comboChain={scoreData.comboChain}
+        timestamp={scoreData.timestamp}
+      />
       <Controls
         isStopMode={isStopMode}
         onModeChange={handleAbilityMode}

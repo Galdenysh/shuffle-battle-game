@@ -6,7 +6,12 @@ import type { Metadata } from 'next';
 import { JetBrains_Mono } from 'next/font/google';
 import { cn } from '@/lib/utils';
 
-const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'] });
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin', 'cyrillic'],
+  variable: '--font-jetbrains-mono',
+  display: 'swap',
+  weight: ['400', '500', '600', '700'],
+});
 
 export const metadata: Metadata = {
   title: 'Shuffle Battle Game',
@@ -31,7 +36,8 @@ export default function RootLayout({
     <html lang="ru">
       <body
         className={cn(
-          jetbrainsMono.className,
+          jetbrainsMono.variable,
+          'font-mono',
           'fixed inset-0 size-full touch-none'
         )}
       >

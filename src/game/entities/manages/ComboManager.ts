@@ -42,10 +42,6 @@ export class ComboManager {
         },
         this.player.scene.time.now
       );
-
-      // console.log(`🎉 Комбо "${combo.name}"! +${score} очков`);
-      // console.log(`Цепочка: ${this.comboChain}`);
-      // console.log(`Всего очков: ${this.currentScore}`);
     }
   }
 
