@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 
 interface LoadingState {
-  buttons: boolean;
+  hud: boolean;
   game: boolean;
   eventBus: boolean;
 }
@@ -14,7 +14,7 @@ interface UseGameLoaderProps {
 
 export function useGameLoader({ onComplete }: UseGameLoaderProps) {
   const [loadingState, setLoadingState] = useState<LoadingState>({
-    buttons: false,
+    hud: false,
     game: false,
     eventBus: false,
   });
@@ -28,7 +28,7 @@ export function useGameLoader({ onComplete }: UseGameLoaderProps) {
   };
 
   const calculateTotalProgress = () => {
-    const totalSteps = 3; // buttons, game, eventBus
+    const totalSteps = 3; // hud, game, eventBus
     const completedSteps = Object.values(loadingState).filter(Boolean).length;
 
     return Math.floor((completedSteps / totalSteps) * 100);
@@ -37,7 +37,7 @@ export function useGameLoader({ onComplete }: UseGameLoaderProps) {
   const updateMessage = (state: LoadingState) => {
     if (!state.game) {
       setMessage('Загрузка игрового движка...');
-    } else if (!state.buttons) {
+    } else if (!state.hud) {
       setMessage('Загрузка игрового интерфейса...');
     } else if (!state.eventBus) {
       setMessage('Загрузка событий и ресурсов...');
@@ -71,24 +71,24 @@ export function useGameLoader({ onComplete }: UseGameLoaderProps) {
 
     setProgress(currentProgress);
     updateMessage(loadingState);
-  }, [loadingState.buttons, loadingState.game, loadingState.eventBus]);
+  }, [loadingState.hud, loadingState.game, loadingState.eventBus]);
 
   // Активируем EventBus когда оба компонента готовы
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
 
-    if (loadingState.buttons && loadingState.game && !loadingState.eventBus) {
+    if (loadingState.hud && loadingState.game && !loadingState.eventBus) {
       activateEventBus(timer);
     }
 
     return () => {
       if (timer) clearTimeout(timer);
     };
-  }, [loadingState.buttons, loadingState.game, loadingState.eventBus]);
+  }, [loadingState.hud, loadingState.game, loadingState.eventBus]);
 
   // Методы для установки состояния загрузки компонентов
-  const setButtonsReady = (ready: boolean) => {
-    updateProgress({ buttons: ready });
+  const setHUDReady = (ready: boolean) => {
+    updateProgress({ hud: ready });
   };
 
   const setGameReady = (ready: boolean) => {
@@ -100,7 +100,7 @@ export function useGameLoader({ onComplete }: UseGameLoaderProps) {
     progress,
     message,
     loadingState,
-    setButtonsReady,
+    setHUDReady,
     setGameReady,
   };
 }

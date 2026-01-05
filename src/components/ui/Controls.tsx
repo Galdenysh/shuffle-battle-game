@@ -4,24 +4,16 @@ import React, { useRef } from 'react';
 import type { FC } from 'react';
 import ControlButton from './ControlButton';
 import ArrowIcons from './ArrowIcons';
-import { BASE_HEIGHT, BASE_WIDTH } from '@/game/constants';
 import { cn } from '@/lib/utils';
 import { Abilities, ControlMode, Direction } from '@/types';
 
 interface ControlsProps {
-  isVisible: boolean;
   isStopMode: boolean;
   onModeChange: (isStopMode: boolean) => void;
   handleMovePress: (moveName: Direction, isActive: boolean) => void;
   handleAbilityPress: (abilityName: Abilities, isActive: boolean) => void;
   handleModePress: (mode: ControlMode) => void;
 }
-
-const containerClasses = {
-  base: 'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-100 flex items-end justify-between p-2 outline outline-2 outline-purple-500/30 outline-offset-2 transition-opacity duration-1200',
-  visible: 'opacity-100 pointer-events-auto',
-  hidden: 'opacity-0 pointer-events-none',
-} as const;
 
 const movesClasses = {
   base: 'grid grid-cols-3 grid-rows-3 gap-3',
@@ -32,7 +24,6 @@ const abilitiesClasses = {
 } as const;
 
 const Controls: FC<ControlsProps> = ({
-  isVisible,
   isStopMode,
   onModeChange,
   handleMovePress,
@@ -80,13 +71,7 @@ const Controls: FC<ControlsProps> = ({
   };
 
   return (
-    <div
-      className={cn(
-        containerClasses.base,
-        isVisible ? containerClasses.visible : containerClasses.hidden
-      )}
-      style={{ width: `${BASE_WIDTH}px`, height: `${BASE_HEIGHT}px` }}
-    >
+    <div className={cn('flex justify-between w-full')}>
       <div className={cn(movesClasses.base)}>
         {moves.map((move, index) => {
           const isCenter = move.id === 'center';

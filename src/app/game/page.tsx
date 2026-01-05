@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { GameInfo, LoadingScreen } from './components';
 import { useGameLoader } from '@/hooks';
 
-const GameButtons = dynamic(() => import('./components/GameButtons'), {
+const GameHUD = dynamic(() => import('./components/GameHUD'), {
   ssr: false,
 });
 
@@ -17,7 +17,7 @@ const PhaserGame = dynamic(() => import('@/components/PhaserGame'), {
 export default function GamePage() {
   const [showGame, setShowGame] = useState<boolean>(false);
 
-  const { isLoading, progress, message, setButtonsReady, setGameReady } =
+  const { isLoading, progress, message, setHUDReady, setGameReady } =
     useGameLoader({
       onComplete: () => {
         console.log('✅ Все компоненты загружены!');
@@ -25,7 +25,7 @@ export default function GamePage() {
     });
 
   const handleReadyButtons = useCallback((ready: boolean) => {
-    setButtonsReady(ready);
+    setHUDReady(ready);
   }, []);
 
   const handleReadyGame = useCallback((ready: boolean) => {
@@ -52,7 +52,7 @@ export default function GamePage() {
         )}
       >
         <GameInfo />
-        <GameButtons onReady={handleReadyButtons} />
+        <GameHUD onReady={handleReadyButtons} />
         <PhaserGame onReady={handleReadyGame} />
       </div>
     </div>

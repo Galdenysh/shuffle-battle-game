@@ -2,14 +2,19 @@
 
 import { useEffect, useState } from 'react';
 import type { FC } from 'react';
-import { Controls } from '@/components/ui';
-import { EMIT_EVENT } from '@/game/constants';
+import { Controls, ScoreDisplay } from '@/components/ui';
+import { BASE_HEIGHT, BASE_WIDTH, EMIT_EVENT } from '@/game/constants';
 import { EventBus } from '@/game/core';
 import { Abilities, ControlMode, Direction } from '@/types';
+import { cn } from '@/lib/utils';
 
-const GameButtons: FC<{ onReady?: (ready: boolean) => void }> = ({
-  onReady,
-}) => {
+const containerClasses = {
+  base: 'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-100 flex flex-col justify-between p-2 outline outline-2 outline-purple-500/30 outline-offset-2 transition-opacity duration-1200',
+  visible: 'opacity-100 pointer-events-auto',
+  hidden: 'opacity-0 pointer-events-none',
+} as const;
+
+const GameHUD: FC<{ onReady?: (ready: boolean) => void }> = ({ onReady }) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [isStopMode, setIsAbilityMode] = useState<boolean>(false);
 
@@ -74,17 +79,25 @@ const GameButtons: FC<{ onReady?: (ready: boolean) => void }> = ({
   }, [onReady]);
 
   return (
-    <Controls
-      isVisible={isVisible}
-      isStopMode={isStopMode}
-      onModeChange={handleAbilityMode}
-      handleMovePress={handleMovePress}
-      handleAbilityPress={handleAbilityPress}
-      handleModePress={handleModePress}
-    />
+    <div
+      className={cn(
+        containerClasses.base,
+        isVisible ? containerClasses.visible : containerClasses.hidden
+      )}
+      style={{ width: `${BASE_WIDTH}px`, height: `${BASE_HEIGHT}px` }}
+    >
+      <ScoreDisplay totalScore={100} comboChain={1} />
+      <Controls
+        isStopMode={isStopMode}
+        onModeChange={handleAbilityMode}
+        handleMovePress={handleMovePress}
+        handleAbilityPress={handleAbilityPress}
+        handleModePress={handleModePress}
+      />
+    </div>
   );
 };
 
-GameButtons.displayName = 'GameButtons';
+GameHUD.displayName = 'GameHUD';
 
-export default GameButtons;
+export default GameHUD;

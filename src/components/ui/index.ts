@@ -6,4 +6,5 @@ export { default as ErrorIcon } from './ErrorIcon';
 export { default as MenuButton } from './MenuButton';
 export { default as MenuInput } from './MenuInput';
 export { default as MenuTitle } from './MenuTitle';
+export { default as ScoreDisplay } from './ScoreDisplay';
 
