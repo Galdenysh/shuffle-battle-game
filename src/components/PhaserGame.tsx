@@ -1,8 +1,12 @@
 'use client';
 
-import { EMIT_EVENT } from '@/game/constants';
 import { EventBus } from '@/game/core';
 import StartGame from '@/game/main';
+import {
+  CurrentSceneReadyEvent,
+  EmitEvents,
+  SceneVisibleEvent,
+} from '@/types/events';
 import type { Game, Scene } from 'phaser';
 import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
 
@@ -49,36 +53,41 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
 
       if (!container) return;
 
-      const handleVisible = () => {
-        container.classList.remove('opacity-0', 'pointer-events-none');
-        container.classList.add('opacity-100', 'pointer-events-auto');
+      const handleVisible = ({ isVisible }: SceneVisibleEvent['data']) => {
+        if (isVisible) {
+          container.classList.remove('opacity-0', 'pointer-events-none');
+          container.classList.add('opacity-100', 'pointer-events-auto');
+        } else {
+          container.classList.remove('opacity-100', 'pointer-events-auto');
+          container.classList.add('opacity-0', 'pointer-events-none');
+        }
       };
 
-      EventBus.once(EMIT_EVENT.SCENE_VISIBLE, handleVisible);
+      EventBus.once(EmitEvents.SCENE_VISIBLE, handleVisible);
 
       return () => {
-        EventBus.off(EMIT_EVENT.SCENE_VISIBLE, handleVisible);
+        EventBus.off(EmitEvents.SCENE_VISIBLE, handleVisible);
       };
     }, []);
 
     // Обработка current-scene-ready
     useEffect(() => {
-      const handleSceneReady = (scene_instance: Scene) => {
+      const handleSceneReady = ({ scene }: CurrentSceneReadyEvent['data']) => {
         if (currentActiveScene && typeof currentActiveScene === 'function') {
-          currentActiveScene(scene_instance);
+          currentActiveScene(scene);
         }
 
         if (typeof ref === 'function') {
-          ref({ game: gameRef.current, scene: scene_instance });
+          ref({ game: gameRef.current, scene });
         } else if (ref) {
-          ref.current = { game: gameRef.current, scene: scene_instance };
+          ref.current = { game: gameRef.current, scene };
         }
       };
 
-      EventBus.once(EMIT_EVENT.CURRENT_SCENE_READY, handleSceneReady);
+      EventBus.once(EmitEvents.CURRENT_SCENE_READY, handleSceneReady);
 
       return () => {
-        EventBus.off(EMIT_EVENT.CURRENT_SCENE_READY, handleSceneReady);
+        EventBus.off(EmitEvents.CURRENT_SCENE_READY, handleSceneReady);
       };
     }, [currentActiveScene, ref]);
 

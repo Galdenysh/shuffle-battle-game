@@ -8,7 +8,7 @@ import {
   PlayerController,
 } from '../entities';
 import { AssetLoader, EventBus } from '../core';
-import { EMIT_EVENT } from '../constants';
+import { EmitEvents } from '@/types/events';
 
 export class MainScene extends Scene {
   private background: DanceFloor;
@@ -49,7 +49,7 @@ export class MainScene extends Scene {
       this.inputManager
     );
 
-    EventBus.emit(EMIT_EVENT.CURRENT_SCENE_READY, this);
+    EventBus.emit(EmitEvents.CURRENT_SCENE_READY, { scene: this });
   }
 
   update() {
@@ -71,7 +71,7 @@ export class MainScene extends Scene {
     this.load.on('complete', () => {
       console.log('✅ Все ассеты загружены!');
 
-      EventBus.emit(EMIT_EVENT.SCENE_VISIBLE);
+      EventBus.emit(EmitEvents.SCENE_VISIBLE, { isVisible: true });
     });
   }
 }

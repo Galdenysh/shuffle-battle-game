@@ -5,7 +5,7 @@ import type { WASDKeys } from '../types';
 import { TouchManager } from './TouchManager';
 import { Abilities, ControlMode } from '@/types';
 import { EventBus } from '@/game/core';
-import { EMIT_EVENT } from '@/game/constants';
+import { EmitEvents } from '@/types/events';
 
 export class InputManager {
   private scene: Scene;
@@ -100,9 +100,7 @@ export class InputManager {
 
     this.keyT.on('down', () => this.activateAbility(Abilities.T_STEP_LEFT));
 
-    this.keyY.on('down', () =>
-      this.activateAbility(Abilities.T_STEP_RIGHT)
-    );
+    this.keyY.on('down', () => this.activateAbility(Abilities.T_STEP_RIGHT));
 
     this.keyF.on('down', () => {
       this.toggleAbilityMode();
@@ -111,7 +109,7 @@ export class InputManager {
         ? ControlMode.STOP_MODE
         : ControlMode.MOVE_MODE;
 
-      EventBus.emit(EMIT_EVENT.CONTROL_MODE_TRIGGERED, mode);
+      EventBus.emit(EmitEvents.CONTROL_MODE_TRIGGERED, { mode });
     });
   }
 

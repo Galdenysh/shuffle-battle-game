@@ -1,16 +1,21 @@
 import { ComboSystem } from './ComboSystem';
 import type { AbilityRecord, Combo } from '../types';
+import { EventBus } from '@/game/core';
+import { EmitEvents } from '@/types/events';
+import type { Player } from '../abstract';
 
 export class ComboManager {
   private comboSystem: ComboSystem;
+  private player: Player;
   private _currentScore: number = 0;
-  
+
   private comboListeners: Array<
     (combo: Combo, score: number, records: AbilityRecord[]) => void
   > = [];
 
-  constructor(comboSystem: ComboSystem) {
+  constructor(comboSystem: ComboSystem, player: Player) {
     this.comboSystem = comboSystem;
+    this.player = player;
   }
 
   /**
@@ -28,9 +33,19 @@ export class ComboManager {
 
       this.notifyComboListeners(combo, score, matchedRecords);
 
-      console.log(`🎉 Комбо "${combo.name}"! +${score} очков`);
-      console.log(`Цепочка: ${this.comboSystem.comboChain}`);
-      console.log(`Всего очков: ${this.currentScore}`);
+      EventBus.emit(
+        EmitEvents.SCORE_CHANGED,
+        {
+          deltaScore: score,
+          totalScore: this.currentScore,
+          comboChain: this.comboChain,
+        },
+        this.player.scene.time.now
+      );
+
+      // console.log(`🎉 Комбо "${combo.name}"! +${score} очков`);
+      // console.log(`Цепочка: ${this.comboChain}`);
+      // console.log(`Всего очков: ${this.currentScore}`);
     }
   }
 

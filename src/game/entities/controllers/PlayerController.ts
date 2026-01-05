@@ -25,7 +25,7 @@ export class PlayerController {
     this.input = input;
 
     this.comboSystem = new ComboSystem(combos);
-    this.comboManager = new ComboManager(this.comboSystem);
+    this.comboManager = new ComboManager(this.comboSystem, this.player);
 
     this.comboListener = this.onComboAchieved.bind(this);
     this.comboManager.addComboListener(this.comboListener);

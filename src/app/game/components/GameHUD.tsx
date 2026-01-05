@@ -3,10 +3,16 @@
 import { useEffect, useState } from 'react';
 import type { FC } from 'react';
 import { Controls, ScoreDisplay } from '@/components/ui';
-import { BASE_HEIGHT, BASE_WIDTH, EMIT_EVENT } from '@/game/constants';
+import { BASE_HEIGHT, BASE_WIDTH } from '@/game/constants';
 import { EventBus } from '@/game/core';
 import { Abilities, ControlMode, Direction } from '@/types';
 import { cn } from '@/lib/utils';
+import {
+  ControlModeTriggeredEvent,
+  EmitEvents,
+  SceneVisibleEvent,
+  ScoreChangedEvent,
+} from '@/types/events';
 
 const containerClasses = {
   base: 'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-100 flex flex-col justify-between p-2 outline outline-2 outline-purple-500/30 outline-offset-2 transition-opacity duration-1200',
@@ -19,15 +25,15 @@ const GameHUD: FC<{ onReady?: (ready: boolean) => void }> = ({ onReady }) => {
   const [isStopMode, setIsAbilityMode] = useState<boolean>(false);
 
   const handleMovePress = (moveName: Direction, isActive: boolean) => {
-    EventBus.emit(EMIT_EVENT.MOVE_TRIGGERED, moveName, isActive);
+    EventBus.emit(EmitEvents.MOVE_TRIGGERED, { moveName, isActive });
   };
 
   const handleAbilityPress = (abilityName: Abilities, isActive: boolean) => {
-    EventBus.emit(EMIT_EVENT.ABILITY_TRIGGERED, abilityName, isActive);
+    EventBus.emit(EmitEvents.ABILITY_TRIGGERED, { abilityName, isActive });
   };
 
   const handleModePress = (mode: ControlMode) => {
-    EventBus.emit(EMIT_EVENT.CONTROL_MODE_TRIGGERED, mode);
+    EventBus.emit(EmitEvents.CONTROL_MODE_TRIGGERED, { mode });
   };
 
   const handleAbilityMode = (newIsAbilityMode: boolean) => {
@@ -36,27 +42,45 @@ const GameHUD: FC<{ onReady?: (ready: boolean) => void }> = ({ onReady }) => {
 
   // Синхронизация с touch кнопкой
   useEffect(() => {
-    const handleModeTriggered = (mode: ControlMode) => {
+    const handleModeTriggered = ({
+      mode,
+    }: ControlModeTriggeredEvent['data']) => {
       setIsAbilityMode(mode === ControlMode.STOP_MODE);
     };
 
-    EventBus.on(EMIT_EVENT.CONTROL_MODE_TRIGGERED, handleModeTriggered);
+    EventBus.on(EmitEvents.CONTROL_MODE_TRIGGERED, handleModeTriggered);
 
     return () => {
-      EventBus.off(EMIT_EVENT.CONTROL_MODE_TRIGGERED, handleModeTriggered);
+      EventBus.off(EmitEvents.CONTROL_MODE_TRIGGERED, handleModeTriggered);
     };
   }, []);
 
   // Обработка scene-visible
   useEffect(() => {
-    const handleVisible = () => {
-      setIsVisible(true);
+    const handleVisible = ({ isVisible }: SceneVisibleEvent['data']) => {
+      setIsVisible(isVisible);
     };
 
-    EventBus.once(EMIT_EVENT.SCENE_VISIBLE, handleVisible);
+    EventBus.once(EmitEvents.SCENE_VISIBLE, handleVisible);
 
     return () => {
-      EventBus.off(EMIT_EVENT.SCENE_VISIBLE, handleVisible);
+      EventBus.off(EmitEvents.SCENE_VISIBLE, handleVisible);
+    };
+  }, []);
+
+  // Обработка score-changed
+  useEffect(() => {
+    const handleScore = (
+      { deltaScore, totalScore, comboChain }: ScoreChangedEvent['data'],
+      timestamp?: number
+    ) => {
+      console.log(deltaScore, totalScore, comboChain, timestamp);
+    };
+
+    EventBus.on(EmitEvents.SCORE_CHANGED, handleScore);
+
+    return () => {
+      EventBus.off(EmitEvents.SCORE_CHANGED, handleScore);
     };
   }, []);
 
