@@ -1,3 +1,4 @@
+import type { Direction } from '@/types';
 import type { AbilityRecord, Combo } from '../types';
 
 export class ComboSystem {
@@ -103,15 +104,23 @@ export class ComboSystem {
     }
 
     const recentRecords = abilityHistory.slice(-combo.pattern.length);
+    const directionRecords: Direction[] = [];
 
     // 1. Проверяем соответствие паттерну
     for (let i = 0; i < combo.pattern.length; i++) {
       if (recentRecords[i].ability !== combo.pattern[i]) {
         return { success: false, matchedRecords: [] };
       }
+
+      directionRecords.push(recentRecords[i].direction);
     }
 
-    // 2. Проверяем время выполнения
+    // 2. Проверяем, что есть хотя бы одна смена направления
+    if (new Set(directionRecords).size === 1) {
+      return { success: false, matchedRecords: [] };
+    }
+
+    // 3. Проверяем время выполнения
     const firstMoveTime = recentRecords[0].timestamp;
     const lastMoveTime = recentRecords[recentRecords.length - 1].timestamp;
     const totalTime = lastMoveTime - firstMoveTime;
@@ -120,26 +129,6 @@ export class ComboSystem {
       return { success: false, matchedRecords: [] };
     }
 
-    // 3. Проверяем максимальный промежуток между движениями
-    const maxGap = this.getMaxGap(recentRecords);
-    const maxAllowedGap = combo.timeLimit / 2; // Максимум половина времени комбо
-
-    if (maxGap > maxAllowedGap) {
-      return { success: false, matchedRecords: [] };
-    }
-
     return { success: true, matchedRecords: recentRecords };
-  }
-
-  private getMaxGap(records: AbilityRecord[]): number {
-    let maxGap = 0;
-
-    for (let i = 1; i < records.length; i++) {
-      const gap = records[i].timestamp - records[i - 1].timestamp;
-
-      maxGap = Math.max(maxGap, gap);
-    }
-
-    return maxGap;
   }
 }
