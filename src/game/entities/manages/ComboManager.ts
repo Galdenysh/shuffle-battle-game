@@ -2,26 +2,23 @@ import { ComboSystem } from './ComboSystem';
 import type { AbilityRecord, Combo } from '../types';
 import { EventBus } from '@/game/core';
 import { EmitEvents } from '@/types/events';
-import type { Player } from '../abstract';
 
 export class ComboManager {
   private comboSystem: ComboSystem;
-  private player: Player;
   private _currentScore: number = 0;
 
   private comboListeners: Array<
     (combo: Combo, score: number, records: AbilityRecord[]) => void
   > = [];
 
-  constructor(comboSystem: ComboSystem, player: Player) {
+  constructor(comboSystem: ComboSystem) {
     this.comboSystem = comboSystem;
-    this.player = player;
   }
 
   /**
    * Проверяет историю и начисляет очки за комбо
    */
-  public processAbilityHistory(abilityHistory: AbilityRecord[]): void {
+  public processAbilityHistory(abilityHistory: AbilityRecord[], timestamp: number): void {
     const { combo, matchedRecords } =
       this.comboSystem.checkCombos(abilityHistory);
 
@@ -40,7 +37,7 @@ export class ComboManager {
           totalScore: this.currentScore,
           comboChain: this.comboChain,
         },
-        this.player.scene.time.now
+        timestamp
       );
     }
   }

@@ -2,7 +2,7 @@ import { Input } from 'phaser';
 import type { Scene, Types } from 'phaser';
 import { ControlScheme } from '../types';
 import type { WASDKeys } from '../types';
-import { TouchManager } from './TouchManager';
+import { TouchKeyPlugin } from './TouchKeyPlugin';
 import { Abilities, ControlMode } from '@/types';
 import { EventBus } from '@/game/core';
 import { EmitEvents } from '@/types/events';
@@ -11,7 +11,7 @@ export class InputManager {
   private scene: Scene;
   private cursors: Types.Input.Keyboard.CursorKeys | null = null;
   private wasdKeys: WASDKeys | null = null;
-  private touchManager: TouchManager | null = null;
+  private touchKeyPlugin: TouchKeyPlugin | null = null;
   private controlScheme: ControlScheme;
 
   // ===== Спецприемы =====
@@ -51,8 +51,8 @@ export class InputManager {
       });
     }
 
-    if (this.touchManager) {
-      this.touchManager.destroy(); // TouchManager сам очистит обработчики
+    if (this.touchKeyPlugin) {
+      this.touchKeyPlugin.destroy(); // TouchKeyPlugin сам очистит обработчики
     }
 
     this.unbindSceneEvents();
@@ -60,7 +60,7 @@ export class InputManager {
     this.keyR = this.keyT = this.keyY = this.keyF = null;
     this.cursors = null;
     this.wasdKeys = null;
-    this.touchManager = null;
+    this.touchKeyPlugin = null;
   }
 
   private setupInputs(): void {
@@ -120,12 +120,12 @@ export class InputManager {
 
     if (!isTouchEnabled) return;
 
-    this.touchManager = new TouchManager(this.scene);
+    this.touchKeyPlugin = new TouchKeyPlugin(this.scene);
 
     // ===== Спецприемы =====
 
-    const abilitiesKeys = this.touchManager.touchAbilitiesKeys;
-    const modeKey = this.touchManager.touchModeKey;
+    const abilitiesKeys = this.touchKeyPlugin.touchAbilitiesKeys;
+    const modeKey = this.touchKeyPlugin.touchModeKey;
 
     if (!abilitiesKeys || !modeKey) return;
 
@@ -158,7 +158,7 @@ export class InputManager {
 
   public get horizontal(): number {
     let value = 0;
-    const touchMoveKeys = this.touchManager?.touchMoveKeys;
+    const touchMoveKeys = this.touchKeyPlugin?.touchMoveKeys;
 
     // Keyboard
     if (this.cursors?.left.isDown || this.wasdKeys?.left.isDown) value -= 1;
@@ -177,7 +177,7 @@ export class InputManager {
 
   public get vertical(): number {
     let value = 0;
-    const touchMoveKeys = this.touchManager?.touchMoveKeys;
+    const touchMoveKeys = this.touchKeyPlugin?.touchMoveKeys;
 
     // Keyboard
     if (this.cursors?.up.isDown || this.wasdKeys?.up.isDown) value -= 1;
@@ -223,19 +223,19 @@ export class InputManager {
   }
 
   public get activeScheme(): ControlScheme {
-    if (this.cursors && this.wasdKeys && this.touchManager) {
+    if (this.cursors && this.wasdKeys && this.touchKeyPlugin) {
       return ControlScheme.ALL;
     }
 
-    if (this.cursors && this.wasdKeys && !this.touchManager) {
+    if (this.cursors && this.wasdKeys && !this.touchKeyPlugin) {
       return ControlScheme.BOTH;
     }
 
-    if (this.cursors && !this.wasdKeys && !this.touchManager) {
+    if (this.cursors && !this.wasdKeys && !this.touchKeyPlugin) {
       return ControlScheme.ARROWS;
     }
 
-    if (!this.cursors && !this.wasdKeys && this.touchManager) {
+    if (!this.cursors && !this.wasdKeys && this.touchKeyPlugin) {
       return ControlScheme.TOUCH;
     }
 

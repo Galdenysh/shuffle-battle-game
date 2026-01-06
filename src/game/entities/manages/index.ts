@@ -1,4 +1,4 @@
 export * from './InputManager';
-export * from './TouchManager';
+export * from './TouchKeyPlugin';
 export * from './ComboManager';
 export * from './ComboSystem';

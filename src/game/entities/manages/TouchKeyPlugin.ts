@@ -26,7 +26,7 @@ class TouchModeKey extends Events.EventEmitter {
   }
 }
 
-export class TouchManager {
+export class TouchKeyPlugin {
   private scene: Scene;
 
   private _touchMoveKeys: Record<Direction, TouchKey> | null = null;

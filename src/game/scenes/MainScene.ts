@@ -1,6 +1,8 @@
 import { Scene } from 'phaser';
 import {
   CharacterFactory,
+  ComboManager,
+  ComboSystem,
   ControlScheme,
   DanceFloor,
   InputManager,
@@ -9,11 +11,13 @@ import {
 } from '../entities';
 import { AssetLoader, EventBus } from '../core';
 import { EmitEvents } from '@/types/events';
+import { combos } from '../config';
 
 export class MainScene extends Scene {
   private background: DanceFloor;
   private player: Player;
   private inputManager: InputManager;
+  private comboManager: ComboManager;
   private playerController: PlayerController;
 
   constructor() {
@@ -21,7 +25,10 @@ export class MainScene extends Scene {
   }
 
   init() {
+    const comboSystem = new ComboSystem(combos);
+
     this.inputManager = new InputManager(this, ControlScheme.ALL);
+    this.comboManager = new ComboManager(comboSystem);
   }
 
   preload() {
@@ -46,7 +53,8 @@ export class MainScene extends Scene {
 
     this.playerController = new PlayerController(
       this.player,
-      this.inputManager
+      this.inputManager,
+      this.comboManager
     );
 
     EventBus.emit(EmitEvents.CURRENT_SCENE_READY, { scene: this });

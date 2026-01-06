@@ -1,19 +1,17 @@
 import { WEBGL } from 'phaser';
 import { Player } from '../abstract';
-import { ComboManager, ComboSystem, InputManager } from '../manages';
-import { combos } from '@/game/config';
+import { ComboManager, InputManager } from '../manages';
 import type { AbilityRecord, Combo } from '../types';
 import { Abilities, Direction } from '@/types';
 
 export class PlayerController {
   private player: Player | null = null;
-  private input: InputManager | null = null;
+  private inputManager: InputManager | null = null;
+  private comboManager: ComboManager | null = null;
   private fixedDirection: Direction;
   private lastDirection: Direction = Direction.SOUTH;
   private abilityStartTime: number = -1;
   private abilityHistory: AbilityRecord[] = [];
-  private comboSystem: ComboSystem;
-  private comboManager: ComboManager;
 
   private comboListener: (
     combo: Combo,
@@ -21,35 +19,38 @@ export class PlayerController {
     records: AbilityRecord[]
   ) => void;
 
-  constructor(player: Player, input: InputManager) {
+  constructor(
+    player: Player,
+    inputManager: InputManager,
+    comboManager: ComboManager
+  ) {
     this.player = player;
-    this.input = input;
-
-    this.comboSystem = new ComboSystem(combos);
-    this.comboManager = new ComboManager(this.comboSystem, this.player);
+    this.inputManager = inputManager;
+    this.comboManager = comboManager;
 
     this.comboListener = this.onComboAchieved.bind(this);
     this.comboManager.addComboListener(this.comboListener);
   }
 
   public update(): void {
-    if (!this.input || !this.player) return;
+    if (!this.inputManager || !this.player) return;
 
     const currentDirection = this.getDirectionFromInput();
     const currentGameTime = this.player.scene.time.now;
 
-    if (this.input.isMoving) this.lastDirection = currentDirection;
+    if (this.inputManager.isMoving) this.lastDirection = currentDirection;
 
-    this.fixedDirection = this.input.activeAbility
+    // Фиксация направления на время выполнения способности
+    this.fixedDirection = this.inputManager.activeAbility
       ? this.fixedDirection ?? this.lastDirection
       : this.lastDirection;
 
-    if (this.input.activeAbility) {
-      if (this.abilityStartTime !== this.input.abilityStartTime) {
-        this.abilityStartTime = this.input.abilityStartTime;
+    if (this.inputManager.activeAbility) {
+      if (this.abilityStartTime !== this.inputManager.abilityStartTime) {
+        this.abilityStartTime = this.inputManager.abilityStartTime;
 
         this.recordAbility(
-          this.input.activeAbility,
+          this.inputManager.activeAbility,
           currentGameTime,
           this.fixedDirection
         );
@@ -60,31 +61,31 @@ export class PlayerController {
 
     // ===== Проигрывание анимаций =====
 
-    if (this.input.isRunningManActive) {
+    if (this.inputManager.isRunningManActive) {
       this.player.runningMan(this.fixedDirection);
 
       return;
     }
 
-    if (this.input.isTStepLeftActive) {
+    if (this.inputManager.isTStepLeftActive) {
       this.player.tStepLeft(this.fixedDirection);
 
       return;
     }
 
-    if (this.input.isTStepRightActive) {
+    if (this.inputManager.isTStepRightActive) {
       this.player.tStepRight(this.fixedDirection);
 
       return;
     }
 
-    if (!this.input.isMoving || this.input.isStopMode) {
+    if (!this.inputManager.isMoving || this.inputManager.isStopMode) {
       this.player.stopMovement();
 
       return;
     }
 
-    if (!this.input.isStopMode) this.player.move(currentDirection);
+    if (!this.inputManager.isStopMode) this.player.move(currentDirection);
   }
 
   public destroy(): void {
@@ -94,14 +95,15 @@ export class PlayerController {
 
     this.abilityHistory = [];
     this.player = null;
-    this.input = null;
+    this.inputManager = null;
+    this.comboManager = null;
   }
 
   private getDirectionFromInput(): Direction {
-    if (!this.input) return Direction.SOUTH;
+    if (!this.inputManager) return Direction.SOUTH;
 
-    const h = this.input.horizontal;
-    const v = this.input.vertical;
+    const h = this.inputManager.horizontal;
+    const v = this.inputManager.vertical;
 
     if (v < 0 && h > 0) return Direction.NORTH_EAST;
     if (v < 0 && h < 0) return Direction.NORTH_WEST;
@@ -129,7 +131,14 @@ export class PlayerController {
   }
 
   private checkForCombos(): void {
-    this.comboManager.processAbilityHistory(this.abilityHistory);
+    if (!this.comboManager || !this.player) return;
+
+    const currentGameTime = this.player.scene.time.now;
+
+    this.comboManager.processAbilityHistory(
+      this.abilityHistory,
+      currentGameTime
+    );
   }
 
   private onComboAchieved(combo: Combo, score: number): void {
