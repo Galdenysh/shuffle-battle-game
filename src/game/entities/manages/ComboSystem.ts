@@ -5,6 +5,7 @@ export class ComboSystem {
   private maxAllowedGapChain: number;
   private _comboChain: number = 0;
   private lastComboTime: number | null = null;
+  private lastComboId: string | null = null;
 
   constructor(
     combos: Combo[],
@@ -54,10 +55,15 @@ export class ComboSystem {
       const timeSinceLastCombo =
         currentTime - combo.timeLimit - this.lastComboTime;
 
-      if (
-        timeSinceLastCombo < 0 ||
-        timeSinceLastCombo >= this.maxAllowedGapChain
-      ) {
+      const isSameCombo = this.lastComboId === combo.id;
+
+      // Проверяем условия разрыва цепи:
+      // 1. Превышен максимальный промежуток
+      // 2. Повтор одного и того же комбо
+      const isChainBroken =
+        timeSinceLastCombo >= this.maxAllowedGapChain || isSameCombo;
+
+      if (isChainBroken) {
         this._comboChain = 1;
       } else {
         this._comboChain++;
@@ -65,6 +71,7 @@ export class ComboSystem {
     }
 
     this.lastComboTime = currentTime;
+    this.lastComboId = combo.id;
 
     const multiplier = combo.multiplier ? combo.multiplier - 1 : 0;
     const chainMultiplier = 1 + (this._comboChain - 1) * multiplier;
@@ -75,7 +82,8 @@ export class ComboSystem {
 
   public resetComboChain(): void {
     this._comboChain = 0;
-    this.lastComboTime = 0;
+    this.lastComboTime = null;
+    this.lastComboId = null;
   }
 
   public get comboChain(): number {
