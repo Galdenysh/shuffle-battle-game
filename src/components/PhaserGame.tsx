@@ -8,7 +8,13 @@ import {
   SceneVisibleEvent,
 } from '@/types/events';
 import type { Game, Scene } from 'phaser';
-import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from 'react';
 
 export type RefPhaserGame = {
   game: Game | null;
@@ -91,29 +97,24 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
       };
     }, [currentActiveScene, ref]);
 
-    useEffect(() => {
-      let rafId1: number;
-      let rafId2: number;
+    const setRef = useCallback(
+      (node: HTMLDivElement | null) => {
+        containerRef.current = node;
 
-      rafId1 = requestAnimationFrame(() => {
-        rafId2 = requestAnimationFrame(() => {
-          onReady?.(true);
-        });
-      });
+        onReady?.(true);
 
-      return () => {
-        cancelAnimationFrame(rafId1);
-        cancelAnimationFrame(rafId2);
-
-        onReady?.(false);
-      };
-    }, [onReady]);
+        return () => {
+          onReady?.(false);
+        };
+      },
+      [onReady]
+    );
 
     return (
       <div
         id="phaser-game"
         className="z-10 opacity-0 transition-opacity duration-300 pointer-events-none"
-        ref={containerRef}
+        ref={setRef}
       ></div>
     );
   }

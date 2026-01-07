@@ -1,18 +1,45 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import type { FC } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { ShowHideIcon } from '@/components/ui';
 
-const GameInfo: FC = () => {
+interface GameInfoProps {
+  isVisibleGamepad?: boolean;
+  onVisibleGamepad?: (isVisible: boolean) => void;
+}
+
+const buttonClasses = {
+  base: 'px-2 min-h-8 bg-gray-900/70 backdrop-blur-xs border border-purple-500/30 text-cyan-400 font-mono text-[10px] cursor-pointer transition-all duration-150',
+  baseIcon: 'flex justify-center items-center p-0 w-8 h-8',
+  hover:
+    'hover:text-cyan-200 hover:border-purple-400/70 hover:bg-purple-900/30',
+  active: 'active:scale-95',
+  focus: 'focus-visible:outline-none focus-visible:border-purple-600/70',
+  disabled:
+    'disabled:opacity-50 disabled:cursor-not-allowed disabled:grayscale',
+} as const;
+
+const GameInfo: FC<GameInfoProps> = ({
+  isVisibleGamepad = true,
+  onVisibleGamepad,
+}) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const playerName = searchParams.get('player') || 'Игрок';
 
   const handleExit = () => {
     router.push('/');
   };
+
+  const handleVisible = () => {
+    onVisibleGamepad?.(!isVisibleGamepad);
+  };
+
+  const toggleText = isVisibleGamepad ? 'Скрыть' : 'Показать';
 
   return (
     <div
@@ -29,15 +56,35 @@ const GameInfo: FC = () => {
       </div>
       <div className="h-3 w-px bg-purple-600/50" />
       <button
+        className={cn(
+          buttonClasses.base,
+          buttonClasses.baseIcon,
+          buttonClasses.hover,
+          buttonClasses.active,
+          buttonClasses.focus,
+          buttonClasses.disabled
+        )}
+        type="button"
+        title={`${toggleText} кнопки управления`}
+        aria-label={`${toggleText} кнопки управления`}
+        onClick={handleVisible}
+        onTouchStart={handleVisible}
+      >
+        <ShowHideIcon isShow={isVisibleGamepad} />
+      </button>
+      <div className="h-3 w-px bg-purple-600/50" />
+      <button
+        className={cn(
+          buttonClasses.base,
+          buttonClasses.hover,
+          buttonClasses.active,
+          buttonClasses.focus,
+          buttonClasses.disabled
+        )}
+        type="button"
+        title="Выйти в меню"
         onClick={handleExit}
         onTouchStart={handleExit}
-        className={cn(
-          'px-2 py-0.5 min-h-8 bg-gray-900/70 backdrop-blur-xs border border-purple-500/30 text-cyan-400 font-mono text-[10px] cursor-pointer transition-all duration-150',
-          'hover:text-cyan-200 hover:border-purple-400/70 hover:bg-purple-900/30',
-          'active:scale-95',
-          'focus-visible:outline-none focus-visible:border-purple-600/70'
-        )}
-        title="Выйти в меню"
       >
         EXIT
       </button>

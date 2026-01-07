@@ -4,9 +4,6 @@ import { BASE_HEIGHT, BASE_WIDTH } from './constants';
 import { config } from './config';
 
 const StartGame = (parent: Types.Core.GameConfig['parent']) => {
-  // const isMobile = typeof window !== 'undefined' &&
-  //   /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
   // Определите плотность пикселей устройства
   const dpr = window.devicePixelRatio || 1;
 

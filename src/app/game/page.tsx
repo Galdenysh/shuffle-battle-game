@@ -3,10 +3,10 @@
 import React, { useCallback, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { cn } from '@/lib/utils';
-import { GameInfo, LoadingScreen } from './components';
+import { LoadingScreen } from './components';
 import { useGameLoader } from '@/hooks';
 
-const GameHUD = dynamic(() => import('./components/GameHUD'), {
+const GameInterface = dynamic(() => import('./components/GameInterface'), {
   ssr: false,
 });
 
@@ -24,7 +24,10 @@ export default function GamePage() {
       },
     });
 
-  const handleReadyButtons = useCallback((ready: boolean) => {
+  // Функции обратного вызова для управления состоянием загрузки
+  // useCallback обязателен, так как функции передаются в массив зависимостей
+
+  const handleReadyInterface = useCallback((ready: boolean) => {
     setHUDReady(ready);
   }, []);
 
@@ -51,8 +54,7 @@ export default function GamePage() {
           showGame ? 'opacity-100' : 'opacity-0'
         )}
       >
-        <GameInfo />
-        <GameHUD onReady={handleReadyButtons} />
+        <GameInterface onReady={handleReadyInterface} />
         <PhaserGame onReady={handleReadyGame} />
       </div>
     </div>

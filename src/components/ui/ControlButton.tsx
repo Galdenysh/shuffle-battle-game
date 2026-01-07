@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 
 interface ControlButtonProps {
   isToggleOn?: boolean;
+  fullWidth?: boolean;
   label?: string;
   icon?: ReactNode;
   'aria-label'?: string;
@@ -23,11 +24,12 @@ interface ControlButtonProps {
 }
 
 const buttonClasses = {
-  base: 'relative min-w-12 min-h-12 py-1 px-2 text-white text-lg font-mono font-bold uppercase tracking-wider border-2 rounded-none flex items-center justify-center transition-all duration-300 overflow-visible cursor-pointer touch-none select-none',
+  base: 'relative min-w-13 min-h-13 w-fit py-1 px-2 text-white text-lg font-mono font-bold uppercase tracking-wider border-2 rounded-none flex items-center justify-center transition-all duration-300 overflow-visible cursor-pointer touch-none select-none',
   baseLightOff:
     'bg-gradient-to-r from-cyan-500/50 via-purple-500/50 to-pink-500/50 border-white shadow-[0_0_20px_rgba(0,255,255,0.6)]',
   baseLightOn:
     'bg-gradient-to-r from-cyan-400/70 via-purple-400/70 to-pink-400/70 border-cyan-200 shadow-[0_0_30px_rgba(0,255,255,0.8),0_0_20px_rgba(255,0,255,0.6),inset_0_0_15px_rgba(255,255,255,0.3)]',
+  fullWidth: 'w-full',
   activeOn: 'scale-95 shadow-inner',
   focus:
     'focus-visible:outline-none focus-visible:border-cyan-300 focus-visible:shadow-[0_0_0_2px_rgba(0,255,255,0.8),0_0_40px_rgba(0,255,255,0.6)]',
@@ -37,6 +39,7 @@ const buttonClasses = {
 
 const ControlButton: FC<ControlButtonProps> = ({
   isToggleOn = false,
+  fullWidth = false,
   label,
   icon,
   'aria-label': ariaLabel,
@@ -79,6 +82,7 @@ const ControlButton: FC<ControlButtonProps> = ({
       className={cn(
         buttonClasses.base,
         isToggleOn ? buttonClasses.baseLightOn : buttonClasses.baseLightOff,
+        fullWidth ? buttonClasses.fullWidth : '',
         isPressed ? buttonClasses.activeOn : '',
         buttonClasses.focus,
         buttonClasses.disabled,

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React from 'react';
 import type { FC } from 'react';
 import ControlButton from './ControlButton';
 import ArrowIcons from './ArrowIcons';
@@ -16,11 +16,11 @@ interface ControlsProps {
 }
 
 const movesClasses = {
-  base: 'grid grid-cols-3 grid-rows-3 gap-3',
+  base: 'grid grid-cols-3 grid-rows-3 gap-4',
 } as const;
 
 const abilitiesClasses = {
-  base: 'flex flex-col gap-3',
+  base: 'flex flex-col gap-4',
 } as const;
 
 const Controls: FC<ControlsProps> = ({
@@ -30,8 +30,6 @@ const Controls: FC<ControlsProps> = ({
   handleAbilityPress,
   handleModePress,
 }) => {
-  const buttonRefs = useRef<Array<HTMLButtonElement | null>>([]);
-
   const moves: Array<{
     id: Direction | 'center';
     label: string;
@@ -73,7 +71,7 @@ const Controls: FC<ControlsProps> = ({
   return (
     <div className={cn('flex justify-between w-full')}>
       <div className={cn(movesClasses.base)}>
-        {moves.map((move, index) => {
+        {moves.map((move) => {
           const isCenter = move.id === 'center';
           const moveDirection =
             move.id !== 'center' ? move.id : Direction.NORTH;
@@ -95,26 +93,21 @@ const Controls: FC<ControlsProps> = ({
               onTouchStart={() => handleMove(move.id, true)}
               onTouchEnd={() => handleMove(move.id, false)}
               onTouchCancel={() => handleMove(move.id, false)}
-              ref={(el) => {
-                buttonRefs.current[index] = el;
-              }}
             />
           );
         })}
       </div>
       <div className={cn(abilitiesClasses.base)}>
-        {abilities.map((ability, index) => (
+        {abilities.map((ability) => (
           <ControlButton
             key={ability.label}
             label={ability.label}
+            fullWidth
             onMouseDown={() => handleAbilityPress(ability.id, true)}
             onMouseUp={() => handleAbilityPress(ability.id, false)}
             onTouchStart={() => handleAbilityPress(ability.id, true)}
             onTouchEnd={() => handleAbilityPress(ability.id, false)}
             onTouchCancel={() => handleAbilityPress(ability.id, false)}
-            ref={(el) => {
-              buttonRefs.current[index] = el;
-            }}
           />
         ))}
       </div>

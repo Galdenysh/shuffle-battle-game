@@ -2,7 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import type { FC } from 'react';
-import { Controls, ScoreDisplay } from '@/components/ui';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  ArrowIcons,
+  ControlButton,
+  Controls,
+  ScoreDisplay,
+} from '@/components/ui';
 import { BASE_HEIGHT, BASE_WIDTH } from '@/game/constants';
 import { EventBus } from '@/game/core';
 import { Abilities, ControlMode, Direction } from '@/types';
@@ -14,15 +20,19 @@ import {
   ScoreChangedEvent,
 } from '@/types/events';
 
+interface GameHUDProps {
+  isVisibleGamepad?: boolean;
+}
+
 const containerClasses = {
   base: 'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-100 flex flex-col justify-between p-2 outline outline-2 outline-purple-500/30 outline-offset-2 transition-opacity duration-1200',
   visible: 'opacity-100 pointer-events-auto',
   hidden: 'opacity-0 pointer-events-none',
 } as const;
 
-const GameHUD: FC<{ onReady?: (ready: boolean) => void }> = ({ onReady }) => {
+const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  const [isStopMode, setIsAbilityMode] = useState<boolean>(false);
+  const [isStopMode, setIsStopMode] = useState<boolean>(false);
 
   const [scoreData, setScoreData] = useState<{
     totalScore: number;
@@ -49,7 +59,17 @@ const GameHUD: FC<{ onReady?: (ready: boolean) => void }> = ({ onReady }) => {
   };
 
   const handleAbilityMode = (newIsAbilityMode: boolean) => {
-    setIsAbilityMode(newIsAbilityMode);
+    setIsStopMode(newIsAbilityMode);
+  };
+
+  const handleMode = () => {
+    const isNewAbilityMode = !isStopMode;
+
+    handleAbilityMode(isNewAbilityMode);
+
+    handleModePress(
+      isNewAbilityMode ? ControlMode.STOP_MODE : ControlMode.MOVE_MODE
+    );
   };
 
   // Синхронизация с touch кнопкой
@@ -57,7 +77,7 @@ const GameHUD: FC<{ onReady?: (ready: boolean) => void }> = ({ onReady }) => {
     const handleModeTriggered = ({
       mode,
     }: ControlModeTriggeredEvent['data']) => {
-      setIsAbilityMode(mode === ControlMode.STOP_MODE);
+      setIsStopMode(mode === ControlMode.STOP_MODE);
     };
 
     EventBus.on(EmitEvents.CONTROL_MODE_TRIGGERED, handleModeTriggered);
@@ -101,24 +121,6 @@ const GameHUD: FC<{ onReady?: (ready: boolean) => void }> = ({ onReady }) => {
     };
   }, []);
 
-  useEffect(() => {
-    let rafId1: number;
-    let rafId2: number;
-
-    rafId1 = requestAnimationFrame(() => {
-      rafId2 = requestAnimationFrame(() => {
-        onReady?.(true);
-      });
-    });
-
-    return () => {
-      cancelAnimationFrame(rafId1);
-      cancelAnimationFrame(rafId2);
-
-      onReady?.(false);
-    };
-  }, [onReady]);
-
   return (
     <div
       className={cn(
@@ -133,13 +135,51 @@ const GameHUD: FC<{ onReady?: (ready: boolean) => void }> = ({ onReady }) => {
         comboChain={scoreData.comboChain}
         timestamp={scoreData.timestamp}
       />
-      <Controls
-        isStopMode={isStopMode}
-        onModeChange={handleAbilityMode}
-        handleMovePress={handleMovePress}
-        handleAbilityPress={handleAbilityPress}
-        handleModePress={handleModePress}
-      />
+      <AnimatePresence mode="wait" initial={false}>
+        {!isVisibleGamepad ? (
+          <motion.div
+            key="control-button"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{
+              type: 'tween',
+              ease: 'easeInOut',
+              duration: 0.2,
+            }}
+          >
+            <ControlButton
+              isToggleOn={isStopMode}
+              icon={
+                <ArrowIcons isToggleOn={isStopMode} showToggleIcon={true} />
+              }
+              aria-label="Center"
+              onMouseDown={handleMode}
+              onTouchStart={handleMode}
+            />
+          </motion.div>
+        ) : (
+          <motion.div
+            key="gamepad"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{
+              type: 'tween',
+              ease: 'easeInOut',
+              duration: 0.2,
+            }}
+          >
+            <Controls
+              isStopMode={isStopMode}
+              onModeChange={handleAbilityMode}
+              handleMovePress={handleMovePress}
+              handleAbilityPress={handleAbilityPress}
+              handleModePress={handleModePress}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
