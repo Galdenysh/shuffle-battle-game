@@ -16,19 +16,19 @@ import { EmitEvents } from '@/types/events';
 import { combos } from '../config';
 
 export class MainScene extends Scene {
-  private background: DanceFloor;
-  private player: Player;
-  private inputManager: InputManager;
-  private comboManager: ComboManager;
-  private gameManager: GameManager;
-  private playerController: PlayerController;
+  private background: DanceFloor | null = null;
+  private player: Player | null = null;
+  private inputManager: InputManager | null = null;
+  private comboManager: ComboManager | null = null;
+  private gameManager: GameManager | null = null;
+  private playerController: PlayerController | null = null;
 
-  private scoreListener: (payload: ComboScorePayload) => void;
+  private comboScoreListener: (payload: ComboScorePayload) => void;
 
   constructor() {
     super('MainScene');
 
-    this.scoreListener = this.onComboAchieved.bind(this);
+    this.comboScoreListener = this.handleComboMatch.bind(this);
   }
 
   init() {
@@ -49,8 +49,11 @@ export class MainScene extends Scene {
   }
 
   create() {
-    this.background = new DanceFloor(this, 0, 0);
+    if (!this.inputManager || !this.comboManager || !this.gameManager) {
+      return;
+    }
 
+    this.background = new DanceFloor(this, 0, 0);
     this.player = CharacterFactory.create('nomadmechanic_man', this, 400, 800);
 
     const wallsLayer = this.background.getWallsLayer();
@@ -65,26 +68,32 @@ export class MainScene extends Scene {
       this.comboManager
     );
 
-    this.comboManager.addComboListener(this.scoreListener);
-
+    this.comboManager.addComboListener(this.comboScoreListener);
     this.gameManager.start();
 
     EventBus.emit(EmitEvents.CURRENT_SCENE_READY, { scene: this });
+
+    this.events.once('shutdown', this.cleanup, this);
+    this.events.once('destroy', this.cleanup, this);
   }
 
   update() {
-    this.playerController.update();
-    this.player.updateDepth();
+    this.playerController?.update();
+    this.player?.updateDepth();
   }
 
-  shutdown() {
-    if (this.inputManager) {
-      this.inputManager.destroy();
-    }
+  private cleanup() {
+    this.inputManager?.destroy();
+    this.comboManager?.destroy(); // ComboManager сам очистит обработчики
+    this.gameManager?.destroy();
+    this.playerController?.destroy();
 
-    this.comboManager.removeComboListener(this.scoreListener);
-
-    // TODO: Сделать отписку this.events.once('shutdown', this.shutdown, this);
+    this.background = null;
+    this.player = null;
+    this.inputManager = null;
+    this.comboManager = null;
+    this.gameManager = null;
+    this.playerController = null;
   }
 
   private setupLoading() {
@@ -99,9 +108,16 @@ export class MainScene extends Scene {
     });
   }
 
-  private onComboAchieved({ points, comboChain }: ComboScorePayload): void {
-    this.gameManager.addScore(points, comboChain);
+  private handleComboMatch({
+    combo,
+    points,
+    comboChain,
+  }: ComboScorePayload): void {
+    if (!this.gameManager || !this.playerController) return;
 
-    // TODO: Перенести анимацию из PlayerController
+    const { isActive } = this.gameManager;
+
+    this.gameManager?.addScore(points, comboChain);
+    this.playerController?.onComboAchieved(combo, isActive ? points : null);
   }
 }

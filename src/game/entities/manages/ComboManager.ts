@@ -3,8 +3,6 @@ import type { AbilityRecord, Combo, ComboScorePayload } from '../types';
 
 export class ComboManager {
   private comboSystem: ComboSystem;
-  private _currentScore: number = 0;
-
   private comboListeners: Array<(payload: ComboScorePayload) => void> = [];
 
   constructor(comboSystem: ComboSystem) {
@@ -24,8 +22,6 @@ export class ComboManager {
     if (combo) {
       const currentTime = matchedRecords[matchedRecords.length - 1].timestamp;
       const points = this.comboSystem.onComboSuccess(combo, currentTime);
-
-      this._currentScore += points;
 
       this.notifyComboListeners({
         combo,
@@ -47,13 +43,9 @@ export class ComboManager {
     this.comboListeners = this.comboListeners.filter((l) => l !== listener);
   }
 
-  public reset(): void {
+  public destroy(): void {
+    this.comboListeners.length = 0;
     this.comboSystem.resetComboChain();
-    this._currentScore = 0;
-  }
-
-  public get currentScore(): number {
-    return this._currentScore;
   }
 
   public get comboChain(): number {

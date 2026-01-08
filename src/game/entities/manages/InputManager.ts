@@ -54,9 +54,7 @@ export class InputManager {
       }
     }
 
-    if (this.touchKeyPlugin) {
-      this.touchKeyPlugin.destroy(); // TouchKeyPlugin сам очистит обработчики
-    }
+    this.touchKeyPlugin?.destroy(); // TouchKeyPlugin сам очистит обработчики
 
     this.unbindSceneEvents();
 

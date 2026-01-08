@@ -1,7 +1,7 @@
 import { WEBGL } from 'phaser';
 import { Player } from '../abstract';
 import { ComboManager, InputManager } from '../manages';
-import type { AbilityRecord, Combo, ComboScorePayload } from '../types';
+import type { AbilityRecord, Combo } from '../types';
 import { Abilities, Direction } from '@/types';
 
 export class PlayerController {
@@ -13,8 +13,6 @@ export class PlayerController {
   private abilityStartTime: number = -1;
   private abilityHistory: AbilityRecord[] = [];
 
-  private comboListener: (payload: ComboScorePayload) => void;
-
   constructor(
     player: Player,
     inputManager: InputManager,
@@ -23,9 +21,6 @@ export class PlayerController {
     this.player = player;
     this.inputManager = inputManager;
     this.comboManager = comboManager;
-
-    this.comboListener = this.onComboAchieved.bind(this);
-    this.comboManager.addComboListener(this.comboListener);
   }
 
   public update(): void {
@@ -84,11 +79,12 @@ export class PlayerController {
     if (!this.inputManager.isStopMode) this.player.move(currentDirection);
   }
 
-  public destroy(): void {
-    if (this.comboManager && this.comboListener) {
-      this.comboManager.removeComboListener(this.comboListener);
-    }
+  public onComboAchieved(combo: Combo, points: number | null): void {
+    this.clearAbilityRecord();
+    this.showComboEffect(combo, points);
+  }
 
+  public destroy(): void {
     this.abilityHistory = [];
     this.player = null;
     this.inputManager = null;
@@ -137,22 +133,20 @@ export class PlayerController {
     );
   }
 
-  private onComboAchieved({ combo, points }: ComboScorePayload): void {
-    this.clearAbilityRecord();
-    this.showComboEffect(combo, points);
-  }
-
   private clearAbilityRecord(): void {
     this.abilityHistory.length = 0;
   }
 
-  private showComboEffect(combo: Combo, points: number): void {
+  private showComboEffect(combo: Combo, points: number | null): void {
     if (!this.player) return;
 
     const scene = this.player.scene;
 
+    const comboPointsText =
+      points !== null ? `${combo.name}!\n+${points}` : `${combo.name}!`;
+
     const text = scene.add
-      .text(this.player.x, this.player.y - 200, `${combo.name}!\n+${points}`, {
+      .text(this.player.x, this.player.y - 200, comboPointsText, {
         fontFamily: 'JetBrains Mono',
         fontSize: '48px',
         fontStyle: 'bold',
