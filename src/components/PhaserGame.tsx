@@ -1,13 +1,5 @@
 'use client';
 
-import { EventBus } from '@/game/core';
-import StartGame from '@/game/main';
-import {
-  CurrentSceneReadyEvent,
-  EmitEvents,
-  SceneVisibleEvent,
-} from '@/types/events';
-import type { Game, Scene } from 'phaser';
 import {
   forwardRef,
   useCallback,
@@ -15,6 +7,11 @@ import {
   useLayoutEffect,
   useRef,
 } from 'react';
+import type { Game, Scene } from 'phaser';
+import { EventBus } from '@/game/core';
+import StartGame from '@/game/main';
+import { EmitEvents } from '@/types';
+import type { CurrentSceneReadyEvent, SceneVisibleEvent } from '@/types';
 
 export type RefPhaserGame = {
   game: Game | null;
@@ -59,7 +56,7 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
 
       if (!container) return;
 
-      const handleVisible = ({ isVisible }: SceneVisibleEvent['data']) => {
+      const handleVisible = ({ isVisible }: SceneVisibleEvent['payload']) => {
         if (isVisible) {
           container.classList.remove('opacity-0', 'pointer-events-none');
           container.classList.add('opacity-100', 'pointer-events-auto');
@@ -78,7 +75,7 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
 
     // Обработка current-scene-ready
     useEffect(() => {
-      const handleSceneReady = ({ scene }: CurrentSceneReadyEvent['data']) => {
+      const handleSceneReady = ({ scene }: CurrentSceneReadyEvent['payload']) => {
         if (currentActiveScene && typeof currentActiveScene === 'function') {
           currentActiveScene(scene);
         }

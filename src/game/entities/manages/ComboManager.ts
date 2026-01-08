@@ -1,15 +1,11 @@
 import { ComboSystem } from './ComboSystem';
-import type { AbilityRecord, Combo } from '../types';
-import { EventBus } from '@/game/core';
-import { EmitEvents } from '@/types/events';
+import type { AbilityRecord, Combo, ComboScorePayload } from '../types';
 
 export class ComboManager {
   private comboSystem: ComboSystem;
   private _currentScore: number = 0;
 
-  private comboListeners: Array<
-    (combo: Combo, score: number, records: AbilityRecord[]) => void
-  > = [];
+  private comboListeners: Array<(payload: ComboScorePayload) => void> = [];
 
   constructor(comboSystem: ComboSystem) {
     this.comboSystem = comboSystem;
@@ -18,32 +14,31 @@ export class ComboManager {
   /**
    * Проверяет историю и начисляет очки за комбо
    */
-  public processAbilityHistory(abilityHistory: AbilityRecord[], timestamp: number): void {
+  public processAbilityHistory(
+    abilityHistory: AbilityRecord[],
+    timestamp: number
+  ): void {
     const { combo, matchedRecords } =
       this.comboSystem.checkCombos(abilityHistory);
 
     if (combo) {
       const currentTime = matchedRecords[matchedRecords.length - 1].timestamp;
-      const score = this.comboSystem.onComboSuccess(combo, currentTime);
+      const points = this.comboSystem.onComboSuccess(combo, currentTime);
 
-      this._currentScore += score;
+      this._currentScore += points;
 
-      this.notifyComboListeners(combo, score, matchedRecords);
-
-      EventBus.emit(
-        EmitEvents.SCORE_CHANGED,
-        {
-          deltaScore: score,
-          totalScore: this.currentScore,
-          comboChain: this.comboChain,
-        },
-        timestamp
-      );
+      this.notifyComboListeners({
+        combo,
+        points,
+        comboChain: this.comboChain,
+        records: matchedRecords,
+        timestamp,
+      });
     }
   }
 
   public addComboListener(
-    listener: (combo: Combo, score: number, records: AbilityRecord[]) => void
+    listener: (payload: ComboScorePayload) => void
   ): void {
     this.comboListeners.push(listener);
   }
@@ -69,11 +64,7 @@ export class ComboManager {
     return this.comboSystem.allCombos;
   }
 
-  private notifyComboListeners(
-    combo: Combo,
-    score: number,
-    records: AbilityRecord[]
-  ): void {
-    this.comboListeners.forEach((listener) => listener(combo, score, records));
+  private notifyComboListeners(payload: ComboScorePayload): void {
+    this.comboListeners.forEach((listener) => listener(payload));
   }
 }

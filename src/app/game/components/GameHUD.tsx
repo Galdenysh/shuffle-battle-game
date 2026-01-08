@@ -18,7 +18,7 @@ import {
   EmitEvents,
   SceneVisibleEvent,
   ScoreChangedEvent,
-} from '@/types/events';
+} from '@/types';
 
 interface GameHUDProps {
   isVisibleGamepad?: boolean;
@@ -76,7 +76,7 @@ const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
   useEffect(() => {
     const handleModeTriggered = ({
       mode,
-    }: ControlModeTriggeredEvent['data']) => {
+    }: ControlModeTriggeredEvent['payload']) => {
       setIsStopMode(mode === ControlMode.STOP_MODE);
     };
 
@@ -89,7 +89,7 @@ const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
 
   // Обработка scene-visible
   useEffect(() => {
-    const handleVisible = ({ isVisible }: SceneVisibleEvent['data']) => {
+    const handleVisible = ({ isVisible }: SceneVisibleEvent['payload']) => {
       setIsVisible(isVisible);
     };
 
@@ -103,7 +103,7 @@ const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
   // Обработка score-changed
   useEffect(() => {
     const handleScore = (
-      { deltaScore, totalScore, comboChain }: ScoreChangedEvent['data'],
+      { deltaScore, totalScore, comboChain }: ScoreChangedEvent['payload'],
       timestamp?: number
     ) => {
       setScoreData({

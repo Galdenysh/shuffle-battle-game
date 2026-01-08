@@ -1,13 +1,12 @@
 import { Events } from 'phaser';
 import type { Scene } from 'phaser';
 import { EventBus } from '@/game/core';
-import { Abilities, ControlMode, Direction } from '@/types';
-import {
+import { Abilities, ControlMode, Direction, EmitEvents } from '@/types';
+import type {
   AbilityTriggeredEvent,
   ControlModeTriggeredEvent,
-  EmitEvents,
   MoveTriggeredEvent,
-} from '@/types/events';
+} from '@/types';
 
 class TouchKey extends Events.EventEmitter {
   public isDown: boolean = false;
@@ -27,8 +26,7 @@ class TouchModeKey extends Events.EventEmitter {
 }
 
 export class TouchKeyPlugin {
-  private scene: Scene;
-
+  private scene: Scene | null = null;
   private _touchMoveKeys: Record<Direction, TouchKey> | null = null;
   private _touchAbilitiesKeys: Record<Abilities, TouchKey> | null = null;
   private _touchModeKey: TouchModeKey | null = null;
@@ -60,12 +58,13 @@ export class TouchKeyPlugin {
     EventBus.off(EmitEvents.ABILITY_TRIGGERED, this.handleAbility, this);
     EventBus.off(EmitEvents.CONTROL_MODE_TRIGGERED, this.handleMode, this);
 
-    this.scene.events.off('shutdown', this.destroy, this);
-    this.scene.events.off('destroy', this.destroy, this);
+    this.scene?.events.off('shutdown', this.destroy, this);
+    this.scene?.events.off('destroy', this.destroy, this);
 
     this._touchMoveKeys = null;
     this._touchAbilitiesKeys = null;
     this._touchModeKey = null;
+    this.scene = null;
   }
 
   public get touchMoveKeys() {
@@ -101,6 +100,8 @@ export class TouchKeyPlugin {
   }
 
   private setupEventListeners(): void {
+    if (!this.scene) return;
+
     EventBus.on(EmitEvents.MOVE_TRIGGERED, this.handleMove, this);
     EventBus.on(EmitEvents.ABILITY_TRIGGERED, this.handleAbility, this);
     EventBus.on(EmitEvents.CONTROL_MODE_TRIGGERED, this.handleMode, this);
@@ -109,7 +110,7 @@ export class TouchKeyPlugin {
     this.scene.events.once('destroy', this.destroy, this);
   }
 
-  private handleMove({ moveName, isActive }: MoveTriggeredEvent['data']): void {
+  private handleMove({ moveName, isActive }: MoveTriggeredEvent['payload']): void {
     const key = this._touchMoveKeys?.[moveName];
 
     if (!key) return;
@@ -130,7 +131,7 @@ export class TouchKeyPlugin {
   private handleAbility({
     abilityName,
     isActive,
-  }: AbilityTriggeredEvent['data']): void {
+  }: AbilityTriggeredEvent['payload']): void {
     const key = this._touchAbilitiesKeys?.[abilityName];
 
     if (!key) return;
@@ -148,7 +149,7 @@ export class TouchKeyPlugin {
     }
   }
 
-  private handleMode({ mode }: ControlModeTriggeredEvent['data']): void {
+  private handleMode({ mode }: ControlModeTriggeredEvent['payload']): void {
     const key = this._touchModeKey;
 
     if (!key) return;

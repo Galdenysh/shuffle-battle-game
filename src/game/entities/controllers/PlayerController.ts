@@ -1,7 +1,7 @@
 import { WEBGL } from 'phaser';
 import { Player } from '../abstract';
 import { ComboManager, InputManager } from '../manages';
-import type { AbilityRecord, Combo } from '../types';
+import type { AbilityRecord, Combo, ComboScorePayload } from '../types';
 import { Abilities, Direction } from '@/types';
 
 export class PlayerController {
@@ -13,11 +13,7 @@ export class PlayerController {
   private abilityStartTime: number = -1;
   private abilityHistory: AbilityRecord[] = [];
 
-  private comboListener: (
-    combo: Combo,
-    score: number,
-    records: AbilityRecord[]
-  ) => void;
+  private comboListener: (payload: ComboScorePayload) => void;
 
   constructor(
     player: Player,
@@ -141,22 +137,22 @@ export class PlayerController {
     );
   }
 
-  private onComboAchieved(combo: Combo, score: number): void {
+  private onComboAchieved({ combo, points }: ComboScorePayload): void {
     this.clearAbilityRecord();
-    this.showComboEffect(combo, score);
+    this.showComboEffect(combo, points);
   }
 
   private clearAbilityRecord(): void {
     this.abilityHistory.length = 0;
   }
 
-  private showComboEffect(combo: Combo, score: number): void {
+  private showComboEffect(combo: Combo, points: number): void {
     if (!this.player) return;
 
     const scene = this.player.scene;
 
     const text = scene.add
-      .text(this.player.x, this.player.y - 200, `${combo.name}!\n+${score}`, {
+      .text(this.player.x, this.player.y - 200, `${combo.name}!\n+${points}`, {
         fontFamily: 'JetBrains Mono',
         fontSize: '48px',
         fontStyle: 'bold',

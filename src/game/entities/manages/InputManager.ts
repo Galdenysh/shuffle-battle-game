@@ -1,18 +1,17 @@
 import { Input } from 'phaser';
 import type { Scene, Types } from 'phaser';
+import { EventBus } from '@/game/core';
+import { TouchKeyPlugin } from './TouchKeyPlugin';
 import { ControlScheme } from '../types';
 import type { WASDKeys } from '../types';
-import { TouchKeyPlugin } from './TouchKeyPlugin';
-import { Abilities, ControlMode } from '@/types';
-import { EventBus } from '@/game/core';
-import { EmitEvents } from '@/types/events';
+import { Abilities, ControlMode, EmitEvents } from '@/types';
 
 export class InputManager {
-  private scene: Scene;
+  private scene: Scene | null = null;
   private cursors: Types.Input.Keyboard.CursorKeys | null = null;
   private wasdKeys: WASDKeys | null = null;
   private touchKeyPlugin: TouchKeyPlugin | null = null;
-  private controlScheme: ControlScheme;
+  private controlScheme: ControlScheme = ControlScheme.ALL;
 
   // ===== Спецприемы =====
 
@@ -31,7 +30,7 @@ export class InputManager {
     [Abilities.T_STEP_RIGHT]: 375,
   }; // (anim.frames.length / anim.frameRate) * 1000;
 
-  constructor(scene: Scene, scheme: ControlScheme = ControlScheme.ALL) {
+  constructor(scene: Scene, scheme: ControlScheme) {
     this.scene = scene;
     this.controlScheme = scheme;
 
@@ -43,12 +42,16 @@ export class InputManager {
   }
 
   public destroy(): void {
-    if (this.scene.input.keyboard) {
-      [this.keyR, this.keyT, this.keyY, this.keyF].forEach((key) => {
-        if (key) {
-          this.scene.input.keyboard?.removeKey(key.keyCode); // Phaser сам очистит обработчики
-        }
-      });
+    if (this.scene) {
+      const { keyboard } = this.scene.input;
+
+      if (keyboard) {
+        [this.keyR, this.keyT, this.keyY, this.keyF].forEach((key) => {
+          if (key) {
+            keyboard.removeKey(key.keyCode); // Phaser сам очистит обработчики
+          }
+        });
+      }
     }
 
     if (this.touchKeyPlugin) {
@@ -61,9 +64,12 @@ export class InputManager {
     this.cursors = null;
     this.wasdKeys = null;
     this.touchKeyPlugin = null;
+    this.scene = null;
   }
 
   private setupInputs(): void {
+    if (!this.scene) return;
+
     const keyboard = this.scene.input.keyboard;
 
     if (!keyboard) return;
@@ -114,6 +120,8 @@ export class InputManager {
   }
 
   private setupTouch(): void {
+    if (!this.scene) return;
+
     const isTouchEnabled =
       this.controlScheme === ControlScheme.TOUCH ||
       this.controlScheme === ControlScheme.ALL;
@@ -147,11 +155,15 @@ export class InputManager {
   }
 
   private bindSceneEvents(): void {
+    if (!this.scene) return;
+
     this.scene.events.once('shutdown', this.destroy, this);
     this.scene.events.once('destroy', this.destroy, this);
   }
 
   private unbindSceneEvents(): void {
+    if (!this.scene) return;
+
     this.scene.events.off('shutdown', this.destroy, this);
     this.scene.events.off('destroy', this.destroy, this);
   }
@@ -257,6 +269,8 @@ export class InputManager {
   }
 
   private activateAbility(moveType: Abilities): void {
+    if (!this.scene) return;
+
     if (!this.vertical && !this.horizontal) return;
     if (this._activeAbility !== null) return;
 
@@ -265,6 +279,8 @@ export class InputManager {
   }
 
   private checkAbilityTimeout(): void {
+    if (!this.scene) return;
+
     if (this._activeAbility === null) return;
 
     const currentTime = this.scene.time.now;

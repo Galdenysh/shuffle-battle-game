@@ -1,5 +1,5 @@
-import { GameEvent } from '@/types/events';
 import { Events } from 'phaser';
+import type { GameEvent } from '@/types';
 
 class ReadyEventEmitter extends Events.EventEmitter {
   private isReady: boolean = false;
@@ -59,7 +59,7 @@ class TypedEventEmitter extends ReadyEventEmitter {
    */
   public emit<T extends GameEvent['type']>(
     eventType: T,
-    eventData: Extract<GameEvent, { type: T }>['data'],
+    eventData: Extract<GameEvent, { type: T }>['payload'],
     timestamp?: Extract<GameEvent, { type: T }>['timestamp']
   ): boolean {
     return super.emit(eventType, eventData, timestamp);
@@ -74,7 +74,7 @@ class TypedEventEmitter extends ReadyEventEmitter {
   public on<T extends GameEvent['type']>(
     eventType: T,
     handler: (
-      eventData: Extract<GameEvent, { type: T }>['data'],
+      eventData: Extract<GameEvent, { type: T }>['payload'],
       timestamp?: Extract<GameEvent, { type: T }>['timestamp']
     ) => void,
     context?: any
@@ -91,7 +91,7 @@ class TypedEventEmitter extends ReadyEventEmitter {
   public once<T extends GameEvent['type']>(
     eventType: T,
     handler: (
-      eventData: Extract<GameEvent, { type: T }>['data'],
+      eventData: Extract<GameEvent, { type: T }>['payload'],
       timestamp?: Extract<GameEvent, { type: T }>['timestamp']
     ) => void,
     context?: any
@@ -109,7 +109,7 @@ class TypedEventEmitter extends ReadyEventEmitter {
   public off<T extends GameEvent['type']>(
     eventType: T,
     handler: (
-      eventData: Extract<GameEvent, { type: T }>['data'],
+      eventData: Extract<GameEvent, { type: T }>['payload'],
       timestamp?: Extract<GameEvent, { type: T }>['timestamp']
     ) => void,
     context?: any,

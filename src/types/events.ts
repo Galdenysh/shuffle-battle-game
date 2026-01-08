@@ -1,19 +1,27 @@
 import type { Scene } from 'phaser';
 import type { Direction } from './direction';
-import { Abilities, ControlMode } from './abilities';
+import type { Abilities, ControlMode } from './abilities';
+import type { GameState } from './gameState';
 
 export enum EmitEvents {
+  // Scene Events
   SCENE_VISIBLE = 'scene-visible',
   CURRENT_SCENE_READY = 'current-scene-ready',
+
+  // Control Events
   MOVE_TRIGGERED = 'move-triggered',
   ABILITY_TRIGGERED = 'ability-triggered',
   CONTROL_MODE_TRIGGERED = 'control-mode-triggered',
+
+  // Gameplay Events
   SCORE_CHANGED = 'score-changed',
+  TIME_CHANGED = 'time-changed',
+  GAME_STATE_CHANGED = 'game-state-changed',
 }
 
 export interface SceneVisibleEvent {
   type: EmitEvents.SCENE_VISIBLE;
-  data: {
+  payload: {
     isVisible: boolean;
   };
   timestamp?: number;
@@ -21,7 +29,7 @@ export interface SceneVisibleEvent {
 
 export interface CurrentSceneReadyEvent {
   type: EmitEvents.CURRENT_SCENE_READY;
-  data: {
+  payload: {
     scene: Scene;
   };
   timestamp?: number;
@@ -29,7 +37,7 @@ export interface CurrentSceneReadyEvent {
 
 export interface MoveTriggeredEvent {
   type: EmitEvents.MOVE_TRIGGERED;
-  data: {
+  payload: {
     moveName: Direction;
     isActive: boolean;
   };
@@ -38,7 +46,7 @@ export interface MoveTriggeredEvent {
 
 export interface AbilityTriggeredEvent {
   type: EmitEvents.ABILITY_TRIGGERED;
-  data: {
+  payload: {
     abilityName: Abilities;
     isActive: boolean;
   };
@@ -47,7 +55,7 @@ export interface AbilityTriggeredEvent {
 
 export interface ControlModeTriggeredEvent {
   type: EmitEvents.CONTROL_MODE_TRIGGERED;
-  data: {
+  payload: {
     mode: ControlMode;
   };
   timestamp?: number;
@@ -55,10 +63,30 @@ export interface ControlModeTriggeredEvent {
 
 export interface ScoreChangedEvent {
   type: EmitEvents.SCORE_CHANGED;
-  data: {
+  payload: {
     deltaScore: number;
     totalScore: number;
     comboChain: number;
+  };
+  timestamp?: number;
+}
+
+export interface TimeChangedEvent {
+  type: EmitEvents.TIME_CHANGED;
+  payload: {
+    timeLeft: number;
+    isWarning: boolean;
+    isCritical: boolean;
+    isTimeUp: boolean;
+  };
+  timestamp?: number;
+}
+
+export interface GameStateChangedEvent {
+  type: EmitEvents.GAME_STATE_CHANGED;
+  payload: {
+    previous: GameState;
+    current: GameState;
   };
   timestamp?: number;
 }
@@ -69,4 +97,6 @@ export type GameEvent =
   | MoveTriggeredEvent
   | AbilityTriggeredEvent
   | ControlModeTriggeredEvent
-  | ScoreChangedEvent;
+  | ScoreChangedEvent
+  | TimeChangedEvent
+  | GameStateChangedEvent;

@@ -5,10 +5,12 @@ import {
   ComboSystem,
   ControlScheme,
   DanceFloor,
+  GameManager,
   InputManager,
   Player,
   PlayerController,
 } from '../entities';
+import type { ComboScorePayload } from '../entities';
 import { AssetLoader, EventBus } from '../core';
 import { EmitEvents } from '@/types/events';
 import { combos } from '../config';
@@ -18,10 +20,15 @@ export class MainScene extends Scene {
   private player: Player;
   private inputManager: InputManager;
   private comboManager: ComboManager;
+  private gameManager: GameManager;
   private playerController: PlayerController;
+
+  private scoreListener: (payload: ComboScorePayload) => void;
 
   constructor() {
     super('MainScene');
+
+    this.scoreListener = this.onComboAchieved.bind(this);
   }
 
   init() {
@@ -29,6 +36,7 @@ export class MainScene extends Scene {
 
     this.inputManager = new InputManager(this, ControlScheme.ALL);
     this.comboManager = new ComboManager(comboSystem);
+    this.gameManager = new GameManager(this, 40);
   }
 
   preload() {
@@ -57,6 +65,10 @@ export class MainScene extends Scene {
       this.comboManager
     );
 
+    this.comboManager.addComboListener(this.scoreListener);
+
+    this.gameManager.start();
+
     EventBus.emit(EmitEvents.CURRENT_SCENE_READY, { scene: this });
   }
 
@@ -69,9 +81,13 @@ export class MainScene extends Scene {
     if (this.inputManager) {
       this.inputManager.destroy();
     }
+
+    this.comboManager.removeComboListener(this.scoreListener);
+
+    // TODO: Сделать отписку this.events.once('shutdown', this.shutdown, this);
   }
 
-  setupLoading() {
+  private setupLoading() {
     this.load.on('progress', (value: number) => {
       console.log(`${Math.round(value * 100)}%`);
     });
@@ -81,5 +97,11 @@ export class MainScene extends Scene {
 
       EventBus.emit(EmitEvents.SCENE_VISIBLE, { isVisible: true });
     });
+  }
+
+  private onComboAchieved({ points, comboChain }: ComboScorePayload): void {
+    this.gameManager.addScore(points, comboChain);
+
+    // TODO: Перенести анимацию из PlayerController
   }
 }

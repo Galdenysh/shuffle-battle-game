@@ -95,3 +95,11 @@ export interface Combo {
   multiplier?: number;
   description?: string;
 }
+
+export interface ComboScorePayload {
+  combo: Combo;
+  points: number;
+  comboChain: number;
+  records: AbilityRecord[];
+  timestamp: number;
+}
