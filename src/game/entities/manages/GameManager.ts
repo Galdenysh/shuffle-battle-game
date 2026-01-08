@@ -62,8 +62,8 @@ export class GameManager {
   }
 
   public restart(): void {
-    this.reset();
     this.setGameState(GameState.READY);
+    this.reset();
   }
 
   public addScore(points: number, comboChain: number): void {
@@ -126,6 +126,8 @@ export class GameManager {
       callbackScope: this,
       loop: true,
     });
+
+    this.updateTimer(); // Немедленный первый тик
   }
 
   private stopTimer(): void {

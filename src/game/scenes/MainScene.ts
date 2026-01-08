@@ -1,4 +1,4 @@
-import { Scene } from 'phaser';
+import { GameObjects, Scene } from 'phaser';
 import {
   CharacterFactory,
   ComboManager,
@@ -9,6 +9,7 @@ import {
   InputManager,
   Player,
   PlayerController,
+  TriggerZone,
 } from '../entities';
 import type { ComboScorePayload } from '../entities';
 import { AssetLoader, EventBus } from '../core';
@@ -36,7 +37,7 @@ export class MainScene extends Scene {
 
     this.inputManager = new InputManager(this, ControlScheme.ALL);
     this.comboManager = new ComboManager(comboSystem);
-    this.gameManager = new GameManager(this, 40);
+    this.gameManager = new GameManager(this, 41);
   }
 
   preload() {
@@ -54,7 +55,7 @@ export class MainScene extends Scene {
     }
 
     this.background = new DanceFloor(this, 0, 0);
-    this.player = CharacterFactory.create('nomadmechanic_man', this, 400, 800);
+    this.player = CharacterFactory.create('nomadmechanic_man', this, 360, 500);
 
     const wallsLayer = this.background.getWallsLayer();
 
@@ -69,7 +70,10 @@ export class MainScene extends Scene {
     );
 
     this.comboManager.addComboListener(this.comboScoreListener);
-    this.gameManager.start();
+
+    new TriggerZone(this, this.player, 360, 820, 50, 50, () => {
+      this.gameManager?.start();
+    });
 
     EventBus.emit(EmitEvents.CURRENT_SCENE_READY, { scene: this });
 
