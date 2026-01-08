@@ -7,11 +7,12 @@ import {
   ArrowIcons,
   ControlButton,
   Controls,
+  CountdownTimer,
   ScoreDisplay,
 } from '@/components/ui';
 import { BASE_HEIGHT, BASE_WIDTH } from '@/game/constants';
 import { EventBus } from '@/game/core';
-import { Abilities, ControlMode, Direction } from '@/types';
+import { Abilities, ControlMode, Direction, TimeChangedEvent } from '@/types';
 import { cn } from '@/lib/utils';
 import {
   ControlModeTriggeredEvent,
@@ -43,6 +44,20 @@ const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
     totalScore: 0,
     comboChain: 1,
     deltaScore: null,
+    timestamp: 0,
+  });
+
+  const [timerData, setTimerData] = useState<{
+    timeLeft: number | null;
+    isWarning: boolean;
+    isCritical: boolean;
+    isTimeUp: boolean;
+    timestamp: number;
+  }>({
+    timeLeft: null,
+    isWarning: false,
+    isCritical: false,
+    isTimeUp: false,
     timestamp: 0,
   });
 
@@ -121,6 +136,33 @@ const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
     };
   }, []);
 
+  // Обработка time-changed
+  useEffect(() => {
+    const handleTimer = (
+      {
+        timeLeft,
+        isWarning,
+        isCritical,
+        isTimeUp,
+      }: TimeChangedEvent['payload'],
+      timestamp?: number
+    ) => {
+      setTimerData({
+        timeLeft,
+        isWarning,
+        isCritical,
+        isTimeUp,
+        timestamp: timestamp ?? 0,
+      });
+    };
+
+    EventBus.on(EmitEvents.TIME_CHANGED, handleTimer);
+
+    return () => {
+      EventBus.off(EmitEvents.TIME_CHANGED, handleTimer);
+    };
+  }, []);
+
   return (
     <div
       className={cn(
@@ -129,12 +171,20 @@ const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
       )}
       style={{ width: `${BASE_WIDTH}px`, height: `${BASE_HEIGHT}px` }}
     >
-      <ScoreDisplay
-        totalScore={scoreData.totalScore}
-        deltaScore={scoreData.deltaScore}
-        comboChain={scoreData.comboChain}
-        timestamp={scoreData.timestamp}
-      />
+      <div className={cn('flex flex-col gap-6')}>
+        <ScoreDisplay
+          totalScore={scoreData.totalScore}
+          deltaScore={scoreData.deltaScore}
+          comboChain={scoreData.comboChain}
+          timestamp={scoreData.timestamp}
+        />
+        <CountdownTimer
+          timeLeft={timerData.timeLeft}
+          isWarning={timerData.isWarning}
+          isCritical={timerData.isCritical}
+          isTimeUp={timerData.isTimeUp}
+        />
+      </div>
       <AnimatePresence mode="wait" initial={false}>
         {!isVisibleGamepad ? (
           <motion.div
@@ -167,7 +217,6 @@ const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
             transition={{
               type: 'tween',
               ease: 'easeInOut',
-              duration: 0.2,
             }}
           >
             <Controls

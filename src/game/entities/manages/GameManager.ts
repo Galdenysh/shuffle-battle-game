@@ -145,12 +145,16 @@ export class GameManager {
     this.timeLeft--;
     this.onTick?.(this.timeLeft);
 
-    EventBus.emit(EmitEvents.TIME_CHANGED, {
-      timeLeft: Math.max(0, this.timeLeft),
-      isWarning: isWarning,
-      isCritical: isCritical,
-      isTimeUp: isTimeUp,
-    });
+    EventBus.emit(
+      EmitEvents.TIME_CHANGED,
+      {
+        timeLeft: Math.max(0, this.timeLeft),
+        isWarning: isWarning,
+        isCritical: isCritical,
+        isTimeUp: isTimeUp,
+      },
+      this.scene?.time.now
+    );
 
     if (isTimeUp) this.end();
   }

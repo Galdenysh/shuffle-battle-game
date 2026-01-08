@@ -104,10 +104,10 @@ const LoadingScreen: FC<LoadingScreenProps> = ({
           </div>
           <div className="w-full h-4 bg-black/60 border-2 border-cyan-500/30 backdrop-blur-md">
             <motion.div
-              className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 shadow-[0_0_15px_rgba(0,255,255,0.4)]"
+              className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 shadow-[0_0_15px_rgba(0,255,255,0.4)] will-change-width"
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
-              transition={{ type: 'spring', stiffness: 50 }}
+              transition={{ type: 'tween', ease: 'easeOut', duration: 0.4 }}
             />
           </div>
         </div>
