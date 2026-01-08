@@ -31,19 +31,26 @@ export class TriggerZone extends GameObjects.Zone {
 
   private createVisuals(x: number, y: number, radius: number) {
     const color = 0x53eafd;
-
-    this.visualEffect.fillStyle(color, 0.4);
-    this.visualEffect.fillCircle(0, 0, radius * 4);
-
-    this.visualEffect.lineStyle(4, color, 1);
-    this.visualEffect.strokeCircle(0, 0, radius * 4);
+    const targetRadius = radius * 4;
+    const ISO_FACTOR = 0.8;
+    const scaleMin = 0.9;
+    const scaleMax = 1;
 
     this.visualEffect.setPosition(x, y);
+    this.visualEffect.fillStyle(color, 0.4);
+    this.visualEffect.fillCircle(0, 0, targetRadius);
+    this.visualEffect.lineStyle(4, color, 1);
+    this.visualEffect.strokeCircle(0, 0, targetRadius);
+    this.visualEffect.setScale(1, ISO_FACTOR);
 
     this.scene.tweens.add({
       targets: this.visualEffect,
-      alpha: { from: 0.3, to: 0.8 },
-      scale: { from: 0.9, to: 1.1 },
+      alpha: { from: 0.6, to: 0.9 },
+      scaleX: { from: scaleMin, to: scaleMax },
+      scaleY: {
+        from: scaleMin * ISO_FACTOR,
+        to: scaleMax * ISO_FACTOR,
+      },
       duration: 1000,
       yoyo: true,
       repeat: -1,
@@ -56,7 +63,7 @@ export class TriggerZone extends GameObjects.Zone {
       this.onEnter();
 
       this.scene.physics.world.removeCollider(overlap);
-      this.visualEffect.destroy(); // Убираем визуализацию
+      this.visualEffect.destroy();
       this.destroy();
     });
   }
