@@ -158,7 +158,7 @@ export abstract class Player extends Physics.Arcade.Sprite {
     }
   ): void {
     this.scene.anims.create({
-      key: config.key,
+      key: `${this.config.textureKey}_${config.key}`,
       frames: this.scene.anims.generateFrameNames(this.config.textureKey, {
         start: config.start,
         end: config.end,
@@ -306,23 +306,38 @@ export abstract class Player extends Physics.Arcade.Sprite {
   protected abstract setupTStepRightAnimations(): void;
 
   private playIdleAnimation(): void {
-    this.playSafe(`idle_${this.currentDirection}`, true);
+    this.playSafe(
+      `${this.config.textureKey}_idle_${this.currentDirection}`,
+      true
+    );
   }
 
   private playWalkAnimation(): void {
-    this.playSafe(`walk_${this.currentDirection}`, true);
+    this.playSafe(
+      `${this.config.textureKey}_walk_${this.currentDirection}`,
+      true
+    );
   }
 
   private playRunningManAnimation(): void {
-    this.playSafe(`runningMan_${this.currentDirection}`, true);
+    this.playSafe(
+      `${this.config.textureKey}_runningMan_${this.currentDirection}`,
+      true
+    );
   }
 
   private playTStepLeftAnimation(): void {
-    this.playSafe(`tStepLeft_${this.currentDirection}`, true);
+    this.playSafe(
+      `${this.config.textureKey}_tStepLeft_${this.currentDirection}`,
+      true
+    );
   }
 
   private playTStepRightAnimation(): void {
-    this.playSafe(`tStepRight_${this.currentDirection}`, true);
+    this.playSafe(
+      `${this.config.textureKey}_tStepRight_${this.currentDirection}`,
+      true
+    );
   }
 
   private playSafe(key: string, ignoreIfPlaying?: boolean): void {

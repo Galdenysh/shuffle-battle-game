@@ -1,6 +1,6 @@
 import type { Abilities, Direction } from '@/types';
 
-export type CharacterType = 'netrunner_woman' | 'nomadmechanic_man';
+export type CharacterType = 'mc_man' | 'shuffler_man';
 
 interface PlayerVisualConfig {
   textureKey: string;

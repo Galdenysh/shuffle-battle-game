@@ -1,6 +1,7 @@
-import { GameObjects, Scene } from 'phaser';
+import { Scene } from 'phaser';
 import {
   CharacterFactory,
+  CollisionManager,
   ComboManager,
   ComboSystem,
   ControlScheme,
@@ -15,13 +16,16 @@ import type { ComboScorePayload } from '../entities';
 import { AssetLoader, EventBus } from '../core';
 import { EmitEvents } from '@/types/events';
 import { combos } from '../config';
+import { Direction } from '@/types';
 
 export class MainScene extends Scene {
   private background: DanceFloor | null = null;
   private player: Player | null = null;
+  private host: Player | null = null;
   private inputManager: InputManager | null = null;
   private comboManager: ComboManager | null = null;
   private gameManager: GameManager | null = null;
+  private collisionManager: CollisionManager | null = null;
   private playerController: PlayerController | null = null;
 
   private comboScoreListener: (payload: ComboScorePayload) => void;
@@ -45,7 +49,7 @@ export class MainScene extends Scene {
 
     AssetLoader.preload(this, {
       environmentName: 'dance_floor',
-      charactersNameList: ['nomadmechanic_man'],
+      charactersNameList: ['shuffler_man', 'mc_man'],
     });
   }
 
@@ -55,13 +59,15 @@ export class MainScene extends Scene {
     }
 
     this.background = new DanceFloor(this, 0, 0);
-    this.player = CharacterFactory.create('nomadmechanic_man', this, 360, 500);
+    this.player = CharacterFactory.create('shuffler_man', this, 360, 500);
+    this.host = CharacterFactory.create('mc_man', this, 110, 500, {
+      defaultDirection: Direction.SOUTH_EAST,
+    });
 
     const wallsLayer = this.background.getWallsLayer();
 
-    if (wallsLayer) {
-      this.physics.add.collider(this.player, wallsLayer);
-    }
+    this.collisionManager = new CollisionManager(this);
+    this.collisionManager.setup([this.player, this.host], wallsLayer);
 
     this.playerController = new PlayerController(
       this.player,
@@ -90,6 +96,7 @@ export class MainScene extends Scene {
     this.inputManager?.destroy();
     this.comboManager?.destroy(); // ComboManager сам очистит обработчики
     this.gameManager?.destroy();
+    this.collisionManager?.cleanup();
     this.playerController?.destroy();
 
     this.background = null;
@@ -97,6 +104,7 @@ export class MainScene extends Scene {
     this.inputManager = null;
     this.comboManager = null;
     this.gameManager = null;
+    this.collisionManager = null;
     this.playerController = null;
   }
 

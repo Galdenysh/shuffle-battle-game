@@ -1,6 +1,6 @@
 import type { Scene } from 'phaser';
 import { Player } from '../abstract';
-import { NetrunnerWoman, NomadmechanicMan } from '../characters';
+import { MCMan, ShufflerMan } from '../characters';
 import type { FactoryCharacterConfig } from '../types';
 
 export class CharacterFactory {
@@ -18,18 +18,18 @@ export class CharacterFactory {
     };
 
     switch (type) {
-      case 'netrunner_woman':
-        return this.createNetrunnerWoman(scene, baseConfig, custom);
+      case 'shuffler_man':
+        return this.createShufflerMan(scene, baseConfig, custom);
 
-      case 'nomadmechanic_man':
-          return this.createNomadmechanicMan(scene, baseConfig);
+      case 'mc_man':
+        return this.createMCMan(scene, baseConfig, custom);
 
       default:
         console.warn(
-          `Unknown character type: ${type}, using netrunner as fallback`
+          `Unknown character type: ${type}, using shuffler as fallback`
         );
 
-        return this.createNetrunnerWoman(scene, baseConfig, custom);
+        return this.createShufflerMan(scene, baseConfig, custom);
     }
   }
 
@@ -42,19 +42,19 @@ export class CharacterFactory {
     );
   }
 
-  private static createNetrunnerWoman(
+  private static createMCMan(
     scene: Scene,
     config: FactoryCharacterConfig,
     customConfig?: FactoryCharacterConfig['custom']
-  ): NetrunnerWoman {
-    return new NetrunnerWoman(scene, config.x, config.y, customConfig);
+  ): MCMan {
+    return new MCMan(scene, config.x, config.y, customConfig);
   }
 
-    private static createNomadmechanicMan(
+  private static createShufflerMan(
     scene: Scene,
     config: FactoryCharacterConfig,
     customConfig?: FactoryCharacterConfig['custom']
-  ): NomadmechanicMan {
-    return new NomadmechanicMan(scene, config.x, config.y, customConfig);
+  ): ShufflerMan {
+    return new ShufflerMan(scene, config.x, config.y, customConfig);
   }
 }

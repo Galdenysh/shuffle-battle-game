@@ -4,9 +4,9 @@ import { CharacterType, PlayerConfig } from '../types';
 import { ASSET_KEYS } from '@/game/constants';
 import { Direction } from '@/types';
 
-export class NomadmechanicMan extends Player {
+export class ShufflerMan extends Player {
   private static readonly DEFAULT_CONFIG: PlayerConfig = {
-    textureKey: ASSET_KEYS.CHAR_NOMAD_MECHANIC_MAN,
+    textureKey: ASSET_KEYS.CHAR_SHUFFLER_MAN,
     defaultDirection: Direction.SOUTH,
     scale: 4,
     colliderScaleX: 0.3,
@@ -90,7 +90,7 @@ export class NomadmechanicMan extends Player {
     y: number,
     customConfig?: Partial<PlayerConfig>
   ) {
-    super(scene, x, y, { ...NomadmechanicMan.DEFAULT_CONFIG, ...customConfig });
+    super(scene, x, y, { ...ShufflerMan.DEFAULT_CONFIG, ...customConfig });
   }
 
   public getConfig(): PlayerConfig {
@@ -98,11 +98,11 @@ export class NomadmechanicMan extends Player {
   }
 
   public getType(): CharacterType {
-    return 'nomadmechanic_man';
+    return 'shuffler_man';
   }
 
   protected setupIdleAnimations(): void {
-    Object.entries(NomadmechanicMan.IDLE_DIRECTION_PREFIXES).forEach(
+    Object.entries(ShufflerMan.IDLE_DIRECTION_PREFIXES).forEach(
       ([direction, prefix]) => {
         this.addIdleAnimation({ direction: direction as Direction, prefix });
       }
@@ -110,7 +110,7 @@ export class NomadmechanicMan extends Player {
   }
 
   protected setupWalkAnimations(): void {
-    Object.entries(NomadmechanicMan.WALK_DIRECTION_PREFIXES).forEach(
+    Object.entries(ShufflerMan.WALK_DIRECTION_PREFIXES).forEach(
       ([direction, prefix]) => {
         this.addWalkAnimation({ direction: direction as Direction, prefix });
       }
@@ -118,7 +118,7 @@ export class NomadmechanicMan extends Player {
   }
 
   protected setupRunningManAnimations(): void {
-    Object.entries(NomadmechanicMan.RUNNING_MAN_DIRECTION_PREFIXES).forEach(
+    Object.entries(ShufflerMan.RUNNING_MAN_DIRECTION_PREFIXES).forEach(
       ([direction, prefix]) => {
         this.addRunningManAnimation({
           direction: direction as Direction,
@@ -129,7 +129,7 @@ export class NomadmechanicMan extends Player {
   }
 
   protected setupTStepLeftAnimations(): void {
-    Object.entries(NomadmechanicMan.T_STEP_LEFT_DIRECTION_PREFIXES).forEach(
+    Object.entries(ShufflerMan.T_STEP_LEFT_DIRECTION_PREFIXES).forEach(
       ([direction, prefix]) => {
         this.addTStepLeftAnimation({
           direction: direction as Direction,
@@ -140,7 +140,7 @@ export class NomadmechanicMan extends Player {
   }
 
   protected setupTStepRightAnimations(): void {
-    Object.entries(NomadmechanicMan.T_STEP_RIGHT_DIRECTION_PREFIXES).forEach(
+    Object.entries(ShufflerMan.T_STEP_RIGHT_DIRECTION_PREFIXES).forEach(
       ([direction, prefix]) => {
         this.addTStepRightAnimation({
           direction: direction as Direction,

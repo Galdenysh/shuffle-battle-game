@@ -12,11 +12,11 @@ export const ASSET_KEYS = {
   ENV_COLLISION_MAP: 'collision_map',
 
   // Characters
-  CHAR_NETRUNNER_WOMAN: 'character_netrunner_woman',
-  CHAR_NOMAD_MECHANIC_MAN: 'character_nomadmechanic_man',
+  CHAR_MC_MAN: 'character_mc_man',
+  CHAR_SHUFFLER_MAN: 'character_shuffler_man',
 } as const;
 
 export const CHARACTER_NAME_TO_KEY: Record<CharacterType, string> = {
-  netrunner_woman: ASSET_KEYS.CHAR_NETRUNNER_WOMAN,
-  nomadmechanic_man: ASSET_KEYS.CHAR_NOMAD_MECHANIC_MAN,
+  mc_man: ASSET_KEYS.CHAR_MC_MAN,
+  shuffler_man: ASSET_KEYS.CHAR_SHUFFLER_MAN,
 };
