@@ -1,4 +1,5 @@
-import { GameObjects, Scene } from 'phaser';
+import { GameObjects } from 'phaser';
+import type { Scene, Time, Tweens } from 'phaser';
 import { Player } from '../abstract';
 
 interface DialogConfig {
@@ -21,9 +22,13 @@ export class DialogueBox extends GameObjects.Container {
   private dialogOffsetX: number;
   private dialogOffsetY: number;
 
+  private hideTimer?: Time.TimerEvent | null = null;
+  private showTimer?: Time.TimerEvent | null = null;
+  private activeTween?: Tweens.Tween | null = null;
+
   private static readonly DEFAULT_CONFIG: DialogConfig = {
     delayShow: 1000,
-    delayHide: 7000,
+    delayHide: 10000,
     dialogDepth: 1000,
     dialogOffsetX: -50,
     dialogOffsetY: -200,
@@ -56,6 +61,36 @@ export class DialogueBox extends GameObjects.Container {
     this.createDialog();
   }
 
+  public destroyDialog() {
+    this.showTimer?.remove();
+    this.hideTimer?.remove();
+    this.showTimer = null;
+    this.hideTimer = null;
+
+    if (this.activeTween) {
+      this.activeTween.stop();
+      this.activeTween = null;
+    }
+
+    if (this.dialog) {
+      this.dialog.destroy();
+      this.dialog = null;
+    }
+
+    this.destroy();
+  }
+
+  public closeDialog() {
+    if (!this.dialog || !this.dialog.visible) {
+      this.destroyDialog();
+
+      return;
+    }
+
+    this.hideTimer?.remove();
+    this.hideDialog();
+  }
+
   private createDialog() {
     const characterX = this.character.x;
     const characterY = this.character.y;
@@ -84,6 +119,7 @@ export class DialogueBox extends GameObjects.Container {
       this.message,
       messageTextConfig
     );
+
     const tempNameText = this.scene.add.text(
       0,
       0,
@@ -154,38 +190,45 @@ export class DialogueBox extends GameObjects.Container {
     this.dialog.setDepth(this.dialogDepth);
     this.dialog.setVisible(false);
 
-    this.scene.time.delayedCall(this.delayShow, () => {
-      this.showHostDialog();
-      this.scene.time.delayedCall(this.delayHide, () => {
-        this.hideHostDialog();
+    this.showTimer = this.scene.time.delayedCall(this.delayShow, () => {
+      this.showDialog();
+
+      this.hideTimer = this.scene.time.delayedCall(this.delayHide, () => {
+        this.hideDialog();
       });
     });
   }
 
-  private showHostDialog() {
+  private showDialog() {
     if (!this.dialog) return;
 
     this.dialog.setVisible(true);
     this.dialog.setAlpha(0);
 
-    this.scene.tweens.add({
+    this.activeTween = this.scene.tweens.add({
       targets: this.dialog,
       alpha: 1,
       duration: 500,
       ease: 'Power2',
+      onComplete: () => {
+        this.activeTween = undefined;
+      },
     });
   }
 
-  private hideHostDialog() {
+  private hideDialog() {
     if (!this.dialog) return;
 
-    this.scene.tweens.add({
+    this.activeTween?.stop();
+
+    this.activeTween = this.scene.tweens.add({
       targets: this.dialog,
       alpha: 0,
       duration: 500,
       ease: 'Power2',
       onComplete: () => {
-        if (this.dialog) this.dialog.setVisible(false);
+        this.activeTween = undefined;
+        this.destroyDialog();
       },
     });
   }

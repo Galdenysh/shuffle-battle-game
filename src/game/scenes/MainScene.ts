@@ -29,6 +29,7 @@ export class MainScene extends Scene {
   private gameManager: GameManager | null = null;
   private collisionManager: CollisionManager | null = null;
   private playerController: PlayerController | null = null;
+  private dialogueBox: DialogueBox | null = null;
 
   private comboScoreListener: (payload: ComboScorePayload) => void;
 
@@ -97,7 +98,7 @@ export class MainScene extends Scene {
 
     new TriggerZone(this, this.player, 360, 820, 50, 50, () => {
       this.gameManager?.start();
-      
+      this.dialogueBox?.closeDialog();
     });
 
     EventBus.emit(EmitEvents.CURRENT_SCENE_READY, { scene: this });
@@ -117,6 +118,7 @@ export class MainScene extends Scene {
     this.gameManager?.destroy();
     this.collisionManager?.cleanup();
     this.playerController?.destroy();
+    this.dialogueBox?.destroyDialog();
 
     this.background = null;
     this.player = null;
@@ -125,6 +127,7 @@ export class MainScene extends Scene {
     this.gameManager = null;
     this.collisionManager = null;
     this.playerController = null;
+    this.dialogueBox = null;
 
     EventBus.off(EmitEvents.PLAYER_DATA_INIT, this.playerDataListener);
   }
@@ -169,6 +172,6 @@ export class MainScene extends Scene {
       playerName ?? 'танцор'
     }! Жду в центре для старта! Или пока разминайся здесь.`;
 
-    new DialogueBox(this, this.host, message, 'MC');
+    this.dialogueBox = new DialogueBox(this, this.host, message, 'MC');
   }
 }
