@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { FC } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { ShowHideIcon } from '@/components/ui';
+import { EmitEvents } from '@/types';
+import { EventBus } from '@/game/core';
 
 interface GameInfoProps {
   isVisibleGamepad?: boolean;
@@ -40,6 +42,12 @@ const GameInfo: FC<GameInfoProps> = ({
   };
 
   const toggleText = isVisibleGamepad ? 'Скрыть' : 'Показать';
+
+  useEffect(() => {
+    if (playerName) {
+      EventBus.emit(EmitEvents.PLAYER_DATA_INIT, { playerName });
+    }
+  }, [playerName]);
 
   return (
     <div

@@ -6,6 +6,7 @@ import {
   ComboSystem,
   ControlScheme,
   DanceFloor,
+  DialogueBox,
   GameManager,
   InputManager,
   Player,
@@ -15,6 +16,7 @@ import {
 import type { ComboScorePayload } from '../entities';
 import { AssetLoader, EventBus } from '../core';
 import { EmitEvents } from '@/types/events';
+import type { PlayerDataInitEvent } from '@/types/events';
 import { combos } from '../config';
 import { Direction } from '@/types';
 
@@ -30,10 +32,22 @@ export class MainScene extends Scene {
 
   private comboScoreListener: (payload: ComboScorePayload) => void;
 
+  private playerDataListener: ({
+    playerName,
+  }: PlayerDataInitEvent['payload']) => void;
+
+  private playerDataResolve: (value: string) => void;
+  private playerDataPromise: Promise<string>;
+
   constructor() {
     super('MainScene');
 
+    this.playerDataPromise = new Promise((resolve) => {
+      this.playerDataResolve = resolve;
+    });
+
     this.comboScoreListener = this.handleComboMatch.bind(this);
+    this.playerDataListener = this.handleSetPlayerData.bind(this);
   }
 
   init() {
@@ -42,6 +56,8 @@ export class MainScene extends Scene {
     this.inputManager = new InputManager(this, ControlScheme.ALL);
     this.comboManager = new ComboManager(comboSystem);
     this.gameManager = new GameManager(this, 41);
+
+    EventBus.on(EmitEvents.PLAYER_DATA_INIT, this.playerDataListener);
   }
 
   preload() {
@@ -77,8 +93,11 @@ export class MainScene extends Scene {
 
     this.comboManager.addComboListener(this.comboScoreListener);
 
+    this.createHostDialog();
+
     new TriggerZone(this, this.player, 360, 820, 50, 50, () => {
       this.gameManager?.start();
+      
     });
 
     EventBus.emit(EmitEvents.CURRENT_SCENE_READY, { scene: this });
@@ -106,6 +125,8 @@ export class MainScene extends Scene {
     this.gameManager = null;
     this.collisionManager = null;
     this.playerController = null;
+
+    EventBus.off(EmitEvents.PLAYER_DATA_INIT, this.playerDataListener);
   }
 
   private setupLoading() {
@@ -131,5 +152,23 @@ export class MainScene extends Scene {
 
     this.gameManager?.addScore(points, comboChain);
     this.playerController?.onComboAchieved(combo, isActive ? points : null);
+  }
+
+  private handleSetPlayerData({ playerName }: PlayerDataInitEvent['payload']) {
+    if (this.playerDataResolve) {
+      this.playerDataResolve(playerName);
+    }
+  }
+
+  private async createHostDialog() {
+    if (!this.host) return;
+
+    const playerName = await this.playerDataPromise;
+
+    const message = `Эй, ${
+      playerName ?? 'танцор'
+    }! Жду в центре для старта! Или пока разминайся здесь.`;
+
+    new DialogueBox(this, this.host, message, 'MC');
   }
 }
