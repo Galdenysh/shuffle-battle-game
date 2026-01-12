@@ -25,7 +25,6 @@ export class GameManager {
     this.onGameStateChange = onGameStateChange;
     this.onTick = onTick;
 
-    this.restart();
     this.bindSceneEvents();
   }
 
@@ -111,6 +110,10 @@ export class GameManager {
 
   public get isFinished(): boolean {
     return this.currentState === GameState.FINISHED;
+  }
+
+  public get totalScore(): number {
+    return this.score;
   }
 
   private setGameState(state: GameState): void {

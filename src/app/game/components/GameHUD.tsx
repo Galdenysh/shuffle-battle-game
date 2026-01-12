@@ -100,6 +100,8 @@ const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
     EventBus.emit(EmitEvents.LEVEL_COMPLETED_ACTION, {
       action: GameCommand.RESTART,
     });
+
+    setIsStopMode(false); // Сброс touch кнопки
   };
 
   // Синхронизация с touch кнопкой

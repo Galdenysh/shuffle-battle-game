@@ -21,7 +21,7 @@ import type {
   PlayerDataInitEvent,
 } from '@/types/events';
 import { combos } from '../config';
-import { Direction, GameCommand } from '@/types';
+import { Direction, GameCommand, GameState } from '@/types';
 
 export class MainScene extends Scene {
   private background: DanceFloor | null = null;
@@ -34,6 +34,8 @@ export class MainScene extends Scene {
   private playerController: PlayerController | null = null;
   private dialogueBox: DialogueBox | null = null;
   private isRestartPending: boolean = false;
+
+  private handleGameStateChange: (state: GameState) => void;
 
   private comboScoreListener: (payload: ComboScorePayload) => void;
 
@@ -51,6 +53,16 @@ export class MainScene extends Scene {
   constructor() {
     super('MainScene');
 
+    this.handleGameStateChange = (state) => {
+      if (state === GameState.READY) {
+        this.createHostReadyDialog();
+      }
+
+      if (state === GameState.FINISHED) {
+        this.createHostEndDialog();
+      }
+    };
+
     this.playerDataPromise = new Promise((resolve) => {
       this.playerDataResolve = resolve;
     });
@@ -63,7 +75,7 @@ export class MainScene extends Scene {
   init() {
     this.inputManager = new InputManager(this, ControlScheme.ALL);
     this.comboManager = new ComboManager(new ComboSystem(combos));
-    this.gameManager = new GameManager(this, 40);
+    this.gameManager = new GameManager(this, 40, this.handleGameStateChange);
 
     EventBus.on(EmitEvents.PLAYER_DATA_INIT, this.playerDataListener);
     EventBus.on(EmitEvents.LEVEL_COMPLETED_ACTION, this.levelActionListener);
@@ -102,12 +114,12 @@ export class MainScene extends Scene {
 
     this.comboManager.addComboListener(this.comboScoreListener);
 
-    this.createHostDialog();
-
     new TriggerZone(this, this.player, 360, 820, 50, 50, () => {
       this.gameManager?.start();
       this.dialogueBox?.closeDialog();
     });
+
+    this.gameManager.restart();
 
     EventBus.emit(EmitEvents.CURRENT_SCENE_READY, { scene: this });
 
@@ -160,20 +172,44 @@ export class MainScene extends Scene {
 
   private handleLevelAction({ action }: LevelCompleteActionEvent['payload']) {
     if (action === GameCommand.RESTART) {
-      if (action === GameCommand.RESTART) {
-        this.isRestartPending = true;
-      }
+      this.isRestartPending = true;
     }
   }
 
-  private async createHostDialog() {
+  private async createHostReadyDialog() {
     if (!this.host) return;
 
     const playerName = await this.playerDataPromise;
 
+    if (!this.scene.isActive()) return;
+
     const message = `Эй, ${
       playerName ?? 'танцор'
     }! Жду в центре танцпола для старта! Или пока разминайся здесь.`;
+
+    this.dialogueBox = new DialogueBox(this, this.host, message, 'MC', {
+      delayShow: 1000,
+    });
+  }
+
+  private createHostEndDialog() {
+    if (!this.host) return;
+
+    const score = this.gameManager?.totalScore;
+
+    let message: string = '';
+
+    if (score === undefined) {
+      message = 'Время вышло, раунд окончен!';
+    } else if (score >= 3000) {
+      message = 'Настоящий пожар! Ты бог шаффла! Твои ноги просто летали.';
+    } else if (score >= 2000) {
+      message = 'Мощно! Твои Т-степы на высоте. Ты почти непобедим!';
+    } else if (score >= 1000) {
+      message = 'Хороший раунд! Техника на месте. Добавь огня в движения!';
+    } else {
+      message = 'Ноги запутались? Тренируй Running Man и возвращайся!';
+    }
 
     this.dialogueBox = new DialogueBox(this, this.host, message, 'MC');
   }

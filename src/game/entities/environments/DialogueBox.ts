@@ -27,7 +27,7 @@ export class DialogueBox extends GameObjects.Container {
   private activeTween: Tweens.Tween | null = null;
 
   private static readonly DEFAULT_CONFIG: DialogConfig = {
-    delayShow: 1000,
+    delayShow: 100,
     delayHide: 10000,
     dialogDepth: 1500,
     dialogOffsetX: -38,
