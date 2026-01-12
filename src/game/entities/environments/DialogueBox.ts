@@ -22,15 +22,15 @@ export class DialogueBox extends GameObjects.Container {
   private dialogOffsetX: number;
   private dialogOffsetY: number;
 
-  private hideTimer?: Time.TimerEvent | null = null;
-  private showTimer?: Time.TimerEvent | null = null;
-  private activeTween?: Tweens.Tween | null = null;
+  private hideTimer: Time.TimerEvent | null = null;
+  private showTimer: Time.TimerEvent | null = null;
+  private activeTween: Tweens.Tween | null = null;
 
   private static readonly DEFAULT_CONFIG: DialogConfig = {
     delayShow: 1000,
     delayHide: 10000,
-    dialogDepth: 1000,
-    dialogOffsetX: -50,
+    dialogDepth: 1500,
+    dialogOffsetX: -38,
     dialogOffsetY: -200,
   };
 
@@ -211,7 +211,7 @@ export class DialogueBox extends GameObjects.Container {
       duration: 500,
       ease: 'Power2',
       onComplete: () => {
-        this.activeTween = undefined;
+        this.activeTween = null;
       },
     });
   }
@@ -227,7 +227,7 @@ export class DialogueBox extends GameObjects.Container {
       duration: 500,
       ease: 'Power2',
       onComplete: () => {
-        this.activeTween = undefined;
+        this.activeTween = null;
         this.destroyDialog();
       },
     });

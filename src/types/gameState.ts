@@ -1,7 +1,11 @@
 export enum GameState {
-  INIT = 'INIT',
-  READY = 'READY',
-  ACTIVE = 'ACTIVE',
-  PAUSED = 'PAUSED',
-  FINISHED = 'FINISHED',
+  INIT = 'init',
+  READY = 'ready',
+  ACTIVE = 'active',
+  PAUSED = 'paused',
+  FINISHED = 'finished',
+}
+
+export enum GameCommand {
+  RESTART = 'restart',
 }

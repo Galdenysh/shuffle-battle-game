@@ -28,7 +28,11 @@ export abstract class Background extends GameObjects.Sprite {
     this.setupAnimations();
     this.setDepth(config.animationDepth);
     this.setupPhysic();
-    this.playSafe(config.animationKey, true);
+
+    this.playSafe(
+      `${this.config.textureSritesheetKey}_${config.animationKey}`,
+      true
+    );
   }
 
   protected addImage(textureKey: string): GameObjects.Image {
@@ -36,8 +40,16 @@ export abstract class Background extends GameObjects.Sprite {
   }
 
   protected addAnimation(config: AnimationConfig): void {
+    if (
+      this.scene.anims.exists(
+        `${this.config.textureSritesheetKey}_${config.key}`
+      )
+    ) {
+      return;
+    }
+
     this.scene.anims.create({
-      key: config.key,
+      key: `${this.config.textureSritesheetKey}_${config.key}`,
       frames: this.scene.anims.generateFrameNumbers(
         this.config.textureSritesheetKey,
         {

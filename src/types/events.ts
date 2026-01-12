@@ -1,7 +1,7 @@
 import type { Scene } from 'phaser';
 import type { Direction } from './direction';
 import type { Abilities, ControlMode } from './abilities';
-import type { GameState } from './gameState';
+import type { GameCommand, GameState } from './gameState';
 
 export enum EmitEvents {
   // Scene Events
@@ -12,12 +12,14 @@ export enum EmitEvents {
   MOVE_TRIGGERED = 'move-triggered',
   ABILITY_TRIGGERED = 'ability-triggered',
   CONTROL_MODE_TRIGGERED = 'control-mode-triggered',
+  RESTART_TRIGGERED = 'restart-triggered',
 
   // Gameplay Events
   PLAYER_DATA_INIT = 'player-data-init',
   SCORE_CHANGED = 'score-changed',
   TIME_CHANGED = 'time-changed',
   GAME_STATE_CHANGED = 'game-state-changed',
+  LEVEL_COMPLETED_ACTION = 'level-complete-action',
 }
 
 export interface SceneVisibleEvent {
@@ -100,6 +102,14 @@ export interface GameStateChangedEvent {
   timestamp?: number;
 }
 
+export interface LevelCompleteActionEvent {
+  type: EmitEvents.LEVEL_COMPLETED_ACTION;
+  payload: {
+    action: GameCommand;
+  };
+  timestamp?: number;
+}
+
 export type GameEvent =
   | SceneVisibleEvent
   | CurrentSceneReadyEvent
@@ -109,4 +119,5 @@ export type GameEvent =
   | PlayerDataInitEvent
   | ScoreChangedEvent
   | TimeChangedEvent
-  | GameStateChangedEvent;
+  | GameStateChangedEvent
+  | LevelCompleteActionEvent;

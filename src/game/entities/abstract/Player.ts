@@ -157,6 +157,10 @@ export abstract class Player extends Physics.Arcade.Sprite {
       zeroPad: Required<AnimationConfig['zeroPad']>;
     }
   ): void {
+    if (this.scene.anims.exists(`${this.config.textureKey}_${config.key}`)) {
+      return;
+    }
+
     this.scene.anims.create({
       key: `${this.config.textureKey}_${config.key}`,
       frames: this.scene.anims.generateFrameNames(this.config.textureKey, {

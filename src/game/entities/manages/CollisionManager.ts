@@ -2,8 +2,8 @@ import type { Physics, Scene, Tilemaps } from 'phaser';
 import { Player } from '../abstract';
 
 export class CollisionManager {
-  private scene: Scene;
-  private charactersGroup: Physics.Arcade.Group;
+  private scene: Scene | null;
+  private charactersGroup: Physics.Arcade.Group | null;
   private colliders: Physics.Arcade.Collider[] = [];
 
   constructor(scene: Scene) {
@@ -18,8 +18,10 @@ export class CollisionManager {
     charactersList: Player[],
     wallsLayer: Tilemaps.TilemapLayer | null
   ) {
+    if (!this.scene || !this.charactersGroup) return;
+
     charactersList.forEach((character) => {
-      this.charactersGroup.add(character);
+      this.charactersGroup?.add(character);
     });
 
     if (wallsLayer) {
@@ -41,14 +43,9 @@ export class CollisionManager {
     return this.charactersGroup;
   }
 
-  public cleanup(): void {
-    this.colliders.forEach((collider) => {
-      if (collider.active) {
-        this.scene.physics.world.removeCollider(collider);
-      }
-    });
-
+  public destroy(): void {
+    this.scene = null;
+    this.charactersGroup = null;
     this.colliders.length = 0;
-    this.charactersGroup.clear(true, true);
   }
 }

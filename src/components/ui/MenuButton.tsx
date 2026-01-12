@@ -13,9 +13,9 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   ButtonBaseProps;
 
 const buttonClasses = {
-  base: 'flex items-center justify-center h-14 px-5 gap-3 bg-gradient-to-r from-cyan-500/6 via-purple-500/4 to-pink-500/6 border-2 border-cyan-500/50 text-cyan-300 font-mono text-lg tracking-wider cursor-pointer transition-all duration-300',
+  base: 'flex items-center justify-center h-14 px-5 gap-3 bg-gradient-to-r from-gray-800/30 via-black to-gray-800/30 border-2 border-cyan-500/50 text-cyan-300 font-mono text-lg tracking-wider cursor-pointer transition-all duration-300',
   hover:
-    'hover:border-cyan-300 hover:text-white hover:shadow-[0_0_25px_rgba(0,255,255,0.6),inset_0_0_20px_rgba(0,255,255,0.1)] hover:from-gray-800 hover:via-black hover:to-gray-800',
+    'hover:border-cyan-300 hover:text-white hover:shadow-[0_0_25px_rgba(0,255,255,0.6),inset_0_0_20px_rgba(0,255,255,0.1)]',
   active:
     'active:scale-[0.98] active:shadow-[0_0_15px_rgba(0,255,255,0.4),inset_0_0_15px_rgba(0,0,0,0.3)]',
   focus:

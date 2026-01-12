@@ -158,6 +158,8 @@ export class PlayerController {
       })
       .setOrigin(0.5);
 
+    text.setDepth(1500);
+
     if (scene.renderer.type === WEBGL) {
       text.postFX.addGlow(0x00f3ff, 3, 0, false, 0.1, 10);
     }

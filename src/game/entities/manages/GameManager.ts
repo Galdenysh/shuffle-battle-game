@@ -106,10 +106,14 @@ export class GameManager {
     const previousState = this.currentState;
     this.currentState = state;
 
-    EventBus.emit(EmitEvents.GAME_STATE_CHANGED, {
-      previous: previousState,
-      current: state,
-    });
+    EventBus.emit(
+      EmitEvents.GAME_STATE_CHANGED,
+      {
+        previous: previousState,
+        current: state,
+      },
+      this.scene?.time.now
+    );
 
     this.onGameStateChange?.(state);
   }

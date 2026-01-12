@@ -8,11 +8,19 @@ import {
   ControlButton,
   Controls,
   CountdownTimer,
+  LevelControls,
   ScoreDisplay,
 } from '@/components/ui';
 import { BASE_HEIGHT, BASE_WIDTH } from '@/game/constants';
 import { EventBus } from '@/game/core';
-import { Abilities, ControlMode, Direction, TimeChangedEvent } from '@/types';
+import {
+  Abilities,
+  ControlMode,
+  Direction,
+  GameCommand,
+  GameState,
+  TimeChangedEvent,
+} from '@/types';
 import { cn } from '@/lib/utils';
 import {
   ControlModeTriggeredEvent,
@@ -61,6 +69,8 @@ const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
     timestamp: 0,
   });
 
+  const [gameState, setGameState] = useState<GameState | null>(null);
+
   const handleMovePress = (moveName: Direction, isActive: boolean) => {
     EventBus.emit(EmitEvents.MOVE_TRIGGERED, { moveName, isActive });
   };
@@ -85,6 +95,12 @@ const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
     handleModePress(
       isNewAbilityMode ? ControlMode.STOP_MODE : ControlMode.MOVE_MODE
     );
+  };
+
+  const handleRestart = () => {
+    EventBus.emit(EmitEvents.LEVEL_COMPLETED_ACTION, {
+      action: GameCommand.RESTART,
+    });
   };
 
   // Синхронизация с touch кнопкой
@@ -163,6 +179,13 @@ const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
     };
   }, []);
 
+  // Обработка game-state-changed
+  useEffect(() => {
+    EventBus.on(EmitEvents.GAME_STATE_CHANGED, ({ current }) => {
+      setGameState(current);
+    });
+  }, []);
+
   return (
     <div
       className={cn(
@@ -185,6 +208,10 @@ const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
           isTimeUp={timerData.isTimeUp}
         />
       </div>
+      <LevelControls
+        gameState={gameState ?? undefined}
+        onRestart={handleRestart}
+      />
       <AnimatePresence mode="wait" initial={false}>
         {!isVisibleGamepad ? (
           <motion.div
