@@ -64,6 +64,17 @@ export class GameManager {
   public restart(): void {
     this.setGameState(GameState.READY);
     this.reset();
+
+    EventBus.emit(
+      EmitEvents.TIME_CHANGED,
+      {
+        timeLeft: Math.max(0, this.timeLeft),
+        isWarning: false,
+        isCritical: false,
+        isTimeUp: false,
+      },
+      this.scene?.time.now
+    );
   }
 
   public addScore(points: number, comboChain: number): void {

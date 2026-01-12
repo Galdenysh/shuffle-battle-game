@@ -7,7 +7,6 @@ import {
   ArrowIcons,
   ControlButton,
   Controls,
-  CountdownTimer,
   LevelControls,
   ScoreDisplay,
 } from '@/components/ui';
@@ -56,13 +55,13 @@ const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
   });
 
   const [timerData, setTimerData] = useState<{
-    timeLeft: number | null;
+    timeLeft: number;
     isWarning: boolean;
     isCritical: boolean;
     isTimeUp: boolean;
     timestamp: number;
   }>({
-    timeLeft: null,
+    timeLeft: 0,
     isWarning: false,
     isCritical: false,
     isTimeUp: false,
@@ -194,20 +193,17 @@ const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
       )}
       style={{ width: `${BASE_WIDTH}px`, height: `${BASE_HEIGHT}px` }}
     >
-      <div className={cn('flex flex-col gap-6')}>
-        <ScoreDisplay
-          totalScore={scoreData.totalScore}
-          deltaScore={scoreData.deltaScore}
-          comboChain={scoreData.comboChain}
-          timestamp={scoreData.timestamp}
-        />
-        <CountdownTimer
-          timeLeft={timerData.timeLeft}
-          isWarning={timerData.isWarning}
-          isCritical={timerData.isCritical}
-          isTimeUp={timerData.isTimeUp}
-        />
-      </div>
+      <ScoreDisplay
+        totalScore={scoreData.totalScore}
+        deltaScore={scoreData.deltaScore}
+        comboChain={scoreData.comboChain}
+        timestampScore={scoreData.timestamp}
+        timeLeft={timerData.timeLeft}
+        isWarning={timerData.isWarning}
+        isCritical={timerData.isCritical}
+        isTimeUp={timerData.isTimeUp}
+        timestampTimer={timerData.timestamp}
+      />
       <LevelControls
         gameState={gameState ?? undefined}
         onRestart={handleRestart}

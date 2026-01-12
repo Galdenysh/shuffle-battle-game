@@ -31,7 +31,7 @@ export class DialogueBox extends GameObjects.Container {
     delayHide: 10000,
     dialogDepth: 1500,
     dialogOffsetX: -38,
-    dialogOffsetY: -200,
+    dialogOffsetY: -190,
   };
 
   constructor(

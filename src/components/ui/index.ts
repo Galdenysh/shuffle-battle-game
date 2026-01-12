@@ -8,6 +8,5 @@ export { default as MenuButton } from './MenuButton';
 export { default as MenuInput } from './MenuInput';
 export { default as MenuTitle } from './MenuTitle';
 export { default as ScoreDisplay } from './ScoreDisplay';
-export { default as CountdownTimer } from './CountdownTimer';
 export { default as LevelControls } from './LevelControls';
 

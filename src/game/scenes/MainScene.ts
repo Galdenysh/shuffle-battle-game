@@ -61,11 +61,9 @@ export class MainScene extends Scene {
   }
 
   init() {
-    const comboSystem = new ComboSystem(combos);
-
     this.inputManager = new InputManager(this, ControlScheme.ALL);
-    this.comboManager = new ComboManager(comboSystem);
-    this.gameManager = new GameManager(this, 41);
+    this.comboManager = new ComboManager(new ComboSystem(combos));
+    this.gameManager = new GameManager(this, 40);
 
     EventBus.on(EmitEvents.PLAYER_DATA_INIT, this.playerDataListener);
     EventBus.on(EmitEvents.LEVEL_COMPLETED_ACTION, this.levelActionListener);
@@ -86,8 +84,8 @@ export class MainScene extends Scene {
     }
 
     this.background = new DanceFloor(this, 0, 0);
-    this.player = CharacterFactory.create('shuffler_man', this, 360, 500);
-    this.host = CharacterFactory.create('mc_man', this, 110, 500, {
+    this.player = CharacterFactory.create('shuffler_man', this, 360, 530);
+    this.host = CharacterFactory.create('mc_man', this, 100, 530, {
       defaultDirection: Direction.SOUTH_EAST,
     });
 

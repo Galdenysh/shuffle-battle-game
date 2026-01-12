@@ -7,7 +7,12 @@ interface ScoreDisplayProps {
   totalScore?: number | string;
   deltaScore?: number | string | null;
   comboChain?: number | string;
-  timestamp?: number | string;
+  timestampScore?: number | string;
+  timeLeft?: number;
+  isWarning?: boolean;
+  isCritical?: boolean;
+  isTimeUp?: boolean;
+  timestampTimer?: number | string;
 }
 
 const textClasses =
@@ -17,14 +22,39 @@ export const ScoreDisplay: FC<ScoreDisplayProps> = ({
   totalScore = 0,
   deltaScore = null,
   comboChain = 1,
-  timestamp = 0,
+  timestampScore = 0,
+  timeLeft = null,
+  isWarning = false,
+  isCritical = false,
+  isTimeUp = false,
+  timestampTimer = 0,
 }) => {
+  const prevTotalScore = useRef<number>(Number(totalScore));
+  const scoreAnimationRef = useRef<NodeJS.Timeout | null>(null);
+
   const [displayScore, setDisplayScore] = useState<number>(Number(totalScore));
   const [currentDelta, setCurrentDelta] = useState<number | null>(null);
   const [isAnimatingScore, setIsAnimatingScore] = useState<boolean>(false);
 
-  const prevTotalScore = useRef<number>(Number(totalScore));
-  const scoreAnimationRef = useRef<NodeJS.Timeout | null>(null);
+  const getTimerClasses = () => {
+    if (isTimeUp) {
+      return cn('text-red-600');
+    }
+
+    if (isCritical) {
+      return cn('text-red-600');
+    }
+
+    if (isWarning) {
+      return cn('text-amber-300');
+    }
+
+    return cn('text-white');
+  };
+
+  const formatValue = (value: number | string): string => {
+    return Math.max(0, Number(value)).toString().padStart(2, '0');
+  };
 
   // Обработка изменения счета и дельты
   useEffect(() => {
@@ -79,7 +109,7 @@ export const ScoreDisplay: FC<ScoreDisplayProps> = ({
         }
       };
     }
-  }, [timestamp, totalScore, deltaScore]);
+  }, [timestampScore, totalScore, deltaScore]);
 
   // Таймер для скрытия дельты
   useEffect(() => {
@@ -100,7 +130,7 @@ export const ScoreDisplay: FC<ScoreDisplayProps> = ({
         <p className={cn(textClasses, 'relative')}>
           Очки:{' '}
           <motion.span
-            key={`score-${timestamp}`}
+            key={`score-${timestampScore}`}
             className={cn('font-bold text-white')}
             animate={
               isAnimatingScore
@@ -118,9 +148,29 @@ export const ScoreDisplay: FC<ScoreDisplayProps> = ({
             {displayScore.toLocaleString()}
           </motion.span>
         </p>
-
         <p className={cn(textClasses)}>
-          Цепь: <span className={cn('font-bold text-white')}>{comboChain}</span>
+          Комбо:{' '}
+          <span className={cn('font-bold text-white')}>{comboChain}</span>
+        </p>
+        <p className={cn(textClasses)}>
+          Время:{' '}
+          <motion.span
+            key={`time-${timestampTimer}`}
+            className={cn(
+              'inline-block font-bold text-white',
+              getTimerClasses()
+            )}
+            animate={
+              isCritical
+                ? {
+                    scale: [1, 1.1, 1],
+                    transition: { duration: 0.5, repeat: Infinity },
+                  }
+                : {}
+            }
+          >
+            {formatValue(timeLeft ?? 0)}
+          </motion.span>
         </p>
       </div>
 
@@ -128,7 +178,7 @@ export const ScoreDisplay: FC<ScoreDisplayProps> = ({
       <AnimatePresence mode="wait">
         {currentDelta !== null && (
           <motion.div
-            key={`delta-${timestamp}`}
+            key={`delta-${timestampScore}`}
             className="relative"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
