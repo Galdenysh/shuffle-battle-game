@@ -9,6 +9,7 @@ import {
   DialogueBox,
   GameManager,
   InputManager,
+  MusicManager,
   Player,
   PlayerController,
   TriggerZone,
@@ -22,6 +23,7 @@ import type {
 } from '@/types/events';
 import { combos } from '../config';
 import { Direction, GameCommand, GameState } from '@/types';
+import { ASSET_KEYS } from '../constants';
 
 export class MainScene extends Scene {
   private background: DanceFloor | null = null;
@@ -31,6 +33,7 @@ export class MainScene extends Scene {
   private comboManager: ComboManager | null = null;
   private gameManager: GameManager | null = null;
   private collisionManager: CollisionManager | null = null;
+  private musicManager: MusicManager | null = null;
   private playerController: PlayerController | null = null;
   private dialogueBox: DialogueBox | null = null;
   private isRestartPending: boolean = false;
@@ -75,7 +78,8 @@ export class MainScene extends Scene {
   init() {
     this.inputManager = new InputManager(this, ControlScheme.ALL);
     this.comboManager = new ComboManager(new ComboSystem(combos));
-    this.gameManager = new GameManager(this, 40, this.handleGameStateChange);
+    this.gameManager = new GameManager(this, 30, this.handleGameStateChange);
+    this.musicManager = new MusicManager(this);
 
     EventBus.on(EmitEvents.PLAYER_DATA_INIT, this.playerDataListener);
     EventBus.on(EmitEvents.LEVEL_COMPLETED_ACTION, this.levelActionListener);
@@ -91,7 +95,12 @@ export class MainScene extends Scene {
   }
 
   create() {
-    if (!this.inputManager || !this.comboManager || !this.gameManager) {
+    if (
+      !this.inputManager ||
+      !this.comboManager ||
+      !this.gameManager ||
+      !this.musicManager
+    ) {
       return;
     }
 
@@ -100,6 +109,9 @@ export class MainScene extends Scene {
     this.host = CharacterFactory.create('mc_man', this, 100, 530, {
       defaultDirection: Direction.SOUTH_EAST,
     });
+
+    this.musicManager.setupReverb(ASSET_KEYS.SFX_HALL_IMPULSE);
+    this.musicManager.playBackgroundMusic(ASSET_KEYS.SOUND_BACKGROUND, 0.2);
 
     const wallsLayer = this.background.getWallsLayer();
 
@@ -117,6 +129,18 @@ export class MainScene extends Scene {
     new TriggerZone(this, this.player, 360, 820, 50, 50, () => {
       this.gameManager?.start();
       this.dialogueBox?.closeDialog();
+
+      if (this.host) {
+        this.dialogueBox = new DialogueBox(
+          this,
+          this.host,
+          'И-и пять! Шесть! Семь! Восемь!',
+          'MC',
+          { delayHide: 5000 }
+        );
+      }
+
+      this.musicManager?.playBattleMusic(ASSET_KEYS.SOUND_BATTLE, 0.15);
     });
 
     this.gameManager.restart();
@@ -183,9 +207,9 @@ export class MainScene extends Scene {
 
     if (!this.scene.isActive()) return;
 
-    const message = `Эй, ${
-      playerName ?? 'танцор'
-    }! Жду в центре танцпола для старта! Или пока разминайся здесь.`;
+    const message = `${
+      playerName ?? 'Шаффлер'
+    }, жду в центре! Готов скользить или пока разомнешься?`;
 
     this.dialogueBox = new DialogueBox(this, this.host, message, 'MC', {
       delayShow: 1000,
@@ -219,6 +243,7 @@ export class MainScene extends Scene {
     this.comboManager?.destroy(); // ComboManager сам очистит обработчики
     this.gameManager?.destroy();
     this.collisionManager?.destroy();
+    this.musicManager?.destroy();
     this.playerController?.destroy();
     this.dialogueBox?.destroyDialog();
 
@@ -228,6 +253,7 @@ export class MainScene extends Scene {
     this.comboManager = null;
     this.gameManager = null;
     this.collisionManager = null;
+    this.musicManager = null;
     this.playerController = null;
     this.dialogueBox = null;
 

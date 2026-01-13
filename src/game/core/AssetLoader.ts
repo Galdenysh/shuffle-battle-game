@@ -12,6 +12,24 @@ export class AssetLoader {
   ): void {
     AssetLoader.loadEnvironment(scene, options.environmentName);
     AssetLoader.loadCharacters(scene, options.charactersNameList);
+    AssetLoader.loadAudio(scene);
+  }
+
+  static loadAudio(scene: Scene): void {
+    const load = scene.load;
+
+    load.audio(
+      ASSET_KEYS.SFX_COMBO_SUCCESS,
+      'assets/audio/sfx/combo_success.mp3'
+    );
+
+    load.audio(
+      ASSET_KEYS.SFX_HALL_IMPULSE,
+      'assets/audio/sfx/hall_impulse.wav'
+    );
+
+    load.audio(ASSET_KEYS.SOUND_BATTLE, 'assets/audio/battle.ogg');
+    load.audio(ASSET_KEYS.SOUND_BACKGROUND, 'assets/audio/background.ogg');
   }
 
   static loadEnvironment(scene: Scene, environmentName: string): void {

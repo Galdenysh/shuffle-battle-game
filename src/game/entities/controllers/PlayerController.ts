@@ -3,6 +3,7 @@ import { Player } from '../abstract';
 import { ComboManager, InputManager } from '../manages';
 import type { AbilityRecord, Combo } from '../types';
 import { Abilities, Direction } from '@/types';
+import { ASSET_KEYS } from '@/game/constants';
 
 export class PlayerController {
   private player: Player | null = null;
@@ -137,6 +138,12 @@ export class PlayerController {
     this.abilityHistory.length = 0;
   }
 
+  private playSound(key: string, volume: number = 0.5): void {
+    if (!this.player) return;
+
+    this.player.scene.sound.play(key, { volume });
+  }
+
   private showComboEffect(combo: Combo, points: number | null): void {
     if (!this.player) return;
 
@@ -175,5 +182,7 @@ export class PlayerController {
 
     scene.cameras.main.flash(150, 100, 150, 255);
     scene.cameras.main.shake(300, 0.01);
+
+    this.playSound(ASSET_KEYS.SFX_COMBO_SUCCESS)
   }
 }

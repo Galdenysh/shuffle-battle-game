@@ -11,6 +11,12 @@ export const ASSET_KEYS = {
   ENV_COLLISION_TILES: 'collision_tiles',
   ENV_COLLISION_MAP: 'collision_map',
 
+  // Audio
+  SFX_COMBO_SUCCESS: 'combo_success',
+  SFX_HALL_IMPULSE: 'hall_impulse',
+  SOUND_BATTLE: 'sound_battle',
+  SOUND_BACKGROUND: 'sound_background',
+
   // Characters
   CHAR_MC_MAN: 'character_mc_man',
   CHAR_SHUFFLER_MAN: 'character_shuffler_man',
