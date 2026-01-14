@@ -162,7 +162,7 @@ export const ModalContent: FC<{
   className?: string;
 }> = ({ children, className }) => {
   return (
-    <div className={cn('flex flex-col flex-1 p-8 md:p-10', className)}>
+    <div className={cn('flex flex-col flex-1 p-4 md:p-5', className)}>
       {children}
     </div>
   );
@@ -173,7 +173,7 @@ export const ModalFooter: FC<{
   className?: string;
 }> = ({ children, className }) => {
   return (
-    <div className={cn('flex justify-end p-4', className)}>{children}</div>
+    <div className={cn('flex justify-end p-4 md:p-5', className)}>{children}</div>
   );
 };
 

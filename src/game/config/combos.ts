@@ -5,34 +5,6 @@ import type { Combo } from '../entities';
 
 export const combos: Combo[] = [
   {
-    id: 'basic_left',
-    name: 'База влево',
-    pattern: [
-      Abilities.RUNNING_MAN,
-      Abilities.T_STEP_LEFT,
-      Abilities.RUNNING_MAN,
-    ],
-    baseScore: 150,
-    difficulty: 2,
-    timeLimit: 2200,
-    multiplier: 1.2,
-    description: 'Running Man → T-Step Left → Running Man',
-  },
-  {
-    id: 'basic_right',
-    name: 'База вправо',
-    pattern: [
-      Abilities.RUNNING_MAN,
-      Abilities.T_STEP_RIGHT,
-      Abilities.RUNNING_MAN,
-    ],
-    baseScore: 150,
-    difficulty: 2,
-    timeLimit: 2200,
-    multiplier: 1.2,
-    description: 'Running Man → T-Step Right → Running Man',
-  },
-  {
     id: 't_shuffle',
     name: 'T-Шаффл',
     pattern: [
@@ -58,8 +30,22 @@ export const combos: Combo[] = [
     baseScore: 120,
     difficulty: 1,
     timeLimit: 2600,
-    multiplier: 1.3,
+    multiplier: 1.2,
     description: 'Три Running Man подряд',
+  },
+  {
+    id: 'basic_left',
+    name: 'База',
+    pattern: [
+      Abilities.RUNNING_MAN,
+      Abilities.T_STEP_RIGHT,
+      Abilities.RUNNING_MAN,
+    ],
+    baseScore: 150,
+    difficulty: 2,
+    timeLimit: 2200,
+    multiplier: 1.3,
+    description: 'Running Man → T-Step Right → Running Man',
   },
   {
     id: 'mixed_combo',

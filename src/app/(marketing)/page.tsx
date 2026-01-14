@@ -17,6 +17,7 @@ import {
   ModalContent,
   ModalFooter,
 } from '@/components/ui';
+import { TutorialModalContent } from '@/components/shared';
 
 export default function MarketingPage() {
   const router = useRouter();
@@ -125,14 +126,8 @@ export default function MarketingPage() {
                 Инструкция к битве
               </MenuGhostButton>
             </ModalTrigger>
-
             <ModalBody>
-              <ModalContent>
-                <h2 className="text-2xl md:text-3xl text-cyan-400 font-mono uppercase mb-4 text-center">
-                  Правила боя
-                </h2>
-              </ModalContent>
-
+              <TutorialModalContent />
               <ModalFooter className="gap-4">
                 <MenuButton fullWidth className="bg-cyan-500/20">
                   ПОНЯТНО
