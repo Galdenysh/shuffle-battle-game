@@ -16,7 +16,7 @@ interface MenuInputProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const inputClasses = {
-  base: 'h-14 px-5 bg-black/60 backdrop-blur-md border-2 text-cyan-100/90 font-mono text-base tracking-wider placeholder-cyan-400/50 transition-all duration-300',
+  base: 'h-14 px-5 bg-black/60 border-2 text-cyan-100/90 font-mono text-base tracking-wider placeholder-cyan-400/50 transition-all duration-300',
   focus:
     'focus:outline-none focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(0,255,255,0.4),inset_0_0_10px_rgba(0,255,255,0.1)]',
   error: 'border-red-500/70 shadow-[0_0_15px_rgba(255,0,0,0.3)]',

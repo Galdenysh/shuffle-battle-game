@@ -144,7 +144,7 @@ export class MusicManager {
   private connectReverb(sound: PhaserAudio) {
     if (this.reverbNode && sound instanceof Sound.WebAudioSound) {
       try {
-        const volumeNode = sound.volumeNode as GainNode;
+        const volumeNode = sound.volumeNode
 
         if (volumeNode) {
           volumeNode.disconnect();

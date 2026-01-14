@@ -159,7 +159,12 @@ export class MainScene extends Scene {
       return;
     }
 
-    this.playerController?.update();
+    if (this.gameManager?.isActive || this.gameManager?.isReady) {
+      this.playerController?.update();
+    } else {
+      this.player?.stopMovement();
+    }
+
     this.player?.updateDepth();
   }
 

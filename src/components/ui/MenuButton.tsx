@@ -17,7 +17,7 @@ const buttonClasses = {
   hover:
     'hover:border-cyan-300 hover:text-white hover:shadow-[0_0_25px_rgba(0,255,255,0.6),inset_0_0_20px_rgba(0,255,255,0.1)]',
   active:
-    'active:scale-[0.98] active:shadow-[0_0_15px_rgba(0,255,255,0.4),inset_0_0_15px_rgba(0,0,0,0.3)]',
+    'active:shadow-[0_0_15px_rgba(0,255,255,0.4),inset_0_0_15px_rgba(0,0,0,0.3)]',
   focus:
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black',
   disabled:
@@ -47,8 +47,8 @@ export const MenuButton: FC<ButtonProps> = (props) => {
         className
       )}
       type="submit"
-      whileHover={{ scale: 1.03 }}
-      whileTap={{ scale: 0.97 }}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
       onClick={onClick}
       disabled={disabled}
       {...other}

@@ -6,7 +6,12 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { BackgroundParticles } from './components';
-import { MenuButton, MenuInput, MenuTitle } from '@/components/ui';
+import {
+  MenuButton,
+  MenuInput,
+  MenuGhostButton,
+  MenuTitle,
+} from '@/components/ui';
 
 export default function MarketingPage() {
   const router = useRouter();
@@ -66,7 +71,7 @@ export default function MarketingPage() {
 
         <motion.form
           className={cn(
-            'flex flex-col p-8 gap-8 bg-black/60 backdrop-blur-xl border-2 shadow-[0_0_40px_rgba(147,51,234,0.2),0_0_20px_rgba(0,255,255,0.1)]',
+            'flex flex-col items-center p-8 gap-8 bg-black/60 backdrop-blur-xl border-2 shadow-[0_0_40px_rgba(147,51,234,0.2),0_0_20px_rgba(0,255,255,0.1)]',
             '[border-image:linear-gradient(to_bottom_right,theme(colors.purple.500/0.3),theme(colors.cyan.500/0.3))_1]'
           )}
           initial={{ opacity: 0, scale: 0.95 }}
@@ -79,12 +84,14 @@ export default function MarketingPage() {
             errorHint={error}
             placeholder="Например: SHUFFLE_MASTER"
             value={playerName}
+            fullWidth
             onChange={handleNameChange}
           />
 
           <MenuButton
             disabled={isLoading}
             loading={isLoading}
+            fullWidth
             onClick={handleStartGame}
           >
             {!isLoading && (
@@ -104,6 +111,9 @@ export default function MarketingPage() {
               {isLoading ? 'Запуск игры...' : 'Начать игру'}
             </span>
           </MenuButton>
+          <MenuGhostButton className="uppercase">
+            Инструкция к битве
+          </MenuGhostButton>
         </motion.form>
       </div>
     </div>

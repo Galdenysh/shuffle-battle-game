@@ -5,6 +5,7 @@ export { default as ArrowIcons } from './ArrowIcons';
 export { default as ErrorIcon } from './ErrorIcon';
 export { default as ShowHideIcon } from './ShowHideIcon';
 export { default as MenuButton } from './MenuButton';
+export { default as MenuGhostButton } from './MenuGhostButton';
 export { default as MenuInput } from './MenuInput';
 export { default as MenuTitle } from './MenuTitle';
 export { default as ScoreDisplay } from './ScoreDisplay';
