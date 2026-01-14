@@ -11,6 +11,11 @@ import {
   MenuInput,
   MenuGhostButton,
   MenuTitle,
+  Modal,
+  ModalTrigger,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
 } from '@/components/ui';
 
 export default function MarketingPage() {
@@ -71,8 +76,8 @@ export default function MarketingPage() {
 
         <motion.form
           className={cn(
-            'flex flex-col items-center p-8 gap-8 bg-black/60 backdrop-blur-xl border-2 shadow-[0_0_40px_rgba(147,51,234,0.2),0_0_20px_rgba(0,255,255,0.1)]',
-            '[border-image:linear-gradient(to_bottom_right,theme(colors.purple.500/0.3),theme(colors.cyan.500/0.3))_1]'
+            'flex flex-col items-center p-8 gap-8 bg-black/60 backdrop-blur-xl shadow-[0_0_40px_rgba(147,51,234,0.2),0_0_20px_rgba(0,255,255,0.1)]',
+            'border-2 [border-image:linear-gradient(to_bottom_right,theme(colors.purple.500/0.3),theme(colors.cyan.500/0.3))_1]'
           )}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -111,9 +116,28 @@ export default function MarketingPage() {
               {isLoading ? 'Запуск игры...' : 'Начать игру'}
             </span>
           </MenuButton>
-          <MenuGhostButton className="uppercase">
-            Инструкция к битве
-          </MenuGhostButton>
+
+          <Modal>
+            <ModalTrigger>
+              <MenuGhostButton className="uppercase">
+                Инструкция к битве
+              </MenuGhostButton>
+            </ModalTrigger>
+
+            <ModalBody>
+              <ModalContent>
+                <h2 className="text-2xl md:text-3xl text-cyan-400 font-mono uppercase mb-4 text-center">
+                  Правила боя
+                </h2>
+              </ModalContent>
+
+              <ModalFooter className="gap-4">
+                <MenuButton fullWidth className="bg-cyan-500/20">
+                  ПОНЯТНО
+                </MenuButton>
+              </ModalFooter>
+            </ModalBody>
+          </Modal>
         </motion.form>
       </div>
     </div>

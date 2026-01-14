@@ -10,4 +10,4 @@ export { default as MenuInput } from './MenuInput';
 export { default as MenuTitle } from './MenuTitle';
 export { default as ScoreDisplay } from './ScoreDisplay';
 export { default as LevelControls } from './LevelControls';
-
+export * from './AnimatedModal';
