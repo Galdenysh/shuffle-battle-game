@@ -117,7 +117,7 @@ export const ModalBody: FC<{
 
           <motion.div
             className={cn(
-              'relative z-50 overflow-scroll',
+              'relative z-50',
               'flex flex-col flex-1  min-h-[50%] max-h-[90%] md:max-w-[40%]',
               'bg-gradient-to-br from-gray-900 via-black to-gray-900',
               'border-2 [border-image:linear-gradient(to_bottom_right,theme(colors.purple.500/0.3),theme(colors.cyan.500/0.3))_1]',
@@ -162,7 +162,7 @@ export const ModalContent: FC<{
   className?: string;
 }> = ({ children, className }) => {
   return (
-    <div className={cn('flex flex-col flex-1 p-4 md:p-5', className)}>
+    <div className={cn('flex flex-col flex-1 p-4 md:p-5 overflow-scroll', className)}>
       {children}
     </div>
   );

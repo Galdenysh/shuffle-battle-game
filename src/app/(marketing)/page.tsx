@@ -5,19 +5,8 @@ import type { ChangeEvent, MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { BackgroundParticles } from './components';
-import {
-  MenuButton,
-  MenuInput,
-  MenuGhostButton,
-  MenuTitle,
-  Modal,
-  ModalTrigger,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-} from '@/components/ui';
-import { TutorialModalContent } from '@/components/shared';
+import { BackgroundParticles, TutorialModalBody } from './components';
+import { MenuButton, MenuInput, MenuTitle, Modal } from '@/components/ui';
 
 export default function MarketingPage() {
   const router = useRouter();
@@ -121,19 +110,7 @@ export default function MarketingPage() {
           </MenuButton>
 
           <Modal>
-            <ModalTrigger>
-              <MenuGhostButton className="uppercase">
-                Инструкция к битве
-              </MenuGhostButton>
-            </ModalTrigger>
-            <ModalBody>
-              <TutorialModalContent />
-              <ModalFooter className="gap-4">
-                <MenuButton fullWidth className="bg-cyan-500/20">
-                  ПОНЯТНО
-                </MenuButton>
-              </ModalFooter>
-            </ModalBody>
+            <TutorialModalBody />
           </Modal>
         </motion.form>
       </div>
