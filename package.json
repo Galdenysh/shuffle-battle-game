@@ -1,6 +1,6 @@
 {
   "name": "shuffle-battle-game",
-  "version": "1.2.0",
+  "version": "1.0.0",
   "description": "Shuffle Battle Game",
   "repository": {
     "type": "git",
@@ -13,14 +13,7 @@
     "url": "https://github.com/Galdenysh/shuffle-battle-game/issues"
   },
   "homepage": "https://github.com/Galdenysh/shuffle-battle-game",
-  "keywords": [
-    "phaser",
-    "phaser3",
-    "next",
-    "nextjs",
-    "vite",
-    "typescript"
-  ],
+  "keywords": ["phaser", "phaser3", "next", "nextjs", "vite", "typescript"],
   "scripts": {
     "dev": "node log.js dev & next dev -p 8080",
     "build": "node log.js build & next build",
