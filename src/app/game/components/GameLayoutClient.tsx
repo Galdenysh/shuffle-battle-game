@@ -30,7 +30,7 @@ const GameLayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
     };
   }, []);
 
-  return <div>{children}</div>;
+  return <div className="h-dvh w-full">{children}</div>;
 };
 
 GameLayoutClient.displayName = 'GameLayoutClient';

@@ -2,6 +2,7 @@
 
 import React, { useCallback, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { LoadingScreen } from './components';
 import { useGameLoader } from '@/hooks';
@@ -40,7 +41,12 @@ export default function GamePage() {
   }, []);
 
   return (
-    <div className={cn('bg-gradient-to-br from-gray-900 to-black')}>
+    <div
+      className={cn(
+        'relative flex flex-col items-center justify-center w-full min-h-full',
+        'bg-gradient-to-br from-gray-900 to-black'
+      )}
+    >
       <LoadingScreen
         progress={progress}
         message={message}
@@ -48,15 +54,12 @@ export default function GamePage() {
         onLoaded={handleLoaded}
       />
 
-      <div
-        className={cn(
-          'relative flex align-center justify-center h-screen transition-opacity duration-300',
-          showGame ? 'opacity-100' : 'opacity-0'
-        )}
+      <motion.div
+        animate={{ opacity: showGame ? 1 : 0 }}
       >
         <GameInterface onReady={handleReadyInterface} />
         <PhaserGame onReady={handleReadyGame} />
-      </div>
+      </motion.div>
     </div>
   );
 }

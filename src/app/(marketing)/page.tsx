@@ -62,7 +62,8 @@ export default function MarketingPage() {
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center p-4 min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white'
+        'flex flex-col items-center justify-center w-full min-h-full p-4',
+        'bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white'
       )}
     >
       <BackgroundParticles />
@@ -76,7 +77,8 @@ export default function MarketingPage() {
 
         <motion.form
           className={cn(
-            'flex flex-col items-center p-8 gap-8 bg-black/60 backdrop-blur-xl shadow-[0_0_40px_rgba(147,51,234,0.2),0_0_20px_rgba(0,255,255,0.1)]',
+            'flex flex-col items-center p-8 gap-8',
+            'bg-black/60 backdrop-blur-xl shadow-[0_0_40px_rgba(147,51,234,0.2),0_0_20px_rgba(0,255,255,0.1)]',
             'border-2 [border-image:linear-gradient(to_bottom_right,theme(colors.purple.500/0.3),theme(colors.cyan.500/0.3))_1]'
           )}
           initial={{ opacity: 0, scale: 0.95 }}
