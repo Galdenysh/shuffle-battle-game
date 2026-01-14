@@ -3,6 +3,7 @@ export { default as ControlButton } from './ControlButton';
 export { default as Controls } from './Controls';
 export { default as ArrowIcons } from './ArrowIcons';
 export { default as ErrorIcon } from './ErrorIcon';
+export { default as RulesIcon } from './RulesIcon';
 export { default as ShowHideIcon } from './ShowHideIcon';
 export { default as MenuButton } from './MenuButton';
 export { default as MenuGhostButton } from './MenuGhostButton';

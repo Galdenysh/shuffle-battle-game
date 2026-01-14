@@ -1,14 +1,7 @@
 import React from 'react';
 import type { FC } from 'react';
-import { TutorialModalContent } from '@/components/shared';
-import {
-  MenuButton,
-  MenuGhostButton,
-  ModalBody,
-  ModalFooter,
-  ModalTrigger,
-  useModal,
-} from '@/components/ui';
+import { MenuButton, ModalBody, ModalFooter, useModal } from '@/components/ui';
+import TutorialModalContent from './TutorialModalContent';
 
 export const TutorialModalBody: FC = () => {
   const { setOpen } = useModal();
@@ -19,11 +12,6 @@ export const TutorialModalBody: FC = () => {
 
   return (
     <>
-      <ModalTrigger>
-        <MenuGhostButton className="uppercase">
-          Инструкция к битве
-        </MenuGhostButton>
-      </ModalTrigger>
       <ModalBody>
         <TutorialModalContent />
         <ModalFooter>

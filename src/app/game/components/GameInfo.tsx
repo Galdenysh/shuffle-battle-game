@@ -4,7 +4,8 @@ import React, { useEffect } from 'react';
 import type { FC } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { ShowHideIcon } from '@/components/ui';
+import { Modal, ModalTrigger, RulesIcon, ShowHideIcon } from '@/components/ui';
+import { TutorialModalBody } from '@/components/shared';
 import { EmitEvents } from '@/types';
 import { EventBus } from '@/game/core';
 
@@ -37,7 +38,7 @@ const GameInfo: FC<GameInfoProps> = ({
     router.push('/');
   };
 
-  const handleVisible = () => {
+  const handleVisibleGamepad = () => {
     onVisibleGamepad?.(!isVisibleGamepad);
   };
 
@@ -63,6 +64,27 @@ const GameInfo: FC<GameInfoProps> = ({
         </span>
       </div>
       <div className="h-3 w-px bg-purple-600/50" />
+      <Modal>
+        <ModalTrigger>
+          <button
+            className={cn(
+              buttonClasses.base,
+              buttonClasses.baseIcon,
+              buttonClasses.hover,
+              buttonClasses.active,
+              buttonClasses.focus,
+              buttonClasses.disabled
+            )}
+            type="button"
+            title="Инструкция к битве"
+            aria-label="Инструкция к битве"
+          >
+            <RulesIcon />
+          </button>
+        </ModalTrigger>
+        <TutorialModalBody />
+      </Modal>
+
       <button
         className={cn(
           buttonClasses.base,
@@ -75,8 +97,8 @@ const GameInfo: FC<GameInfoProps> = ({
         type="button"
         title={`${toggleText} кнопки управления`}
         aria-label={`${toggleText} кнопки управления`}
-        onClick={handleVisible}
-        onTouchStart={handleVisible}
+        onClick={handleVisibleGamepad}
+        onTouchStart={handleVisibleGamepad}
       >
         <ShowHideIcon isShow={isVisibleGamepad} />
       </button>

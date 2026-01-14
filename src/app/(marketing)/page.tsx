@@ -5,8 +5,16 @@ import type { ChangeEvent, MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { BackgroundParticles, TutorialModalBody } from './components';
-import { MenuButton, MenuInput, MenuTitle, Modal } from '@/components/ui';
+import { BackgroundParticles } from './components';
+import {
+  MenuButton,
+  MenuGhostButton,
+  MenuInput,
+  MenuTitle,
+  Modal,
+  ModalTrigger,
+} from '@/components/ui';
+import { TutorialModalBody } from '@/components/shared';
 
 export default function MarketingPage() {
   const router = useRouter();
@@ -110,6 +118,11 @@ export default function MarketingPage() {
           </MenuButton>
 
           <Modal>
+            <ModalTrigger>
+              <MenuGhostButton className="uppercase">
+                Инструкция к битве
+              </MenuGhostButton>
+            </ModalTrigger>
             <TutorialModalBody />
           </Modal>
         </motion.form>
