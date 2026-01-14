@@ -24,6 +24,11 @@ import type {
 import { combos } from '../config';
 import { Direction, GameCommand, GameState } from '@/types';
 import { ASSET_KEYS } from '../constants';
+import {
+  END_GAME_MESSAGES,
+  READY_GAME_MESSAGES,
+  START_GAME_MESSAGES,
+} from '../dialogues';
 
 export class MainScene extends Scene {
   private background: DanceFloor | null = null;
@@ -130,15 +135,7 @@ export class MainScene extends Scene {
       this.gameManager?.start();
       this.dialogueBox?.closeDialog();
 
-      if (this.host) {
-        this.dialogueBox = new DialogueBox(
-          this,
-          this.host,
-          'И-и пять! Шесть! Семь! Восемь!',
-          'MC',
-          { delayHide: 5000 }
-        );
-      }
+      this.createHostStartDialog();
 
       this.musicManager?.playBattleMusic(ASSET_KEYS.SOUND_BATTLE, 0.15);
     });
@@ -212,12 +209,29 @@ export class MainScene extends Scene {
 
     if (!this.scene.isActive()) return;
 
-    const message = `${
-      playerName ?? 'Шаффлер'
-    }, жду в центре! Готов скользить или пока разомнешься?`;
+    const name = playerName ?? 'Шаффлер';
+
+    const randomGreetingFn =
+      READY_GAME_MESSAGES[
+        Math.floor(Math.random() * READY_GAME_MESSAGES.length)
+      ];
+
+    const message = randomGreetingFn(name);
 
     this.dialogueBox = new DialogueBox(this, this.host, message, 'MC', {
       delayShow: 1000,
+    });
+  }
+
+  private createHostStartDialog() {
+    if (!this.host) return;
+
+    const startCalls = START_GAME_MESSAGES;
+
+    const message = startCalls[Math.floor(Math.random() * startCalls.length)];
+
+    this.dialogueBox = new DialogueBox(this, this.host, message, 'MC', {
+      delayHide: 5000,
     });
   }
 
@@ -226,21 +240,25 @@ export class MainScene extends Scene {
 
     const score = this.gameManager?.totalScore;
 
-    let message: string = '';
+    this.dialogueBox = new DialogueBox(
+      this,
+      this.host,
+      this.getRandomMessage(score),
+      'MC'
+    );
+  }
 
-    if (score === undefined) {
-      message = 'Время вышло, раунд окончен!';
-    } else if (score >= 3000) {
-      message = 'Настоящий пожар! Ты бог шаффла! Твои ноги просто летали.';
-    } else if (score >= 2000) {
-      message = 'Мощно! Твои Т-степы на высоте. Ты почти непобедим!';
-    } else if (score >= 1000) {
-      message = 'Хороший раунд! Техника на месте. Добавь огня в движения!';
-    } else {
-      message = 'Ноги запутались? Тренируй Running Man и возвращайся!';
-    }
+  private getRandomMessage(score?: number): string {
+    const messages = END_GAME_MESSAGES;
 
-    this.dialogueBox = new DialogueBox(this, this.host, message, 'MC');
+    const pick = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
+
+    if (score === undefined) return pick(messages.timeout);
+    if (score >= 3000) return pick(messages.god);
+    if (score >= 2000) return pick(messages.power);
+    if (score >= 1000) return pick(messages.good);
+
+    return pick(messages.tryAgain);
   }
 
   private cleanup() {

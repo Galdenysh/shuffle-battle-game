@@ -85,9 +85,9 @@ export default function MarketingPage() {
         >
           <MenuInput
             id="playerName"
-            label="Введи своё игровое имя"
+            label="Укажи свой Shuffle ID"
             errorHint={error}
-            placeholder="Например: SHUFFLE_MASTER"
+            placeholder="Например: NEON_STEPPER_01"
             value={playerName}
             fullWidth
             onChange={handleNameChange}

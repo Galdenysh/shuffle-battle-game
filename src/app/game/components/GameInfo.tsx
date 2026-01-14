@@ -32,7 +32,7 @@ const GameInfo: FC<GameInfoProps> = ({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const playerName = searchParams.get('player') || 'Игрок';
+  const playerName = searchParams.get('player') || 'Шаффлер';
 
   const handleExit = () => {
     router.push('/');
