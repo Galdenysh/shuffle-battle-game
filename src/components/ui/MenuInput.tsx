@@ -65,7 +65,6 @@ export const MenuInput: FC<MenuInputProps> = (props) => {
           value={value}
           onChange={onChange}
           placeholder={placeholder}
-          autoFocus
           autoComplete="off"
           maxLength={VALUE_MAX_LENGTH}
           aria-invalid={!!errorHint}
