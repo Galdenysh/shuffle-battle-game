@@ -6,7 +6,11 @@ import bridge from '@vkontakte/vk-bridge';
 
 const VKProvider: FC = () => {
   useEffect(() => {
-    bridge.send('VKWebAppInit');
+    const isVk = bridge.isEmbedded();
+
+    if (isVk) {
+      bridge.send('VKWebAppInit');
+    }
   }, []);
 
   return null;
@@ -15,4 +19,3 @@ const VKProvider: FC = () => {
 VKProvider.displayName = 'VKProvider';
 
 export default VKProvider;
-
