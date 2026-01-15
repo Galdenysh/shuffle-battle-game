@@ -22,17 +22,6 @@ export abstract class Background extends GameObjects.Sprite {
     this.setPosition(scene.cameras.main.centerX, scene.cameras.main.centerY);
 
     scene.add.existing(this);
-
-    this.setupBackground();
-    this.setupForeground();
-    this.setupAnimations();
-    this.setDepth(config.animationDepth);
-    this.setupPhysic();
-
-    this.playSafe(
-      `${this.config.textureSritesheetKey}_${config.animationKey}`,
-      true
-    );
   }
 
   protected addImage(textureKey: string): GameObjects.Image {
@@ -80,6 +69,19 @@ export abstract class Background extends GameObjects.Sprite {
   protected abstract setupAnimations(): void;
 
   protected abstract setupPhysic(): void;
+
+  protected initBackground() {
+    this.setupBackground();
+    this.setupForeground();
+    this.setupAnimations();
+    this.setDepth(this.config.animationDepth);
+    this.setupPhysic();
+
+    this.playSafe(
+      `${this.config.textureSritesheetKey}_${this.config.animationKey}`,
+      true
+    );
+  }
 
   private playSafe(key: string, ignoreIfPlaying?: boolean): void {
     const cachedTime = this.missingAnimCache.get(key);

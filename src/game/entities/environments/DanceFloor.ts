@@ -16,7 +16,7 @@ export class DanceFloor extends Background {
     animationDepth: 0,
   };
 
-  private wallsLayer: Tilemaps.TilemapLayer | null;
+  private wallsLayer: Tilemaps.TilemapLayer | null = null;
 
   constructor(
     scene: Scene,
@@ -25,6 +25,8 @@ export class DanceFloor extends Background {
     customConfig?: Partial<BackgroundConfig>
   ) {
     super(scene, x, y, { ...DanceFloor.DEFAULT_CONFIG, ...customConfig });
+
+    this.initBackground();
   }
 
   public getConfig(): BackgroundConfig {

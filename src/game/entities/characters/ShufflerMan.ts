@@ -91,6 +91,8 @@ export class ShufflerMan extends Player {
     customConfig?: Partial<PlayerConfig>
   ) {
     super(scene, x, y, { ...ShufflerMan.DEFAULT_CONFIG, ...customConfig });
+
+    this.initPlayer()
   }
 
   public getConfig(): PlayerConfig {

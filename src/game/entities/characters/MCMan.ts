@@ -91,6 +91,8 @@ export class MCMan extends Player {
     customConfig?: Partial<PlayerConfig>
   ) {
     super(scene, x, y, { ...MCMan.DEFAULT_CONFIG, ...customConfig });
+
+    this.initPlayer()
   }
 
   public getConfig(): PlayerConfig {

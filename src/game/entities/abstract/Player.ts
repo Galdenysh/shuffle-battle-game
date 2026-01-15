@@ -25,14 +25,6 @@ export abstract class Player extends Physics.Arcade.Sprite {
 
     scene.add.existing(this);
     scene.physics.add.existing(this, false);
-
-    this.setupIdleAnimations();
-    this.setupWalkAnimations();
-    this.setupRunningManAnimations();
-    this.setupTStepLeftAnimations();
-    this.setupTStepRightAnimations();
-    this.setupPhysics();
-    this.playIdleAnimation();
   }
 
   public updateDepth(): void {
@@ -308,6 +300,16 @@ export abstract class Player extends Physics.Arcade.Sprite {
   protected abstract setupTStepLeftAnimations(): void;
 
   protected abstract setupTStepRightAnimations(): void;
+
+  protected initPlayer(): void {
+    this.setupIdleAnimations();
+    this.setupWalkAnimations();
+    this.setupRunningManAnimations();
+    this.setupTStepLeftAnimations();
+    this.setupTStepRightAnimations();
+    this.setupPhysics();
+    this.playIdleAnimation();
+  }
 
   private playIdleAnimation(): void {
     this.playSafe(
