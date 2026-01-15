@@ -16,8 +16,8 @@ export const config: Types.Core.GameConfig = {
   scale: {
     mode: Scale.FIT,
     autoCenter: Scale.CENTER_BOTH,
-    min: { width: BASE_WIDTH, height: BASE_HEIGHT },
-    max: { width: BASE_WIDTH * 2, height: BASE_HEIGHT * 2 },
+    width: BASE_WIDTH,
+    height: BASE_HEIGHT,
     expandParent: false,
     zoom: 1,
   },
@@ -60,4 +60,3 @@ export const config: Types.Core.GameConfig = {
 
   autoRound: true,
 };
-

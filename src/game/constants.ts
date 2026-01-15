@@ -1,7 +1,7 @@
 import type { CharacterType } from './entities';
 
-export const BASE_WIDTH = 360;
-export const BASE_HEIGHT = 640;
+export const BASE_WIDTH = 720;
+export const BASE_HEIGHT = 1280;
 
 export const ASSET_KEYS = {
   // Environment

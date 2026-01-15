@@ -75,7 +75,9 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
 
     // Обработка current-scene-ready
     useEffect(() => {
-      const handleSceneReady = ({ scene }: CurrentSceneReadyEvent['payload']) => {
+      const handleSceneReady = ({
+        scene,
+      }: CurrentSceneReadyEvent['payload']) => {
         if (currentActiveScene && typeof currentActiveScene === 'function') {
           currentActiveScene(scene);
         }
@@ -110,7 +112,7 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
     return (
       <div
         id="phaser-game"
-        className="z-10 opacity-0 transition-opacity duration-300 pointer-events-none"
+        className="h-dvh w-dvw z-10 opacity-0 transition-opacity duration-300 pointer-events-none"
         ref={setRef}
       ></div>
     );

@@ -43,7 +43,7 @@ export default function GamePage() {
   return (
     <div
       className={cn(
-        'relative flex flex-col items-center justify-center w-full min-h-full',
+        'w-dvw h-dvh overflow-hidden flex items-center justify-center',
         'bg-gradient-to-br from-gray-900 to-black'
       )}
     >
@@ -56,6 +56,7 @@ export default function GamePage() {
 
       <motion.div
         animate={{ opacity: showGame ? 1 : 0 }}
+        className="relative w-full h-full flex items-center justify-center"
       >
         <GameInterface onReady={handleReadyInterface} />
         <PhaserGame onReady={handleReadyGame} />
