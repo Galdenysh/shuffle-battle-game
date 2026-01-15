@@ -144,6 +144,12 @@ export class MainScene extends Scene {
 
     EventBus.emit(EmitEvents.CURRENT_SCENE_READY, { scene: this });
 
+    this.cameras.main.fadeIn(500, 0, 0, 0);
+
+    this.cameras.main.once('camerafadeincomplete', () => {
+      EventBus.emit(EmitEvents.SCENE_VISIBLE, { isVisible: true });
+    });
+
     this.events.once('shutdown', this.cleanup, this);
     this.events.once('destroy', this.cleanup, this);
   }
@@ -172,8 +178,6 @@ export class MainScene extends Scene {
 
     this.load.on('complete', () => {
       console.log('✅ Все ассеты загружены!');
-
-      EventBus.emit(EmitEvents.SCENE_VISIBLE, { isVisible: true });
     });
   }
 

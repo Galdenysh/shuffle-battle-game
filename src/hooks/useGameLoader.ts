@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 
 interface LoadingState {
-  hud: boolean;
-  game: boolean;
+  hudMounted: boolean;
+  gameMounted: boolean;
   eventBus: boolean;
+  gameReady: boolean;
 }
 
 interface UseGameLoaderProps {
@@ -14,9 +15,10 @@ interface UseGameLoaderProps {
 
 export function useGameLoader({ onComplete }: UseGameLoaderProps) {
   const [loadingState, setLoadingState] = useState<LoadingState>({
-    hud: false,
-    game: false,
+    hudMounted: false,
+    gameMounted: false,
     eventBus: false,
+    gameReady: false,
   });
 
   const [isLoading, setIsLoading] = useState(true);
@@ -27,37 +29,32 @@ export function useGameLoader({ onComplete }: UseGameLoaderProps) {
     setLoadingState((prev) => ({ ...prev, ...updates }));
   };
 
-  const calculateTotalProgress = () => {
-    const totalSteps = 3; // hud, game, eventBus
-    const completedSteps = Object.values(loadingState).filter(Boolean).length;
+  const calculateTotalProgress = (state: LoadingState) => {
+    const steps = Object.values(state);
+    const completed = steps.filter(Boolean).length;
 
-    return Math.floor((completedSteps / totalSteps) * 100);
+    return Math.floor((completed / steps.length) * 100);
   };
 
   const updateMessage = (state: LoadingState) => {
-    if (!state.game) {
-      setMessage('Загрузка игрового движка...');
-    } else if (!state.hud) {
+    if (!state.hudMounted || !state.gameMounted) {
       setMessage('Загрузка игрового интерфейса...');
     } else if (!state.eventBus) {
-      setMessage('Загрузка событий и ресурсов...');
+      setMessage('Загрузка системы событий...');
+    } else if (!state.gameReady) {
+      setMessage('Загрузка игровых ресурсов...');
+    } else if (state.gameReady){
+      setMessage('Готово! Запуск игры...');
     }
   };
 
-  const activateEventBus = async (timer: NodeJS.Timeout | null) => {
+  const activateEventBus = async () => {
     try {
       const { EventBus } = await import('@/game/core');
 
       EventBus.ready();
 
       updateProgress({ eventBus: true });
-      setMessage('Готово! Запуск игры...');
-
-      timer = setTimeout(() => {
-        setIsLoading(false);
-
-        onComplete?.();
-      }, 500); // Задержка для плавности
     } catch (error) {
       console.error('❌ Ошибка загрузки EventBus:', error);
 
@@ -67,32 +64,57 @@ export function useGameLoader({ onComplete }: UseGameLoaderProps) {
 
   // Обновляем прогресс и сообщение при изменении состояния
   useEffect(() => {
-    const currentProgress = calculateTotalProgress();
+    const currentProgress = calculateTotalProgress(loadingState);
 
     setProgress(currentProgress);
     updateMessage(loadingState);
-  }, [loadingState.hud, loadingState.game, loadingState.eventBus]);
+  }, [
+    loadingState.hudMounted,
+    loadingState.gameMounted,
+    loadingState.eventBus,
+    loadingState.gameReady,
+  ]);
 
   // Активируем EventBus когда оба компонента готовы
   useEffect(() => {
-    let timer: NodeJS.Timeout | null = null;
-
-    if (loadingState.hud && loadingState.game && !loadingState.eventBus) {
-      activateEventBus(timer);
+    if (
+      loadingState.hudMounted &&
+      loadingState.gameMounted &&
+      !loadingState.eventBus
+    ) {
+      activateEventBus();
     }
+  }, [
+    loadingState.hudMounted,
+    loadingState.gameMounted,
+    loadingState.eventBus,
+  ]);
 
-    return () => {
-      if (timer) clearTimeout(timer);
-    };
-  }, [loadingState.hud, loadingState.game, loadingState.eventBus]);
+  // Завершение загрузки
+  useEffect(() => {
+    if (loadingState.gameReady && loadingState.eventBus) {
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+        onComplete?.();
+      }, 300); // Небольшая пауза для плавности
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [loadingState.gameReady, loadingState.eventBus, onComplete]);
 
   // Методы для установки состояния загрузки компонентов
-  const setHUDReady = (ready: boolean) => {
-    updateProgress({ hud: ready });
+  const setHUDMounted = (isMounted: boolean) => {
+    updateProgress({ hudMounted: isMounted });
   };
 
-  const setGameReady = (ready: boolean) => {
-    updateProgress({ game: ready });
+  const setGameMounted = (isMounted: boolean) => {
+    updateProgress({ gameMounted: isMounted });
+  };
+
+  const setGameReady = (isReady: boolean) => {
+    updateProgress({ gameReady: isReady });
   };
 
   return {
@@ -100,7 +122,8 @@ export function useGameLoader({ onComplete }: UseGameLoaderProps) {
     progress,
     message,
     loadingState,
-    setHUDReady,
+    setHUDMounted,
+    setGameMounted,
     setGameReady,
   };
 }

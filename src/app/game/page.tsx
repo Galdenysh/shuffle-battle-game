@@ -18,7 +18,7 @@ const PhaserGame = dynamic(() => import('@/components/PhaserGame'), {
 export default function GamePage() {
   const [showGame, setShowGame] = useState<boolean>(false);
 
-  const { isLoading, progress, message, setHUDReady, setGameReady } =
+  const { isLoading, progress, message, setHUDMounted, setGameMounted, setGameReady } =
     useGameLoader({
       onComplete: () => {
         console.log('✅ Все компоненты загружены!');
@@ -28,12 +28,16 @@ export default function GamePage() {
   // Функции обратного вызова для управления состоянием загрузки
   // useCallback обязателен, так как функции передаются в массив зависимостей
 
-  const handleReadyInterface = useCallback((ready: boolean) => {
-    setHUDReady(ready);
+  const handleMountedInterface = useCallback((isMounted: boolean) => {
+    setHUDMounted(isMounted);
   }, []);
 
-  const handleReadyGame = useCallback((ready: boolean) => {
-    setGameReady(ready);
+  const handleMountedGame = useCallback((isMounted: boolean) => {
+    setGameMounted(isMounted);
+  }, []);
+
+  const handleReadyGame = useCallback((isReady: boolean) => {
+    setGameReady(isReady);
   }, []);
 
   const handleLoaded = useCallback(() => {
@@ -55,11 +59,14 @@ export default function GamePage() {
       />
 
       <motion.div
-        animate={{ opacity: showGame ? 1 : 0 }}
         className="relative w-full h-full flex items-center justify-center"
+        animate={{
+          opacity: showGame ? 1 : 0,
+          pointerEvents: showGame ? 'auto' : 'none',
+        }}
       >
-        <GameInterface onReady={handleReadyInterface} />
-        <PhaserGame onReady={handleReadyGame} />
+        <GameInterface onMounted={handleMountedInterface} />
+        <PhaserGame onMounted={handleMountedGame} onGameReady={handleReadyGame} />
       </motion.div>
     </div>
   );

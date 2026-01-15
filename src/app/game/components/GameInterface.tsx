@@ -7,10 +7,10 @@ import GameHUD from './GameHUD';
 import { useIsTouchDevice } from '@/hooks';
 
 interface GameInterfaceProps {
-  onReady?: (ready: boolean) => void;
+  onMounted?: (isMounted: boolean) => void;
 }
 
-const GameInterface: FC<GameInterfaceProps> = ({ onReady }) => {
+const GameInterface: FC<GameInterfaceProps> = ({ onMounted }) => {
   const [isVisibleGamepad, setIsVisibleGamepad] = useState<boolean>(true);
   const isTouch = useIsTouchDevice();
 
@@ -19,12 +19,12 @@ const GameInterface: FC<GameInterfaceProps> = ({ onReady }) => {
   };
 
   useEffect(() => {
-    onReady?.(true);
+    onMounted?.(true);
 
     return () => {
-      onReady?.(false);
+      onMounted?.(false);
     };
-  }, [onReady]);
+  }, [onMounted]);
 
   useEffect(() => {
     setIsVisibleGamepad(isTouch);

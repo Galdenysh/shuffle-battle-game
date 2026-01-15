@@ -2,16 +2,17 @@
 
 import {
   forwardRef,
-  useCallback,
   useEffect,
   useLayoutEffect,
   useRef,
+  useState,
 } from 'react';
 import type { Game, Scene } from 'phaser';
 import { EventBus } from '@/game/core';
 import StartGame from '@/game/main';
 import { EmitEvents } from '@/types';
 import type { CurrentSceneReadyEvent, SceneVisibleEvent } from '@/types';
+import { cn } from '@/lib/utils';
 
 export type RefPhaserGame = {
   game: Game | null;
@@ -20,13 +21,15 @@ export type RefPhaserGame = {
 
 interface PhaserGameProps {
   currentActiveScene?: (scene_instance: Scene) => void;
-  onReady?: (ready: boolean) => void;
+  onMounted?: (isMounted: boolean) => void;
+  onGameReady?: (isReady: boolean) => void;
 }
 
 const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
-  function PhaserGame({ currentActiveScene, onReady }, ref) {
+  function PhaserGame({ currentActiveScene, onMounted, onGameReady }, ref) {
     const gameRef = useRef<Game | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
+    const [isVisible, setIsVisible] = useState<boolean>(false);
 
     useLayoutEffect(() => {
       if (gameRef.current === null) {
@@ -57,13 +60,9 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
       if (!container) return;
 
       const handleVisible = ({ isVisible }: SceneVisibleEvent['payload']) => {
-        if (isVisible) {
-          container.classList.remove('opacity-0', 'pointer-events-none');
-          container.classList.add('opacity-100', 'pointer-events-auto');
-        } else {
-          container.classList.remove('opacity-100', 'pointer-events-auto');
-          container.classList.add('opacity-0', 'pointer-events-none');
-        }
+        setIsVisible(isVisible);
+
+        onGameReady?.(isVisible);
       };
 
       EventBus.once(EmitEvents.SCENE_VISIBLE, handleVisible);
@@ -71,7 +70,7 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
       return () => {
         EventBus.off(EmitEvents.SCENE_VISIBLE, handleVisible);
       };
-    }, []);
+    }, [containerRef.current]);
 
     // Обработка current-scene-ready
     useEffect(() => {
@@ -96,24 +95,22 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
       };
     }, [currentActiveScene, ref]);
 
-    const setRef = useCallback(
-      (node: HTMLDivElement | null) => {
-        containerRef.current = node;
+    useEffect(() => {
+      onMounted?.(true);
 
-        onReady?.(true);
-
-        return () => {
-          onReady?.(false);
-        };
-      },
-      [onReady]
-    );
+      return () => {
+        onMounted?.(false);
+      };
+    }, [onMounted]);
 
     return (
       <div
         id="phaser-game"
-        className="h-dvh w-dvw z-10 opacity-0 transition-opacity duration-300 pointer-events-none"
-        ref={setRef}
+        className={cn(
+          'h-dvh w-dvw z-10 transition-opacity duration-300',
+          isVisible ? 'pointer-events-auto' : 'pointer-events-none'
+        )}
+        ref={containerRef}
       ></div>
     );
   }
