@@ -33,7 +33,7 @@ interface GameHUDProps {
 }
 
 const containerClasses = {
-  base: 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-100 flex flex-col justify-between p-2 outline outline-2 outline-purple-500/30 outline-offset-2 transition-opacity duration-1200',
+  base: 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-100 flex flex-col justify-between p-2 outline outline-2 outline-purple-500/30 -outline-offset-2 transition-opacity duration-1200',
   visible: 'opacity-100 pointer-events-auto',
   hidden: 'opacity-0 pointer-events-none',
 } as const;
