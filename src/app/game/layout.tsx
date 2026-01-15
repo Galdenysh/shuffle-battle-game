@@ -1,4 +1,3 @@
-import React from 'react';
 import type { ReactNode } from 'react';
 import type { Metadata, Viewport } from 'next';
 import { GameLayoutClient } from './components';

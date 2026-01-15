@@ -1,4 +1,4 @@
-import React from 'react';
+
 import type { FC } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import MenuButton from './MenuButton';

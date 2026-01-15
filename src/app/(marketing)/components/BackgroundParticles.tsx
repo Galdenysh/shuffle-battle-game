@@ -1,6 +1,6 @@
 'use client';
 
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { SparklesCore } from '@/components/ui';
 import { cn } from '@/lib/utils';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, {
+import {
   cloneElement,
   createContext,
   isValidElement,
@@ -162,7 +162,12 @@ export const ModalContent: FC<{
   className?: string;
 }> = ({ children, className }) => {
   return (
-    <div className={cn('flex flex-col flex-1 p-4 md:p-5 overflow-scroll', className)}>
+    <div
+      className={cn(
+        'flex flex-col flex-1 p-4 md:p-5 overflow-scroll overscroll-contain',
+        className
+      )}
+    >
       {children}
     </div>
   );
@@ -173,12 +178,18 @@ export const ModalFooter: FC<{
   className?: string;
 }> = ({ children, className }) => {
   return (
-    <div className={cn('flex justify-end p-4 md:p-5', className)}>{children}</div>
+    <div className={cn('flex justify-end p-4 md:p-5', className)}>
+      {children}
+    </div>
   );
 };
 
 const Overlay: FC<{ className?: string }> = ({ className }) => {
   const { setOpen } = useModal();
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <motion.div
@@ -197,13 +208,18 @@ const Overlay: FC<{ className?: string }> = ({ className }) => {
         opacity: 0,
         backdropFilter: 'blur(0px)',
       }}
-      onClick={() => setOpen(false)}
+      onClick={handleClose}
+      onTouchStart={handleClose}
     ></motion.div>
   );
 };
 
 const CloseButton = () => {
   const { setOpen } = useModal();
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <button
@@ -212,7 +228,8 @@ const CloseButton = () => {
         'flex items-center justify-center h-8 w-8 cursor-pointer'
       )}
       aria-label="Закрыть модальное окно"
-      onClick={() => setOpen(false)}
+      onClick={handleClose}
+      onTouchStart={handleClose}
     >
       <svg
         className="text-white h-5 w-5 group-hover:scale-125 group-hover:rotate-3 transition duration-200"

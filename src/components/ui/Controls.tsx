@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+
 import type { FC } from 'react';
 import ControlButton from './ControlButton';
 import ArrowIcons from './ArrowIcons';

@@ -1,9 +1,9 @@
-import React from 'react';
+
 import type { FC } from 'react';
 import { MenuButton, ModalBody, ModalFooter, useModal } from '@/components/ui';
 import TutorialModalContent from './TutorialModalContent';
 
-export const TutorialModalBody: FC = () => {
+export const TutorialModalBody: FC<{ className?: string }> = ({ className }) => {
   const { setOpen } = useModal();
 
   const handleClose = () => {
@@ -12,7 +12,7 @@ export const TutorialModalBody: FC = () => {
 
   return (
     <>
-      <ModalBody>
+      <ModalBody className={className}>
         <TutorialModalContent />
         <ModalFooter>
           <MenuButton
