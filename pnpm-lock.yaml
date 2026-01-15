@@ -23,6 +23,9 @@ importers:
       '@tsparticles/slim':
         specifier: ^3.9.1
         version: 3.9.1
+      '@vkontakte/vk-bridge':
+        specifier: ^2.15.11
+        version: 2.15.11
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -588,6 +591,9 @@ packages:
 
   '@types/react@19.2.8':
     resolution: {integrity: sha512-3MbSL37jEchWZz2p2mjntRZtPt837ij10ApxKfgmXCTuHWagYg7iA5bqPw6C8BMPfwidlvfPI/fxOc42HLhcyg==}
+
+  '@vkontakte/vk-bridge@2.15.11':
+    resolution: {integrity: sha512-gFkjqePxV+rBltgxtddL/MMgruG6iGeHr2s1gSTgxKQx7pks5QoafswcQ4kaz1E3AAkC0h/xbyHQApN+vobbvQ==}
 
   baseline-browser-mapping@2.9.14:
     resolution: {integrity: sha512-B0xUquLkiGLgHhpPBqvl7GWegWBUNuujQ6kXd/r1U38ElPT6Ok8KZ8e+FpUGEc2ZoRQUzq/aUnaKFc/svWUGSg==}
@@ -1345,6 +1351,8 @@ snapshots:
   '@types/react@19.2.8':
     dependencies:
       csstype: 3.2.3
+
+  '@vkontakte/vk-bridge@2.15.11': {}
 
   baseline-browser-mapping@2.9.14: {}
 
