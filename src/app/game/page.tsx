@@ -18,12 +18,18 @@ const PhaserGame = dynamic(() => import('@/components/PhaserGame'), {
 export default function GamePage() {
   const [showGame, setShowGame] = useState<boolean>(false);
 
-  const { isLoading, progress, message, setHUDMounted, setGameMounted, setGameReady } =
-    useGameLoader({
-      onComplete: () => {
-        console.log('✅ Все компоненты загружены!');
-      },
-    });
+  const {
+    isLoading,
+    progress,
+    message,
+    setHUDMounted,
+    setGameMounted,
+    setGameReady,
+  } = useGameLoader({
+    onComplete: () => {
+      console.log('✅ Все компоненты загружены!');
+    },
+  });
 
   // Функции обратного вызова для управления состоянием загрузки
   // useCallback обязателен, так как функции передаются в массив зависимостей
@@ -60,13 +66,17 @@ export default function GamePage() {
 
       <motion.div
         className="relative w-full h-full flex items-center justify-center"
+        initial={{ opacity: 0 }}
         animate={{
           opacity: showGame ? 1 : 0,
           pointerEvents: showGame ? 'auto' : 'none',
         }}
       >
         <GameInterface onMounted={handleMountedInterface} />
-        <PhaserGame onMounted={handleMountedGame} onGameReady={handleReadyGame} />
+        <PhaserGame
+          onMounted={handleMountedGame}
+          onGameReady={handleReadyGame}
+        />
       </motion.div>
     </div>
   );

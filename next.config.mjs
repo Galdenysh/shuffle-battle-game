@@ -1,7 +1,23 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: 'export',
-    distDir: 'dist'
+  reactStrictMode: true,
+  swcMinify: true,
+
+  // Настройка CSP заголовков для VK
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value:
+              'frame-ancestors vk.com *.vk.com *.vk-apps.com *.vk-apps.io *.userapi.com https://ok.ru *.ok.ru;',
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
