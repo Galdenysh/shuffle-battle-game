@@ -15,14 +15,24 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: 'Shuffle Battle Game',
   description: 'Танцевальный баттл по шаффлу',
+  manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     title: 'Shuffle Battle',
     statusBarStyle: 'black-translucent',
   },
   icons: {
-    icon: '/favicon.png',
-    apple: '/favicon.png',
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [{ url: '/icon-180.png', sizes: '180x180', type: 'image/png' }],
+    other: [
+      {
+        rel: 'apple-touch-icon',
+        url: '/icon-180.png',
+      },
+    ],
   },
 };
 
