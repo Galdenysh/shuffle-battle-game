@@ -5,3 +5,4 @@ export * from './ComboSystem';
 export * from './GameManager';
 export * from './CollisionManager';
 export * from './MusicManager';
+export * from './HostAIManager';

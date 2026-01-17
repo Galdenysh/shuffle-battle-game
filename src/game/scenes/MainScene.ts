@@ -4,28 +4,23 @@ import {
   CollisionManager,
   ComboManager,
   ComboSystem,
+  ComboScorePayload,
   ControlScheme,
   DanceFloor,
-  DialogueBox,
   GameManager,
   InputManager,
   MusicManager,
+  HostAIManager,
   Player,
   PlayerController,
   TriggerZone,
 } from '../entities';
-import type { ComboScorePayload } from '../entities';
 import { AssetLoader, EventBus } from '../core';
 import { EmitEvents } from '@/types/events';
 import type { LevelCompleteActionEvent } from '@/types/events';
 import { combos } from '../config';
 import { Direction, GameCommand, GameState } from '@/types';
 import { ASSET_KEYS } from '../constants';
-import {
-  END_GAME_MESSAGES,
-  READY_GAME_MESSAGES,
-  START_GAME_MESSAGES,
-} from '../dialogues';
 import { DEFAULT_VALUES, STORAGE_KEYS } from '@/lib/constants';
 
 export class MainScene extends Scene {
@@ -37,8 +32,8 @@ export class MainScene extends Scene {
   private gameManager: GameManager | null = null;
   private collisionManager: CollisionManager | null = null;
   private musicManager: MusicManager | null = null;
+  private hostAIManager: HostAIManager | null = null;
   private playerController: PlayerController | null = null;
-  private dialogueBox: DialogueBox | null = null;
   private isRestartPending: boolean = false;
 
   private playerData: { playerName: string } = {
@@ -55,7 +50,7 @@ export class MainScene extends Scene {
     this.comboManager = new ComboManager(new ComboSystem(combos));
     this.gameManager = new GameManager(
       this,
-      3,
+      30,
       this.handleGameStateChange.bind(this)
     );
     this.musicManager = new MusicManager(this);
@@ -97,6 +92,8 @@ export class MainScene extends Scene {
     this.host = CharacterFactory.create('mc_man', this, 100, 530, {
       defaultDirection: Direction.SOUTH_EAST,
     });
+
+    this.hostAIManager = new HostAIManager(this, this.host);
 
     this.musicManager.setupReverb(ASSET_KEYS.SFX_HALL_IMPULSE);
     this.musicManager.playBackgroundMusic(ASSET_KEYS.SOUND_BACKGROUND, 0.2);
@@ -182,74 +179,12 @@ export class MainScene extends Scene {
     }
   }
 
-  private createHostReadyDialog() {
-    if (!this.host) return;
-
-    const randomGreetingFn =
-      READY_GAME_MESSAGES[
-        Math.floor(Math.random() * READY_GAME_MESSAGES.length)
-      ];
-
-    const message = randomGreetingFn(this.playerData.playerName);
-
-    this.dialogueBox = new DialogueBox(this, this.host, message, 'MC', {
-      delayShow: 1000,
-    });
-  }
-
-  private createHostStartDialog() {
-    if (!this.host) return;
-
-    const startCalls = START_GAME_MESSAGES;
-
-    const message = startCalls[Math.floor(Math.random() * startCalls.length)];
-
-    this.dialogueBox = new DialogueBox(this, this.host, message, 'MC', {
-      delayHide: 5000,
-    });
-  }
-
-  private createHostEndDialog() {
-    if (!this.host) return;
-
-    const score = this.gameManager?.totalScore;
-
-    this.dialogueBox = new DialogueBox(
-      this,
-      this.host,
-      this.getRandomMessage(score),
-      'MC'
-    );
-  }
-
   private handleGameStateChange(state: GameState) {
-    if (state === GameState.READY) {
-      this.dialogueBox?.closeDialog();
-      this.createHostReadyDialog();
-    }
-
-    if (state === GameState.ACTIVE) {
-      this.dialogueBox?.closeDialog();
-      this.createHostStartDialog();
-    }
-
-    if (state === GameState.FINISHED) {
-      this.dialogueBox?.closeDialog();
-      this.createHostEndDialog();
-    }
-  }
-
-  private getRandomMessage(score?: number): string {
-    const messages = END_GAME_MESSAGES;
-
-    const pick = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
-
-    if (score === undefined) return pick(messages.timeout);
-    if (score >= 3000) return pick(messages.god);
-    if (score >= 2000) return pick(messages.power);
-    if (score >= 1000) return pick(messages.good);
-
-    return pick(messages.tryAgain);
+    this.hostAIManager?.onGameStateChange(
+      state,
+      this.playerData.playerName,
+      this.gameManager?.totalScore
+    );
   }
 
   private cleanup() {
@@ -259,7 +194,7 @@ export class MainScene extends Scene {
     this.collisionManager?.destroy();
     this.musicManager?.destroy();
     this.playerController?.destroy();
-    this.dialogueBox?.destroyDialog();
+    this.hostAIManager?.destroy();
 
     this.background = null;
     this.player = null;
@@ -269,7 +204,7 @@ export class MainScene extends Scene {
     this.collisionManager = null;
     this.musicManager = null;
     this.playerController = null;
-    this.dialogueBox = null;
+    this.hostAIManager = null;
 
     EventBus.off(
       EmitEvents.LEVEL_COMPLETED_ACTION,
