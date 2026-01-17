@@ -15,6 +15,7 @@ import {
   ModalTrigger,
 } from '@/components/ui';
 import { TutorialModalBody } from '@/components/shared';
+import { STORAGE_KEYS } from '@/lib/constants';
 
 export default function MarketingPage() {
   const router = useRouter();
@@ -54,7 +55,9 @@ export default function MarketingPage() {
 
     setIsLoading(true);
 
-    router.push(`/game?player=${encodeURIComponent(trimmedName)}`);
+    sessionStorage.setItem(STORAGE_KEYS.PLAYER_NAME, trimmedName);
+
+    router.push('/game');
   };
 
   return (

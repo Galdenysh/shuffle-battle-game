@@ -17,10 +17,7 @@ import {
 import type { ComboScorePayload } from '../entities';
 import { AssetLoader, EventBus } from '../core';
 import { EmitEvents } from '@/types/events';
-import type {
-  LevelCompleteActionEvent,
-  PlayerDataInitEvent,
-} from '@/types/events';
+import type { LevelCompleteActionEvent } from '@/types/events';
 import { combos } from '../config';
 import { Direction, GameCommand, GameState } from '@/types';
 import { ASSET_KEYS } from '../constants';
@@ -29,6 +26,7 @@ import {
   READY_GAME_MESSAGES,
   START_GAME_MESSAGES,
 } from '../dialogues';
+import { DEFAULT_VALUES, STORAGE_KEYS } from '@/lib/constants';
 
 export class MainScene extends Scene {
   private background: DanceFloor | null = null;
@@ -43,51 +41,24 @@ export class MainScene extends Scene {
   private dialogueBox: DialogueBox | null = null;
   private isRestartPending: boolean = false;
 
-  private handleGameStateChange: (state: GameState) => void;
-
-  private comboScoreListener: (payload: ComboScorePayload) => void;
-
-  private playerDataListener: ({
-    playerName,
-  }: PlayerDataInitEvent['payload']) => void;
-
-  private playerDataResolve: (value: string) => void;
-  private playerDataPromise: Promise<string>;
-
-  private levelActionListener: (
-    payload: LevelCompleteActionEvent['payload']
-  ) => void;
+  private playerData: { playerName: string } = {
+    playerName: DEFAULT_VALUES.PLAYER_NAME,
+  };
 
   constructor() {
     super('MainScene');
-
-    this.handleGameStateChange = (state) => {
-      if (state === GameState.READY) {
-        this.createHostReadyDialog();
-      }
-
-      if (state === GameState.FINISHED) {
-        this.createHostEndDialog();
-      }
-    };
-
-    this.playerDataPromise = new Promise((resolve) => {
-      this.playerDataResolve = resolve;
-    });
-
-    this.comboScoreListener = this.handleComboMatch.bind(this);
-    this.playerDataListener = this.handleSetPlayerData.bind(this);
-    this.levelActionListener = this.handleLevelAction.bind(this);
   }
 
   init() {
+    this.playerData.playerName = this.registry.get(STORAGE_KEYS.PLAYER_NAME);
     this.inputManager = new InputManager(this, ControlScheme.ALL);
     this.comboManager = new ComboManager(new ComboSystem(combos));
-    this.gameManager = new GameManager(this, 30, this.handleGameStateChange);
+    this.gameManager = new GameManager(
+      this,
+      3,
+      this.handleGameStateChange.bind(this)
+    );
     this.musicManager = new MusicManager(this);
-
-    EventBus.on(EmitEvents.PLAYER_DATA_INIT, this.playerDataListener);
-    EventBus.on(EmitEvents.LEVEL_COMPLETED_ACTION, this.levelActionListener);
   }
 
   preload() {
@@ -100,6 +71,18 @@ export class MainScene extends Scene {
   }
 
   create() {
+    EventBus.off(
+      EmitEvents.LEVEL_COMPLETED_ACTION,
+      this.handleLevelAction,
+      this
+    );
+
+    EventBus.on(
+      EmitEvents.LEVEL_COMPLETED_ACTION,
+      this.handleLevelAction,
+      this
+    );
+
     if (
       !this.inputManager ||
       !this.comboManager ||
@@ -129,22 +112,17 @@ export class MainScene extends Scene {
       this.comboManager
     );
 
-    this.comboManager.addComboListener(this.comboScoreListener);
+    this.comboManager.addComboListener(this.handleComboMatch, this);
 
     new TriggerZone(this, this.player, 360, 820, 50, 50, () => {
       this.gameManager?.start();
-      this.dialogueBox?.closeDialog();
-
-      this.createHostStartDialog();
-
       this.musicManager?.playBattleMusic(ASSET_KEYS.SOUND_BATTLE, 0.15);
     });
 
-    this.gameManager.restart();
+    this.gameManager?.restart();
+    this.cameras.main.fadeIn(200, 0, 0, 0);
 
     EventBus.emit(EmitEvents.CURRENT_SCENE_READY, { scene: this });
-
-    this.cameras.main.fadeIn(500, 0, 0, 0);
 
     this.cameras.main.once('camerafadeincomplete', () => {
       EventBus.emit(EmitEvents.SCENE_VISIBLE, { isVisible: true });
@@ -194,33 +172,25 @@ export class MainScene extends Scene {
     this.playerController?.onComboAchieved(combo, isActive ? points : null);
   }
 
-  private handleSetPlayerData({ playerName }: PlayerDataInitEvent['payload']) {
-    if (this.playerDataResolve) {
-      this.playerDataResolve(playerName);
-    }
-  }
-
   private handleLevelAction({ action }: LevelCompleteActionEvent['payload']) {
     if (action === GameCommand.RESTART) {
-      this.isRestartPending = true;
+      this.cameras.main.fadeOut(200, 0, 0, 0);
+
+      this.cameras.main.once('camerafadeoutcomplete', () => {
+        this.isRestartPending = true;
+      });
     }
   }
 
-  private async createHostReadyDialog() {
+  private createHostReadyDialog() {
     if (!this.host) return;
-
-    const playerName = await this.playerDataPromise;
-
-    if (!this.scene.isActive()) return;
-
-    const name = playerName ?? 'Шаффлер';
 
     const randomGreetingFn =
       READY_GAME_MESSAGES[
         Math.floor(Math.random() * READY_GAME_MESSAGES.length)
       ];
 
-    const message = randomGreetingFn(name);
+    const message = randomGreetingFn(this.playerData.playerName);
 
     this.dialogueBox = new DialogueBox(this, this.host, message, 'MC', {
       delayShow: 1000,
@@ -250,6 +220,23 @@ export class MainScene extends Scene {
       this.getRandomMessage(score),
       'MC'
     );
+  }
+
+  private handleGameStateChange(state: GameState) {
+    if (state === GameState.READY) {
+      this.dialogueBox?.closeDialog();
+      this.createHostReadyDialog();
+    }
+
+    if (state === GameState.ACTIVE) {
+      this.dialogueBox?.closeDialog();
+      this.createHostStartDialog();
+    }
+
+    if (state === GameState.FINISHED) {
+      this.dialogueBox?.closeDialog();
+      this.createHostEndDialog();
+    }
   }
 
   private getRandomMessage(score?: number): string {
@@ -284,8 +271,11 @@ export class MainScene extends Scene {
     this.playerController = null;
     this.dialogueBox = null;
 
-    EventBus.off(EmitEvents.PLAYER_DATA_INIT, this.playerDataListener);
-    EventBus.off(EmitEvents.LEVEL_COMPLETED_ACTION, this.levelActionListener);
+    EventBus.off(
+      EmitEvents.LEVEL_COMPLETED_ACTION,
+      this.handleLevelAction,
+      this
+    );
 
     this.events.off('shutdown', this.cleanup, this);
     this.events.off('destroy', this.cleanup, this);

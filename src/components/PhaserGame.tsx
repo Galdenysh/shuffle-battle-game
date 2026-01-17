@@ -13,6 +13,7 @@ import StartGame from '@/game/main';
 import { EmitEvents } from '@/types';
 import type { CurrentSceneReadyEvent, SceneVisibleEvent } from '@/types';
 import { cn } from '@/lib/utils';
+import { DEFAULT_VALUES, STORAGE_KEYS } from '@/lib/constants';
 
 export type RefPhaserGame = {
   game: Game | null;
@@ -33,7 +34,11 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
 
     useLayoutEffect(() => {
       if (gameRef.current === null) {
-        gameRef.current = StartGame('phaser-game');
+        const playerName =
+          sessionStorage.getItem(STORAGE_KEYS.PLAYER_NAME) ||
+          DEFAULT_VALUES.PLAYER_NAME;
+
+        gameRef.current = StartGame('phaser-game', { playerName });
 
         if (typeof ref === 'function') {
           ref({ game: gameRef.current, scene: null });

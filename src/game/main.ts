@@ -1,23 +1,19 @@
 import { Game } from 'phaser';
 import type { Types } from 'phaser';
-import { BASE_HEIGHT, BASE_WIDTH } from './constants';
 import { config } from './config';
+import { STORAGE_KEYS } from '@/lib/constants';
 
-const StartGame = (parent: Types.Core.GameConfig['parent']) => {
-  // Определите плотность пикселей устройства
-  const dpr = window.devicePixelRatio || 1;
-
-  const baseWidth = (config.width as number) || BASE_WIDTH;
-  const baseHeight = (config.height as number) || BASE_HEIGHT;
-
-  const finalConfig = {
+const StartGame = (
+  parent: Types.Core.GameConfig['parent'],
+  initialData: { playerName: string }
+) => {
+  const finalConfig: Types.Core.GameConfig = {
     ...config,
     parent,
-    width: Math.floor(baseWidth * dpr),
-    height: Math.floor(baseHeight * dpr),
-    scale: {
-      ...config.scale,
-      zoom: dpr > 1 ? 1 / dpr : 1,
+    callbacks: {
+      preBoot: (game) => {
+        game.registry.set(STORAGE_KEYS.PLAYER_NAME, initialData.playerName);
+      },
     },
   };
 

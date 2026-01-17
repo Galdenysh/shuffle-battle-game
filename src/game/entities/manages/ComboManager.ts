@@ -1,9 +1,14 @@
 import { ComboSystem } from './ComboSystem';
 import type { AbilityRecord, Combo, ComboScorePayload } from '../types';
 
+interface ComboListenerEntry {
+  callback: (payload: ComboScorePayload) => void;
+  context?: any;
+}
+
 export class ComboManager {
   private comboSystem: ComboSystem;
-  private comboListeners: Array<(payload: ComboScorePayload) => void> = [];
+  private comboListeners: ComboListenerEntry[] = [];
 
   constructor(comboSystem: ComboSystem) {
     this.comboSystem = comboSystem;
@@ -34,13 +39,16 @@ export class ComboManager {
   }
 
   public addComboListener(
-    listener: (payload: ComboScorePayload) => void
+    listener: (payload: ComboScorePayload) => void,
+    context?: any
   ): void {
-    this.comboListeners.push(listener);
+    this.comboListeners.push({ callback: listener, context });
   }
 
   public removeComboListener(listener: Function): void {
-    this.comboListeners = this.comboListeners.filter((l) => l !== listener);
+    this.comboListeners = this.comboListeners.filter(
+      (entry) => entry.callback !== listener
+    );
   }
 
   public destroy(): void {
@@ -57,6 +65,12 @@ export class ComboManager {
   }
 
   private notifyComboListeners(payload: ComboScorePayload): void {
-    this.comboListeners.forEach((listener) => listener(payload));
+    this.comboListeners.forEach((entry) => {
+      if (entry.context) {
+        entry.callback.call(entry.context, payload);
+      } else {
+        entry.callback(payload);
+      }
+    });
   }
 }

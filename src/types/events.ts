@@ -15,7 +15,6 @@ export enum EmitEvents {
   RESTART_TRIGGERED = 'restart-triggered',
 
   // Gameplay Events
-  PLAYER_DATA_INIT = 'player-data-init',
   SCORE_CHANGED = 'score-changed',
   TIME_CHANGED = 'time-changed',
   GAME_STATE_CHANGED = 'game-state-changed',
@@ -64,14 +63,6 @@ export interface ControlModeTriggeredEvent {
   timestamp?: number;
 }
 
-export interface PlayerDataInitEvent {
-  type: EmitEvents.PLAYER_DATA_INIT;
-  payload: {
-    playerName: string;
-  };
-  timestamp?: number;
-}
-
 export interface ScoreChangedEvent {
   type: EmitEvents.SCORE_CHANGED;
   payload: {
@@ -116,7 +107,6 @@ export type GameEvent =
   | MoveTriggeredEvent
   | AbilityTriggeredEvent
   | ControlModeTriggeredEvent
-  | PlayerDataInitEvent
   | ScoreChangedEvent
   | TimeChangedEvent
   | GameStateChangedEvent

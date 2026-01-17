@@ -1,13 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
 import type { FC } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Modal, ModalTrigger, RulesIcon, ShowHideIcon } from '@/components/ui';
 import { TutorialModalBody } from '@/components/shared';
-import { EmitEvents } from '@/types';
-import { EventBus } from '@/game/core';
+import { DEFAULT_VALUES, STORAGE_KEYS } from '@/lib/constants';
 
 interface GameInfoProps {
   isVisibleGamepad?: boolean;
@@ -30,9 +28,10 @@ const GameInfo: FC<GameInfoProps> = ({
   onVisibleGamepad,
 }) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
-  const playerName = searchParams.get('player') || 'Шаффлер';
+  const playerName =
+    sessionStorage.getItem(STORAGE_KEYS.PLAYER_NAME) ||
+    DEFAULT_VALUES.PLAYER_NAME;
 
   const handleExit = () => {
     router.push('/');
@@ -43,12 +42,6 @@ const GameInfo: FC<GameInfoProps> = ({
   };
 
   const toggleText = isVisibleGamepad ? 'Скрыть' : 'Показать';
-
-  useEffect(() => {
-    if (playerName) {
-      EventBus.emit(EmitEvents.PLAYER_DATA_INIT, { playerName });
-    }
-  }, [playerName]);
 
   return (
     <div
