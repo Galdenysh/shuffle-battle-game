@@ -77,7 +77,7 @@ export class MusicManager {
 
       if (impulseBuffer && impulseBuffer instanceof AudioBuffer) {
         this.reverbNode.buffer = impulseBuffer;
-        this.reverbNode.connect(context.destination);
+        this.reverbNode.connect(this.scene.sound.masterMuteNode);
       }
     }
   }

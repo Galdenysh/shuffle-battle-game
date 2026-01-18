@@ -3,13 +3,21 @@
 import type { FC } from 'react';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Modal, ModalTrigger, RulesIcon, ShowHideIcon } from '@/components/ui';
+import {
+  Modal,
+  ModalTrigger,
+  MuteIcon,
+  RulesIcon,
+  ShowHideIcon,
+} from '@/components/ui';
 import { TutorialModalBody } from '@/components/shared';
 import { DEFAULT_VALUES, STORAGE_KEYS } from '@/lib/constants';
 
 interface GameInfoProps {
   isVisibleGamepad?: boolean;
+  isMuted?: boolean;
   onVisibleGamepad?: (isVisible: boolean) => void;
+  onMuted?: () => void;
 }
 
 const buttonClasses = {
@@ -25,13 +33,21 @@ const buttonClasses = {
 
 const GameInfo: FC<GameInfoProps> = ({
   isVisibleGamepad = true,
+  isMuted = false,
   onVisibleGamepad,
+  onMuted,
 }) => {
   const router = useRouter();
 
   const playerName =
     sessionStorage.getItem(STORAGE_KEYS.PLAYER_NAME) ||
     DEFAULT_VALUES.PLAYER_NAME;
+
+  const toggleGamepadText = `${
+    isVisibleGamepad ? 'Скрыть' : 'Показать'
+  } кнопки управления`;
+
+  const toggleSoundText = `${isMuted ? 'Включить' : 'Выключить'} звук`;
 
   const handleExit = () => {
     router.push('/');
@@ -41,7 +57,9 @@ const GameInfo: FC<GameInfoProps> = ({
     onVisibleGamepad?.(!isVisibleGamepad);
   };
 
-  const toggleText = isVisibleGamepad ? 'Скрыть' : 'Показать';
+  const handleMuted = () => {
+    onMuted?.();
+  };
 
   return (
     <div
@@ -88,12 +106,29 @@ const GameInfo: FC<GameInfoProps> = ({
           buttonClasses.disabled
         )}
         type="button"
-        title={`${toggleText} кнопки управления`}
-        aria-label={`${toggleText} кнопки управления`}
+        title={toggleGamepadText}
+        aria-label={toggleGamepadText}
         onClick={handleVisibleGamepad}
         onTouchStart={handleVisibleGamepad}
       >
         <ShowHideIcon isShow={isVisibleGamepad} />
+      </button>
+      <button
+        className={cn(
+          buttonClasses.base,
+          buttonClasses.baseIcon,
+          buttonClasses.hover,
+          buttonClasses.active,
+          buttonClasses.focus,
+          buttonClasses.disabled
+        )}
+        type="button"
+        title={toggleSoundText}
+        aria-label={toggleSoundText}
+        onClick={handleMuted}
+        onTouchStart={handleMuted}
+      >
+        <MuteIcon isMuted={isMuted} />
       </button>
       <div className="h-3 w-px bg-purple-600/50" />
       <button

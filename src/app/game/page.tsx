@@ -2,10 +2,12 @@
 
 import { useCallback, useState } from 'react';
 import dynamic from 'next/dynamic';
+import type { Game } from 'phaser';
 import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
 import { LoadingScreen } from './components';
 import { useGameLoader } from '@/hooks';
+import type { RefPhaserGame } from '@/components/PhaserGame';
+import { cn } from '@/lib/utils';
 
 const GameInterface = dynamic(() => import('./components/GameInterface'), {
   ssr: false,
@@ -17,6 +19,7 @@ const PhaserGame = dynamic(() => import('@/components/PhaserGame'), {
 
 export default function GamePage() {
   const [showGame, setShowGame] = useState<boolean>(false);
+  const [gameInstance, setGameInstance] = useState<Game | null>(null);
 
   const {
     isLoading,
@@ -30,6 +33,14 @@ export default function GamePage() {
       console.log('✅ Все компоненты загружены!');
     },
   });
+
+  const onGameReady = useCallback((ref: RefPhaserGame | null) => {
+    const gameRef = ref;
+
+    if (gameRef?.game) {
+      setGameInstance(gameRef?.game);
+    }
+  }, []);
 
   // Функции обратного вызова для управления состоянием загрузки
   // useCallback обязателен, так как функции передаются в массив зависимостей
@@ -72,10 +83,14 @@ export default function GamePage() {
           pointerEvents: showGame ? 'auto' : 'none',
         }}
       >
-        <GameInterface onMounted={handleMountedInterface} />
+        <GameInterface
+          gameInstance={gameInstance}
+          onMounted={handleMountedInterface}
+        />
         <PhaserGame
           onMounted={handleMountedGame}
           onGameReady={handleReadyGame}
+          ref={onGameReady}
         />
       </motion.div>
     </div>
