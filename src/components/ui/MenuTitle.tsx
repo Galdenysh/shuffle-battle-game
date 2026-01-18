@@ -19,7 +19,7 @@ export const MenuTitle: FC<TitleProps> = ({ title, subtitle, className }) => {
     >
       <h1
         className={cn(
-          'text-5xl md:text-6xl font-bold bg-clip-text text-transparent uppercase font-mono tracking-wider bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 drop-shadow-[0_0_10px_rgba(0,255,255,0.7)]'
+          'text-5xl md:text-6xl font-bold bg-clip-text text-transparent uppercase tracking-wider bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 drop-shadow-[0_0_10px_rgba(0,255,255,0.7)]'
         )}
       >
         {title}
@@ -27,7 +27,7 @@ export const MenuTitle: FC<TitleProps> = ({ title, subtitle, className }) => {
       {subtitle && (
         <p
           className={cn(
-            'text-xl text-purple-300/90 font-mono tracking-wider drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]'
+            'text-xl text-purple-300/90 tracking-wider drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]'
           )}
         >
           {subtitle}

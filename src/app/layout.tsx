@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import type { Metadata, Viewport } from 'next';
 import { JetBrains_Mono } from 'next/font/google';
 import { cn } from '@/lib/utils';
+import { OrientationLock } from '@/components';
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin', 'cyrillic'],
@@ -64,6 +65,7 @@ export default function RootLayout({
         )}
       >
         {children}
+        <OrientationLock />
       </body>
     </html>
   );

@@ -6,14 +6,14 @@ import type { Game } from 'phaser';
 import { motion } from 'framer-motion';
 import { LoadingScreen } from './components';
 import { useGameLoader } from '@/hooks';
-import type { RefPhaserGame } from '@/components/PhaserGame';
 import { cn } from '@/lib/utils';
+import type { RefPhaserGame } from './components/PhaserGame';
 
 const GameInterface = dynamic(() => import('./components/GameInterface'), {
   ssr: false,
 });
 
-const PhaserGame = dynamic(() => import('@/components/PhaserGame'), {
+const PhaserGame = dynamic(() => import('./components/PhaserGame'), {
   ssr: false,
 });
 

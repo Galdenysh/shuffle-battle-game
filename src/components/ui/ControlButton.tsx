@@ -24,7 +24,7 @@ interface ControlButtonProps {
 }
 
 const buttonClasses = {
-  base: 'relative min-w-13 min-h-13 w-fit py-1 px-2 text-white text-lg font-mono font-bold uppercase tracking-wider border-2 rounded-none flex items-center justify-center transition-all duration-300 overflow-visible cursor-pointer touch-none select-none',
+  base: 'relative min-w-13 min-h-13 w-fit py-1 px-2 text-white text-lg  font-bold uppercase tracking-wider border-2 rounded-none flex items-center justify-center transition-all duration-300 overflow-visible cursor-pointer touch-none select-none',
   baseLightOff:
     'bg-gradient-to-r from-cyan-500/50 via-purple-500/50 to-pink-500/50 border-white shadow-[0_0_20px_rgba(0,255,255,0.6)]',
   baseLightOn:

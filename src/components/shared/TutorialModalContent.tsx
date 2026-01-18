@@ -10,11 +10,11 @@ const listClasses = 'flex flex-col gap-2 text-sm text-cyan-100/80';
 const TutorialModalContent: FC = () => {
   return (
     <ModalContent>
-      <h2 className="text-2xl md:text-3xl text-cyan-400 font-mono uppercase mb-4 text-center">
+      <h2 className="text-2xl md:text-3xl text-cyan-400 uppercase mb-4 text-center">
         Правила битвы
       </h2>
 
-      <div className="grid grid-cols-1 gap-4 font-mono text-sm text-cyan-100/80">
+      <div className="grid grid-cols-1 gap-4 text-sm text-cyan-100/80">
         <article className="p-4 border border-cyan-500/20 bg-cyan-500/5">
           <span className="text-cyan-400 block mb-1 uppercase">
             01. Управление
@@ -91,13 +91,13 @@ const TutorialModalContent: FC = () => {
               <span className="text-white font-bold whitespace-nowrap">
                 T-Шаффл:
               </span>{' '}
-              <span className="text-cyan-300 font-mono">T(L)</span>{' '}
+              <span className="text-cyan-300">T(L)</span>{' '}
               <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300 font-mono">T(R)</span>{' '}
+              <span className="text-cyan-300">T(R)</span>{' '}
               <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300 font-mono">T(L)</span>{' '}
+              <span className="text-cyan-300">T(L)</span>{' '}
               <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300 font-mono">T(R)</span>
+              <span className="text-cyan-300">T(R)</span>
               <span className="ml-2 text-purple-400 text-[10px]">x1.1</span>
             </li>
 
@@ -106,11 +106,11 @@ const TutorialModalContent: FC = () => {
               <span className="text-white font-bold whitespace-nowrap">
                 Цепочка бега:
               </span>{' '}
-              <span className="text-cyan-300 font-mono">RM</span>{' '}
+              <span className="text-cyan-300">RM</span>{' '}
               <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300 font-mono">RM</span>{' '}
+              <span className="text-cyan-300">RM</span>{' '}
               <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300 font-mono">RM</span>
+              <span className="text-cyan-300">RM</span>
               <span className="ml-2 text-purple-400 text-[10px]">x1.2</span>
             </li>
 
@@ -119,11 +119,11 @@ const TutorialModalContent: FC = () => {
               <span className="text-white font-bold whitespace-nowrap">
                 База:
               </span>{' '}
-              <span className="text-cyan-300 font-mono">RM</span>{' '}
+              <span className="text-cyan-300">RM</span>{' '}
               <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300 font-mono">T(R)</span>{' '}
+              <span className="text-cyan-300">T(R)</span>{' '}
               <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300 font-mono">RM</span>
+              <span className="text-cyan-300">RM</span>
               <span className="ml-2 text-purple-400 text-[10px]">x1.3</span>
             </li>
 
@@ -132,13 +132,13 @@ const TutorialModalContent: FC = () => {
               <span className="text-white font-bold whitespace-nowrap">
                 Микс:
               </span>{' '}
-              <span className="text-cyan-300 font-mono">RM</span>{' '}
+              <span className="text-cyan-300">RM</span>{' '}
               <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300 font-mono">T(L)</span>{' '}
+              <span className="text-cyan-300">T(L)</span>{' '}
               <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300 font-mono">T(R)</span>{' '}
+              <span className="text-cyan-300">T(R)</span>{' '}
               <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300 font-mono">RM</span>
+              <span className="text-cyan-300">RM</span>
               <span className="ml-2 text-purple-400 text-[10px]">x1.8</span>
             </li>
 
@@ -147,17 +147,17 @@ const TutorialModalContent: FC = () => {
               <span className="text-yellow-400 font-bold whitespace-nowrap">
                 Мастер:
               </span>{' '}
-              <span className="text-cyan-300 font-mono">RM</span>{' '}
+              <span className="text-cyan-300">RM</span>{' '}
               <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300 font-mono">T(L)</span>{' '}
+              <span className="text-cyan-300">T(L)</span>{' '}
               <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300 font-mono">RM</span>{' '}
+              <span className="text-cyan-300">RM</span>{' '}
               <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300 font-mono">T(R)</span>{' '}
+              <span className="text-cyan-300">T(R)</span>{' '}
               <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300 font-mono">T(L)</span>{' '}
+              <span className="text-cyan-300">T(L)</span>{' '}
               <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300 font-mono">RM</span>
+              <span className="text-cyan-300">RM</span>
               <span className="ml-2 text-yellow-400 text-[10px] font-bold">
                 x2.5
               </span>

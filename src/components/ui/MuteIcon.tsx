@@ -8,12 +8,13 @@ interface MuteIconProps {
 const MuteIcon: FC<MuteIconProps> = ({ isMuted = true, className = '' }) => {
   return (
     <svg
+      className={className}
+      aria-hidden={true}
       width="20"
       height="20"
       viewBox="0 0 20 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className={className}
     >
       <defs>
         <linearGradient id="mute-grad" x1="0%" y1="0%" x2="100%" y2="100%">

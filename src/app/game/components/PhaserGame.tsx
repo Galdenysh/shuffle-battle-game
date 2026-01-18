@@ -10,10 +10,10 @@ import {
 import type { Game, Scene } from 'phaser';
 import { EventBus } from '@/game/core';
 import StartGame from '@/game/main';
-import { EmitEvents } from '@/types';
-import type { CurrentSceneReadyEvent, SceneVisibleEvent } from '@/types';
 import { cn } from '@/lib/utils';
 import { DEFAULT_VALUES, STORAGE_KEYS } from '@/lib/constants';
+import { EmitEvents } from '@/types';
+import type { CurrentSceneReadyEvent, SceneVisibleEvent } from '@/types';
 
 export type RefPhaserGame = {
   game: Game | null;

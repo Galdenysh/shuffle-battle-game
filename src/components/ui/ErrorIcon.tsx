@@ -1,10 +1,10 @@
-
 import type { FC } from 'react';
 import { cn } from '@/lib/utils';
 
 const ErrorIcon: FC = () => (
   <svg
     className={cn('w-4 h-4 flex-shrink-0')}
+    aria-hidden={true}
     fill="currentColor"
     viewBox="0 0 20 20"
   >

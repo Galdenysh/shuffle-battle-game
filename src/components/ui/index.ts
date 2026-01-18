@@ -6,6 +6,7 @@ export { default as ErrorIcon } from './ErrorIcon';
 export { default as RulesIcon } from './RulesIcon';
 export { default as ShowHideIcon } from './ShowHideIcon';
 export { default as MuteIcon } from './MuteIcon';
+export { default as PhoneIcon } from './PhoneIcon';
 export { default as MenuButton } from './MenuButton';
 export { default as MenuGhostButton } from './MenuGhostButton';
 export { default as MenuInput } from './MenuInput';

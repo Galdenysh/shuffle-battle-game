@@ -99,7 +99,7 @@ const LoadingScreen: FC<LoadingScreenProps> = ({
       <div className="flex flex-col items-center justify-start space-y-8 w-80 h-50 mx-auto">
         {/* Прогресс-бар */}
         <div className="w-full space-y-4">
-          <div className="flex justify-between font-mono text-xs tracking-widest">
+          <div className="flex justify-between text-xs tracking-widest">
             <span className="text-cyan-400 drop-shadow-[0_0_5px_rgba(0,255,255,0.5)]">
               {message}
             </span>
@@ -140,7 +140,7 @@ const LoadingScreen: FC<LoadingScreenProps> = ({
         <AnimatePresence mode="wait">
           <motion.div
             key={currentTipIndex}
-            className="text-center text-cyan-100/70 text-sm font-mono tracking-wide"
+            className="text-center text-cyan-100/70 text-sm  tracking-wide"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}

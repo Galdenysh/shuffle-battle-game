@@ -23,7 +23,7 @@ interface GameInfoProps {
 }
 
 const buttonClasses = {
-  base: 'px-2 min-h-8 bg-gray-900/70 backdrop-blur-xs border border-purple-500/30 text-cyan-400 font-mono text-[10px] cursor-pointer transition-all duration-150',
+  base: 'px-2 min-h-8 bg-gray-900/70 backdrop-blur-xs border border-purple-500/30 text-cyan-400 text-[10px] cursor-pointer transition-all duration-150',
   baseIcon: 'flex justify-center items-center p-0 w-8 h-8',
   hover:
     'hover:text-cyan-200 hover:border-purple-400/70 hover:bg-purple-900/30',
@@ -76,7 +76,7 @@ const GameInfo: FC<GameInfoProps> = ({
         'flex items-center gap-1.5 min-w-fit px-1.5 py-1.5',
         'bg-black/50 backdrop-blur-sm border-2 border-purple-500/30',
         'shadow-[0_0_4px_rgba(147,51,234,0.15)]',
-        'text-purple-300/90 font-mono text-xs',
+        'text-purple-300/90  text-xs',
       )}
     >
       <div

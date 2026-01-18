@@ -16,7 +16,7 @@ interface ScoreDisplayProps {
 }
 
 const textClasses =
-  'text-base text-cyan-300/90 font-mono tracking-wider drop-shadow-[0_0_3px_rgba(255,255,255,0.7)]';
+  'text-base text-cyan-300/90 tracking-wider drop-shadow-[0_0_3px_rgba(255,255,255,0.7)]';
 
 export const ScoreDisplay: FC<ScoreDisplayProps> = ({
   totalScore = 0,

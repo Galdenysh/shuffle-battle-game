@@ -1,4 +1,3 @@
-
 import type { FC } from 'react';
 import { Direction } from '@/types';
 
@@ -30,6 +29,7 @@ const ArrowIcons: FC<ArrowIconsProps> = ({
   if (showToggleIcon) {
     return (
       <svg
+        aria-hidden={true}
         width="24"
         height="24"
         viewBox="0 0 24 24"
@@ -63,6 +63,7 @@ const ArrowIcons: FC<ArrowIconsProps> = ({
 
   return (
     <svg
+      aria-hidden={true}
       width="24"
       height="24"
       viewBox="0 0 24 24"

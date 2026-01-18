@@ -16,7 +16,7 @@ interface MenuInputProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const inputClasses = {
-  base: 'h-14 px-5 bg-black/60 border-2 text-cyan-100/90 font-mono text-base tracking-wider placeholder-cyan-400/50 transition-all duration-300',
+  base: 'h-14 px-5 bg-black/60 border-2 text-cyan-100/90 text-base tracking-wider placeholder-cyan-400/50 transition-all duration-300',
   focus:
     'focus:outline-none focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(0,255,255,0.4),inset_0_0_10px_rgba(0,255,255,0.1)]',
   error: 'border-red-500/70 shadow-[0_0_15px_rgba(255,0,0,0.3)]',
@@ -45,7 +45,7 @@ export const MenuInput: FC<MenuInputProps> = (props) => {
         <label
           htmlFor={id}
           className={cn(
-            'block text-lg font-mono mb-4 text-cyan-300/90 tracking-wider drop-shadow-[0_0_3px_rgba(0,255,255,0.5)]'
+            'block text-lg mb-4 text-cyan-300/90 tracking-wider drop-shadow-[0_0_3px_rgba(0,255,255,0.5)]'
           )}
         >
           {label}
@@ -85,7 +85,7 @@ export const MenuInput: FC<MenuInputProps> = (props) => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               className={cn(
-                'flex items-center gap-2 text-red-400 font-mono tracking-wider drop-shadow-[0_0_3px_rgba(255,0,0,0.5)]'
+                'flex items-center gap-2 text-red-400 tracking-wider drop-shadow-[0_0_3px_rgba(255,0,0,0.5)]'
               )}
             >
               <ErrorIcon />
@@ -95,7 +95,7 @@ export const MenuInput: FC<MenuInputProps> = (props) => {
 
           <div
             className={cn(
-              'text-cyan-300/90 text-right font-mono tracking-wider drop-shadow-[0_0_3px_rgba(0,255,255,0.5)]'
+              'text-cyan-300/90 text-right tracking-wider drop-shadow-[0_0_3px_rgba(0,255,255,0.5)]'
             )}
           >
             {String(value)?.length}/{inputProps?.maxLength ?? VALUE_MAX_LENGTH}
