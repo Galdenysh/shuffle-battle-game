@@ -64,7 +64,7 @@ export default function GamePage() {
   return (
     <div
       className={cn(
-        'w-dvw h-dvh overflow-hidden flex items-center justify-center',
+        'h-full w-full overflow-hidden flex items-center justify-center',
         'bg-gradient-to-br from-gray-900 to-black'
       )}
     >
@@ -76,7 +76,7 @@ export default function GamePage() {
       />
 
       <motion.div
-        className="relative w-full h-full flex items-center justify-center"
+        className="relative h-full w-full flex items-center justify-center"
         initial={{ opacity: 0 }}
         animate={{
           opacity: showGame ? 1 : 0,

@@ -1,7 +1,7 @@
 import './globals.css';
 
 import type { ReactNode } from 'react';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { JetBrains_Mono } from 'next/font/google';
 import { cn } from '@/lib/utils';
 
@@ -17,9 +17,12 @@ export const metadata: Metadata = {
   description: 'Танцевальный баттл по шаффлу',
   manifest: '/manifest.json',
   appleWebApp: {
-    capable: true,
     title: 'Shuffle Battle',
+    capable: true,
     statusBarStyle: 'black-translucent',
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
   },
   icons: {
     icon: [
@@ -36,10 +39,14 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport = {
+export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  maximumScale: 1,
+  minimumScale: 1,
+  userScalable: false,
   interactiveWidget: 'resizes-content',
+  viewportFit: 'contain',
 };
 
 export default function RootLayout({
@@ -48,12 +55,12 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="ru">
+    <html lang="ru" className="h-full bg-black overflow-hidden">
       <body
         className={cn(
           jetbrainsMono.variable,
-          'font-mono',
-          'fixed inset-0 size-full touch-none'
+          'font-mono antialiased',
+          'h-full m-0 p-0 bg-black overflow-hidden'
         )}
       >
         {children}

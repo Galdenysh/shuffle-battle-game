@@ -178,8 +178,8 @@ const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
       )}
       style={{
         // Это гарантирует 100% совпадение с Phaser Scale.FIT
-        width: `min(100dvw, calc(100dvh * (${BASE_WIDTH} / ${BASE_HEIGHT})))`,
-        height: `min(100dvh, calc(100dvw * (${BASE_HEIGHT} / ${BASE_WIDTH})))`,
+        width: `min(100vw, calc(100vh * (${BASE_WIDTH} / ${BASE_HEIGHT})))`,
+        height: `min(100vh, calc(100vw * (${BASE_HEIGHT} / ${BASE_WIDTH})))`,
       }}
       initial={{ opacity: 0 }}
       animate={{

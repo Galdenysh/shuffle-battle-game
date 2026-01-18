@@ -113,7 +113,7 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
       <div
         id="phaser-game"
         className={cn(
-          'h-dvh w-dvw z-10 transition-opacity duration-300',
+          'h-full w-full z-10 transition-opacity duration-300',
           isVisible ? 'pointer-events-auto' : 'pointer-events-none'
         )}
         ref={containerRef}

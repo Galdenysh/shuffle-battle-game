@@ -73,23 +73,29 @@ const GameInfo: FC<GameInfoProps> = ({
     <div
       className={cn(
         'absolute top-2 right-2 z-150',
-        'flex items-center gap-1.5',
-        'min-w-fit px-1.5 py-1.5',
+        'flex items-center gap-1.5 min-w-fit px-1.5 py-1.5',
         'bg-black/50 backdrop-blur-sm border-2 border-purple-500/30',
         'shadow-[0_0_4px_rgba(147,51,234,0.15)]',
-        'text-purple-300/90 font-mono text-xs'
+        'text-purple-300/90 font-mono text-xs',
       )}
     >
       <div
         className={cn(
-          'flex items-center',
-          'px-1 py-0.5',
+          'flex items-center px-1 py-0.5',
           'cursor-pointer select-none',
-          'hover:bg-purple-500/10 transition-all duration-300'
+          'hover:drop-shadow-[0_0_10px_rgba(0,255,255,0.8)] group',
+          'transition-all duration-300'
         )}
         onClick={handleName}
+        onTouchStart={handleName}
       >
-        <span className="text-purple-400/80 text-[10px]">
+        <span
+          className={cn(
+            'text-purple-400/80 text-[10px]',
+            'group-hover:text-purple-400',
+            'transition-all duration-300'
+          )}
+        >
           {`PL${isExpanded ? ':' : ''}`}
         </span>
 
@@ -114,7 +120,13 @@ const GameInfo: FC<GameInfoProps> = ({
                 }
           }
         >
-          <span className="text-purple-100/90 text-xs font-medium">
+          <span
+            className={cn(
+              'text-purple-100/90 text-xs font-medium',
+              'group-hover:text-purple-100',
+              'transition-all duration-300'
+            )}
+          >
             {playerName.slice(0, 16)}
             {playerName.length > 16 ? '...' : ''}
           </span>

@@ -24,9 +24,16 @@ const GameInterface: FC<GameInterfaceProps> = ({ gameInstance, onMounted }) => {
   const handleMuted = () => {
     if (!gameInstance) return;
 
-    const currentMute = gameInstance.sound.mute;
+    const soundManager = gameInstance.sound;
+    const nextMuteState = !isMuted;
 
-    gameInstance.sound.setMute(!currentMute);
+    try {
+      if (soundManager) {
+        soundManager.setMute(nextMuteState);
+      }
+    } catch (error) {
+      console.warn('⚠️ Не удалось установить состояние звука:', error);
+    }
   };
 
   useEffect(() => {
@@ -53,12 +60,16 @@ const GameInterface: FC<GameInterfaceProps> = ({ gameInstance, onMounted }) => {
       setIsMuted(status);
     };
 
-    setIsMuted(soundManager.mute);
+    try {
+      if (soundManager) setIsMuted(soundManager.mute);
+    } catch (error) {
+      console.warn('⚠️ Не удалось получить начальное состояние звука:', error);
+    }
 
-    soundManager.on('mute', syncMuteState);
+    soundManager?.on('mute', syncMuteState);
 
     return () => {
-      soundManager.off('mute', syncMuteState);
+      soundManager?.off('mute', syncMuteState);
     };
   }, [gameInstance]);
 

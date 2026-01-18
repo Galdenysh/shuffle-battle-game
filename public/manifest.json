@@ -2,6 +2,8 @@
   "name": "Shuffle Battle Game",
   "short_name": "ShuffleBattle",
   "display": "standalone",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "portrait",
   "start_url": "/",
   "icons": [
     {
@@ -17,4 +19,3 @@
     }
   ]
 }
-

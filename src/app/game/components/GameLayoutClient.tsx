@@ -26,7 +26,7 @@ const GameLayoutClient: FC<{ children: ReactNode }> = ({ children }) => {
   }, []);
 
   return (
-    <div className="h-dvh w-full no-scroll no-select" ref={rootRef}>
+    <div className="h-full w-full bg-black no-scroll no-select" ref={rootRef}>
       {children}
     </div>
   );

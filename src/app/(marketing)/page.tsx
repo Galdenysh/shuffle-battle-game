@@ -69,7 +69,7 @@ export default function MarketingPage() {
     >
       <BackgroundParticles />
 
-      <div className={cn('w-full max-w-md mx-auto')}>
+      <div className={cn('max-w-md')}>
         <MenuTitle
           className="mb-12"
           title="Shuffle Battle"
