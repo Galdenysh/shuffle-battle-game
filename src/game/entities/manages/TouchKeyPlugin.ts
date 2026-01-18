@@ -4,7 +4,7 @@ import { EventBus } from '@/game/core';
 import { Abilities, ControlMode, Direction, EmitEvents } from '@/types';
 import type {
   AbilityTriggeredEvent,
-  ControlModeTriggeredEvent,
+  ControlModeChangedEvent,
   MoveTriggeredEvent,
 } from '@/types';
 
@@ -56,7 +56,7 @@ export class TouchKeyPlugin {
 
     EventBus.off(EmitEvents.MOVE_TRIGGERED, this.handleMove, this);
     EventBus.off(EmitEvents.ABILITY_TRIGGERED, this.handleAbility, this);
-    EventBus.off(EmitEvents.CONTROL_MODE_TRIGGERED, this.handleMode, this);
+    EventBus.off(EmitEvents.CONTROL_MODE_COMMAND, this.handleMode, this);
 
     this.scene?.events.off('shutdown', this.destroy, this);
     this.scene?.events.off('destroy', this.destroy, this);
@@ -104,13 +104,16 @@ export class TouchKeyPlugin {
 
     EventBus.on(EmitEvents.MOVE_TRIGGERED, this.handleMove, this);
     EventBus.on(EmitEvents.ABILITY_TRIGGERED, this.handleAbility, this);
-    EventBus.on(EmitEvents.CONTROL_MODE_TRIGGERED, this.handleMode, this);
+    EventBus.on(EmitEvents.CONTROL_MODE_COMMAND, this.handleMode, this);
 
     this.scene.events.once('shutdown', this.destroy, this);
     this.scene.events.once('destroy', this.destroy, this);
   }
 
-  private handleMove({ moveName, isActive }: MoveTriggeredEvent['payload']): void {
+  private handleMove({
+    moveName,
+    isActive,
+  }: MoveTriggeredEvent['payload']): void {
     const key = this._touchMoveKeys?.[moveName];
 
     if (!key) return;
@@ -149,7 +152,7 @@ export class TouchKeyPlugin {
     }
   }
 
-  private handleMode({ mode }: ControlModeTriggeredEvent['payload']): void {
+  private handleMode({ mode }: ControlModeChangedEvent['payload']): void {
     const key = this._touchModeKey;
 
     if (!key) return;

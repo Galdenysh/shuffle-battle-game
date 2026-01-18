@@ -37,8 +37,14 @@ export class InputManager {
     this.setupInputs();
     this.setupTouch();
     this.bindSceneEvents();
+  }
 
-    this.scene.events.on('update', this.checkAbilityTimeout.bind(this));
+  public sync() {
+    const mode = this._isStopMode
+      ? ControlMode.STOP_MODE
+      : ControlMode.MOVE_MODE;
+
+    EventBus.emit(EmitEvents.CONTROL_MODE_CHANGED, { mode });
   }
 
   public destroy(): void {
@@ -101,20 +107,9 @@ export class InputManager {
     this.keyF = keyboard.addKey(Input.Keyboard.KeyCodes.F);
 
     this.keyR.on('down', () => this.activateAbility(Abilities.RUNNING_MAN));
-
     this.keyT.on('down', () => this.activateAbility(Abilities.T_STEP_LEFT));
-
     this.keyY.on('down', () => this.activateAbility(Abilities.T_STEP_RIGHT));
-
-    this.keyF.on('down', () => {
-      this.toggleAbilityMode();
-
-      const mode: ControlMode = this._isStopMode
-        ? ControlMode.STOP_MODE
-        : ControlMode.MOVE_MODE;
-
-      EventBus.emit(EmitEvents.CONTROL_MODE_TRIGGERED, { mode });
-    });
+    this.keyF.on('down', this.toggleAbilityMode, this);
   }
 
   private setupTouch(): void {
@@ -155,6 +150,8 @@ export class InputManager {
   private bindSceneEvents(): void {
     if (!this.scene) return;
 
+    this.scene.events.on('update', this.checkAbilityTimeout, this);
+    this.scene.events.once('update', this.sync, this);
     this.scene.events.once('shutdown', this.destroy, this);
     this.scene.events.once('destroy', this.destroy, this);
   }
@@ -162,6 +159,8 @@ export class InputManager {
   private unbindSceneEvents(): void {
     if (!this.scene) return;
 
+    this.scene.events.off('update', this.checkAbilityTimeout, this);
+    this.scene.events.off('update', this.sync, this);
     this.scene.events.off('shutdown', this.destroy, this);
     this.scene.events.off('destroy', this.destroy, this);
   }
@@ -253,17 +252,20 @@ export class InputManager {
   }
 
   private toggleAbilityMode(): void {
-    this._isStopMode = !this._isStopMode;
+    this.setStopMode(
+      this._isStopMode ? ControlMode.MOVE_MODE : ControlMode.STOP_MODE
+    );
   }
 
   private setStopMode(mode: ControlMode | null): void {
     if (!mode) return;
 
-    if (mode === ControlMode.STOP_MODE) {
-      this._isStopMode = true;
-    } else {
-      this._isStopMode = false;
-    }
+    const nextValue = mode === ControlMode.STOP_MODE;
+
+    if (this._isStopMode === nextValue) return;
+
+    this._isStopMode = nextValue;
+    this.sync();
   }
 
   private activateAbility(moveType: Abilities): void {

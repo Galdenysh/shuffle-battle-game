@@ -1,6 +1,5 @@
 'use client';
 
-
 import type { FC } from 'react';
 import ControlButton from './ControlButton';
 import ArrowIcons from './ArrowIcons';
@@ -9,7 +8,6 @@ import { Abilities, ControlMode, Direction } from '@/types';
 
 interface ControlsProps {
   isStopMode: boolean;
-  onModeChange: (isStopMode: boolean) => void;
   handleMovePress: (moveName: Direction, isActive: boolean) => void;
   handleAbilityPress: (abilityName: Abilities, isActive: boolean) => void;
   handleModePress: (mode: ControlMode) => void;
@@ -25,7 +23,6 @@ const abilitiesClasses = {
 
 const Controls: FC<ControlsProps> = ({
   isStopMode,
-  onModeChange,
   handleMovePress,
   handleAbilityPress,
   handleModePress,
@@ -59,8 +56,6 @@ const Controls: FC<ControlsProps> = ({
       handleMovePress(moveName, isActive);
     } else if (isActive) {
       const isNewAbilityMode = !isStopMode;
-
-      onModeChange(isNewAbilityMode);
 
       handleModePress(
         isNewAbilityMode ? ControlMode.STOP_MODE : ControlMode.MOVE_MODE

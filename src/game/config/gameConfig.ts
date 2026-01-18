@@ -3,6 +3,8 @@ import { BASE_HEIGHT, BASE_WIDTH } from '../constants';
 import { MainScene } from '../scenes';
 
 export const config: Types.Core.GameConfig = {
+  title: 'Shuffle Battle',
+
   type: AUTO,
 
   width: BASE_WIDTH,

@@ -11,7 +11,8 @@ export enum EmitEvents {
   // Control Events
   MOVE_TRIGGERED = 'move-triggered',
   ABILITY_TRIGGERED = 'ability-triggered',
-  CONTROL_MODE_TRIGGERED = 'control-mode-triggered',
+  CONTROL_MODE_COMMAND = 'control-mode-command', // Команда от React
+  CONTROL_MODE_CHANGED = 'control-mode-changed', // Факт изменения в Phaser
   RESTART_TRIGGERED = 'restart-triggered',
 
   // Gameplay Events
@@ -55,8 +56,16 @@ export interface AbilityTriggeredEvent {
   timestamp?: number;
 }
 
-export interface ControlModeTriggeredEvent {
-  type: EmitEvents.CONTROL_MODE_TRIGGERED;
+export interface ControlModeCommandEvent {
+  type: EmitEvents.CONTROL_MODE_COMMAND;
+  payload: {
+    mode: ControlMode;
+  };
+  timestamp?: number;
+}
+
+export interface ControlModeChangedEvent {
+  type: EmitEvents.CONTROL_MODE_CHANGED;
   payload: {
     mode: ControlMode;
   };
@@ -106,7 +115,8 @@ export type GameEvent =
   | CurrentSceneReadyEvent
   | MoveTriggeredEvent
   | AbilityTriggeredEvent
-  | ControlModeTriggeredEvent
+  | ControlModeCommandEvent
+  | ControlModeChangedEvent
   | ScoreChangedEvent
   | TimeChangedEvent
   | GameStateChangedEvent

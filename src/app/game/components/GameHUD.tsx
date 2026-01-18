@@ -12,17 +12,15 @@ import {
 } from '@/components/ui';
 import { BASE_HEIGHT, BASE_WIDTH } from '@/game/constants';
 import { EventBus } from '@/game/core';
+import { cn } from '@/lib/utils';
 import {
   Abilities,
   ControlMode,
+  ControlModeChangedEvent,
   Direction,
   GameCommand,
   GameState,
   TimeChangedEvent,
-} from '@/types';
-import { cn } from '@/lib/utils';
-import {
-  ControlModeTriggeredEvent,
   EmitEvents,
   SceneVisibleEvent,
   ScoreChangedEvent,
@@ -73,17 +71,11 @@ const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
   };
 
   const handleModePress = (mode: ControlMode) => {
-    EventBus.emit(EmitEvents.CONTROL_MODE_TRIGGERED, { mode });
-  };
-
-  const handleAbilityMode = (newIsAbilityMode: boolean) => {
-    setIsStopMode(newIsAbilityMode);
+    EventBus.emit(EmitEvents.CONTROL_MODE_COMMAND, { mode });
   };
 
   const handleMode = () => {
     const isNewAbilityMode = !isStopMode;
-
-    handleAbilityMode(isNewAbilityMode);
 
     handleModePress(
       isNewAbilityMode ? ControlMode.STOP_MODE : ControlMode.MOVE_MODE
@@ -94,22 +86,20 @@ const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
     EventBus.emit(EmitEvents.LEVEL_COMPLETED_ACTION, {
       action: GameCommand.RESTART,
     });
-
-    setIsStopMode(false); // Сброс touch кнопки
   };
 
   // Синхронизация с touch кнопкой
   useEffect(() => {
     const handleModeTriggered = ({
       mode,
-    }: ControlModeTriggeredEvent['payload']) => {
+    }: ControlModeChangedEvent['payload']) => {
       setIsStopMode(mode === ControlMode.STOP_MODE);
     };
 
-    EventBus.on(EmitEvents.CONTROL_MODE_TRIGGERED, handleModeTriggered);
+    EventBus.on(EmitEvents.CONTROL_MODE_CHANGED, handleModeTriggered);
 
     return () => {
-      EventBus.off(EmitEvents.CONTROL_MODE_TRIGGERED, handleModeTriggered);
+      EventBus.off(EmitEvents.CONTROL_MODE_CHANGED, handleModeTriggered);
     };
   }, []);
 
@@ -249,7 +239,6 @@ const GameHUD: FC<GameHUDProps> = ({ isVisibleGamepad = true }) => {
           >
             <Controls
               isStopMode={isStopMode}
-              onModeChange={handleAbilityMode}
               handleMovePress={handleMovePress}
               handleAbilityPress={handleAbilityPress}
               handleModePress={handleModePress}
