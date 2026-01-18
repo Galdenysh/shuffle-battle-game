@@ -1,7 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import type { FC } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import {
   Modal,
@@ -38,9 +40,11 @@ const GameInfo: FC<GameInfoProps> = ({
   onMuted,
 }) => {
   const router = useRouter();
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const playerName =
-    sessionStorage.getItem(STORAGE_KEYS.PLAYER_NAME) ||
+    (typeof window !== 'undefined' &&
+      sessionStorage.getItem(STORAGE_KEYS.PLAYER_NAME)) ||
     DEFAULT_VALUES.PLAYER_NAME;
 
   const toggleGamepadText = `${
@@ -49,30 +53,72 @@ const GameInfo: FC<GameInfoProps> = ({
 
   const toggleSoundText = `${isMuted ? 'Включить' : 'Выключить'} звук`;
 
-  const handleExit = () => {
-    router.push('/');
-  };
-
-  const handleVisibleGamepad = () => {
-    onVisibleGamepad?.(!isVisibleGamepad);
+  const handleName = () => {
+    setIsExpanded(!isExpanded);
   };
 
   const handleMuted = () => {
     onMuted?.();
   };
 
+  const handleVisibleGamepad = () => {
+    onVisibleGamepad?.(!isVisibleGamepad);
+  };
+
+  const handleExit = () => {
+    router.push('/');
+  };
+
   return (
     <div
       className={cn(
-        'absolute top-2 right-2 z-150 px-1.5 py-1.5 bg-black/50 backdrop-blur-sm border-2 border-purple-500/30 text-purple-300/90 font-mono text-xs shadow-[0_0_4px_rgba(147,51,234,0.15)] flex items-center gap-1.5 min-w-fit'
+        'absolute top-2 right-2 z-150',
+        'flex items-center gap-1.5',
+        'min-w-fit px-1.5 py-1.5',
+        'bg-black/50 backdrop-blur-sm border-2 border-purple-500/30',
+        'shadow-[0_0_4px_rgba(147,51,234,0.15)]',
+        'text-purple-300/90 font-mono text-xs'
       )}
     >
-      <div className="flex items-center gap-1">
-        <span className="text-purple-400/80 text-[10px]">PL:</span>
-        <span className="text-purple-100/90 text-xs font-medium truncate max-w-[80px]">
-          {playerName.slice(0, 10)}
-          {playerName.length > 10 ? '...' : ''}
+      <div
+        className={cn(
+          'flex items-center',
+          'px-1 py-0.5',
+          'cursor-pointer select-none',
+          'hover:bg-purple-500/10 transition-all duration-300'
+        )}
+        onClick={handleName}
+      >
+        <span className="text-purple-400/80 text-[10px]">
+          {`PL${isExpanded ? ':' : ''}`}
         </span>
+
+        <motion.div
+          className="overflow-hidden whitespace-nowrap"
+          initial={false}
+          animate={{
+            width: isExpanded ? 'auto' : 0,
+            opacity: isExpanded ? 1 : 0,
+          }}
+          transition={
+            isExpanded
+              ? {
+                  type: 'spring',
+                  stiffness: 300,
+                  damping: 20,
+                }
+              : {
+                  type: 'tween',
+                  duration: 0.2,
+                  ease: 'circOut',
+                }
+          }
+        >
+          <span className="text-purple-100/90 text-xs font-medium">
+            {playerName.slice(0, 16)}
+            {playerName.length > 16 ? '...' : ''}
+          </span>
+        </motion.div>
       </div>
       <div className="h-3 w-px bg-purple-600/50" />
       <Modal>
