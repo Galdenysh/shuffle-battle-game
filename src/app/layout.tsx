@@ -69,7 +69,7 @@ export default function RootLayout({
           'h-full m-0 p-0 bg-black overflow-hidden'
         )}
       >
-        <SerwistProvider swUrl="/serwist/sw.js">
+        <SerwistProvider swUrl="/sw.js">
           <PreventZoom />
           <OrientationLock />
           <VKProvider />

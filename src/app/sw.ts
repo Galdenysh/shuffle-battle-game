@@ -1,13 +1,10 @@
 /// <reference lib="esnext" />
 /// <reference lib="webworker" />
-import { defaultCache } from '@serwist/turbopack/worker';
+import { defaultCache } from '@serwist/next/worker';
+import { CacheFirst, ExpirationPlugin } from 'serwist';
 import type { PrecacheEntry, SerwistGlobalConfig } from 'serwist';
 import { Serwist } from 'serwist';
 
-// This declares the value of injectionPoint to TypeScript.
-// injectionPoint is the string that will be replaced by the
-// actual precache manifest. By default, this string is set to
-// "self.__SW_MANIFEST".
 declare global {
   interface WorkerGlobalScope extends SerwistGlobalConfig {
     __SW_MANIFEST: (PrecacheEntry | string)[] | undefined;
@@ -21,7 +18,31 @@ const serwist = new Serwist({
   skipWaiting: true,
   clientsClaim: true,
   navigationPreload: true,
-  runtimeCaching: defaultCache,
+  runtimeCaching: [
+    {
+      matcher: ({ url }) => url.searchParams.has('_rsc'),
+      handler: new CacheFirst({
+        cacheName: 'next-data-v1',
+        plugins: [
+          // Чтобы кэш не раздувался, храним данные 7 дней
+          new ExpirationPlugin({
+            maxAgeSeconds: 7 * 24 * 60 * 60, // 7 дней в секундах
+            maxEntries: 100, // ограничение по количеству файлов
+          }),
+          {
+            cacheWillUpdate: async ({ response }) => {
+              if (response && response.status === 200) {
+                return response;
+              }
+
+              return null; // Ошибки (404, 500) игнорируем и не кэшируем
+            },
+          },
+        ],
+      }),
+    },
+    ...defaultCache,
+  ],
   fallbacks: {
     entries: [
       {
