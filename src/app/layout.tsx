@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import type { Metadata, Viewport } from 'next';
 import { JetBrains_Mono } from 'next/font/google';
 import { cn } from '@/lib/utils';
-import { OrientationLock, PreventZoom } from '@/components';
+import { OrientationLock, PreventZoom, VKProvider } from '@/components';
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin', 'cyrillic'],
@@ -66,6 +66,7 @@ export default function RootLayout({
       >
         <PreventZoom />
         <OrientationLock />
+        <VKProvider />
         {children}
       </body>
     </html>
