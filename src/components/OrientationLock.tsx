@@ -8,7 +8,7 @@ const OrientationLock: FC = () => {
   return (
     <div
       className={cn(
-        'fixed inset-0 flex-col items-center justify-center p-6 hidden z-9999',
+        'hidden fixed inset-0 flex-col items-center justify-center p-6 z-9999',
         'bg-black text-white',
         '[@media(pointer:coarse)]:landscape:flex'
       )}

@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import type { Metadata, Viewport } from 'next';
 import { JetBrains_Mono } from 'next/font/google';
 import { cn } from '@/lib/utils';
-import { OrientationLock } from '@/components';
+import { OrientationLock, PreventZoom } from '@/components';
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin', 'cyrillic'],
@@ -64,8 +64,9 @@ export default function RootLayout({
           'h-full m-0 p-0 bg-black overflow-hidden'
         )}
       >
-        {children}
+        <PreventZoom />
         <OrientationLock />
+        {children}
       </body>
     </html>
   );

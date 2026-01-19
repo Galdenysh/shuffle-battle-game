@@ -21,6 +21,11 @@ export default function GamePage() {
   const [showGame, setShowGame] = useState<boolean>(false);
   const [gameInstance, setGameInstance] = useState<Game | null>(null);
 
+  // useCallback обязателен, так как функция передается в массив зависимостей
+  const onComplete = useCallback(() => {
+    console.log('✅ Все компоненты загружены!');
+  }, []);
+
   const {
     isLoading,
     progress,
@@ -28,11 +33,7 @@ export default function GamePage() {
     setHUDMounted,
     setGameMounted,
     setGameReady,
-  } = useGameLoader({
-    onComplete: () => {
-      console.log('✅ Все компоненты загружены!');
-    },
-  });
+  } = useGameLoader({ onComplete });
 
   const onGameReady = useCallback((ref: RefPhaserGame | null) => {
     const gameRef = ref;

@@ -26,7 +26,7 @@ const LOADING_TIPS = [
   'MC следит за тобой. Удиви его, и он признает тебя легендой!',
 ];
 
-const TIP_CHANGE_INTERVAL = 3000;
+const TIP_CHANGE_INTERVAL = 5000;
 
 const getRandomTip = (currentTipIndex: number): number => {
   let newIndex;
@@ -50,7 +50,7 @@ const LoadingScreen: FC<LoadingScreenProps> = ({
 
   // Получение текущей подсказки
   const getCurrentTip = () => {
-    return isMounted ? `💡 ${LOADING_TIPS[currentTipIndex]}` : '';
+    return isMounted ? LOADING_TIPS[currentTipIndex] : '';
   };
 
   // Обработчик завершения загрузки
@@ -140,13 +140,18 @@ const LoadingScreen: FC<LoadingScreenProps> = ({
         <AnimatePresence mode="wait">
           <motion.div
             key={currentTipIndex}
-            className="text-center text-cyan-100/70 text-sm  tracking-wide"
+            className="px-6 text-center text-cyan-100/70 text-sm tracking-wide"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
-            <p className="drop-shadow-[0_0_3px_rgba(0,255,255,0.3)]">
+            <p className="drop-shadow-[0_0_3px_rgba(0,255,255,0.5)]">
+              <span className="relative w-0 h-0">
+                <span className="absolute -left-6 brightness-125 select-none">
+                  💡
+                </span>
+              </span>
               {getCurrentTip()}
             </p>
           </motion.div>
@@ -159,3 +164,21 @@ const LoadingScreen: FC<LoadingScreenProps> = ({
 LoadingScreen.displayName = 'LoadingScreen';
 
 export default LoadingScreen;
+
+{
+  /* <motion.div
+  key={currentTipIndex}
+  className="relative px-8 text-center text-cyan-100/70 text-sm tracking-wide"
+  initial={{ opacity: 0, scale: 0.95 }}
+  animate={{ opacity: 1, scale: 1 }}
+  exit={{ opacity: 0, scale: 0.95 }}
+  transition={{ duration: 0.3 }}
+>
+  <p className="inline-block relative">
+    <span className="absolute -left-7 top-0 brightness-125">💡</span>
+    <span className="drop-shadow-[0_0_3px_rgba(0,255,255,0.3)]">
+      {getCurrentTip()}
+    </span>
+  </p>
+</motion.div> */
+}
