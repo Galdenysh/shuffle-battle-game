@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  serverExternalPackages: ['esbuild-wasm'],
 
   // Настройка CSP заголовков для VK
   async headers() {

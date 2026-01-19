@@ -5,6 +5,8 @@ import type { Metadata, Viewport } from 'next';
 import { JetBrains_Mono } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { OrientationLock, PreventZoom, VKProvider } from '@/components';
+import { SerwistProvider } from './serwist';
+import { siteConfig } from '@/lib/constants';
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin', 'cyrillic'],
@@ -14,11 +16,14 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Shuffle Battle Game',
-  description: 'Танцевальный баттл по шаффлу',
-  manifest: '/manifest.json',
+  applicationName: siteConfig.name,
+  title: {
+    default: siteConfig.title,
+    template: siteConfig.titleTemplate,
+  },
+  description: siteConfig.description,
   appleWebApp: {
-    title: 'Shuffle Battle',
+    title: siteConfig.title,
     capable: true,
     statusBarStyle: 'black-translucent',
   },
@@ -64,10 +69,12 @@ export default function RootLayout({
           'h-full m-0 p-0 bg-black overflow-hidden'
         )}
       >
-        <PreventZoom />
-        <OrientationLock />
-        <VKProvider />
-        {children}
+        <SerwistProvider swUrl="/serwist/sw.js">
+          <PreventZoom />
+          <OrientationLock />
+          <VKProvider />
+          {children}
+        </SerwistProvider>
       </body>
     </html>
   );

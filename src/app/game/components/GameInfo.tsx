@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { FC } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
@@ -42,10 +42,9 @@ const GameInfo: FC<GameInfoProps> = ({
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const playerName =
-    (typeof window !== 'undefined' &&
-      sessionStorage.getItem(STORAGE_KEYS.PLAYER_NAME)) ||
-    DEFAULT_VALUES.PLAYER_NAME;
+  const [playerName, setPlayerName] = useState<string>(
+    DEFAULT_VALUES.PLAYER_NAME
+  );
 
   const toggleGamepadText = `${
     isVisibleGamepad ? 'Скрыть' : 'Показать'
@@ -69,6 +68,12 @@ const GameInfo: FC<GameInfoProps> = ({
     router.push('/');
   };
 
+  useEffect(() => {
+    const savedName = sessionStorage.getItem(STORAGE_KEYS.PLAYER_NAME);
+
+    if (savedName) setPlayerName(savedName);
+  }, []);
+
   return (
     <div
       className={cn(
@@ -76,7 +81,7 @@ const GameInfo: FC<GameInfoProps> = ({
         'flex items-center gap-1.5 min-w-fit px-1.5 py-1.5',
         'bg-black/50 backdrop-blur-sm border-2 border-purple-500/30',
         'shadow-[0_0_4px_rgba(147,51,234,0.15)]',
-        'text-purple-300/90  text-xs',
+        'text-purple-300/90  text-xs'
       )}
     >
       <div

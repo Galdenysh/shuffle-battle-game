@@ -35,8 +35,7 @@ const PhaserGame = forwardRef<RefPhaserGame, PhaserGameProps>(
     useLayoutEffect(() => {
       if (gameRef.current === null) {
         const playerName =
-          (typeof window !== 'undefined' &&
-            sessionStorage.getItem(STORAGE_KEYS.PLAYER_NAME)) ||
+          sessionStorage.getItem(STORAGE_KEYS.PLAYER_NAME) ||
           DEFAULT_VALUES.PLAYER_NAME;
 
         gameRef.current = StartGame('phaser-game', { playerName });
