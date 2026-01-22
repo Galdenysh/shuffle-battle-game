@@ -2,9 +2,23 @@
 const nextConfig = {
   reactStrictMode: true,
 
-  // Настройка CSP заголовков для VK
+  env: {
+    NEXT_PUBLIC_ASSET_VERSION: Date.now().toString(),
+  },
+
   async headers() {
     return [
+      // Отключаем кэширование для CDN
+      {
+        source: '/(:path*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          },
+        ],
+      },
+      // Настройка CSP заголовков для VK
       {
         source: '/:path*',
         headers: [

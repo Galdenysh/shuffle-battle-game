@@ -212,6 +212,8 @@ export class MainScene extends Scene {
       this
     );
 
+    this.load.off('progress');
+    this.load.off('complete');
     this.events.off('shutdown', this.cleanup, this);
     this.events.off('destroy', this.cleanup, this);
   }
