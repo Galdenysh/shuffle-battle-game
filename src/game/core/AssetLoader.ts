@@ -1,6 +1,7 @@
 import type { Scene } from 'phaser';
 import type { CharacterType } from '../entities';
 import { ASSET_KEYS, CHARACTER_NAME_TO_KEY } from '../constants';
+import { v } from '@/lib/utils';
 
 export class AssetLoader {
   static preload(
@@ -20,16 +21,16 @@ export class AssetLoader {
 
     load.audio(
       ASSET_KEYS.SFX_COMBO_SUCCESS,
-      'assets/audio/sfx/combo_success.mp3'
+      v('assets/audio/sfx/combo_success.mp3')
     );
 
     load.audio(
       ASSET_KEYS.SFX_HALL_IMPULSE,
-      'assets/audio/sfx/hall_impulse.wav'
+      v('assets/audio/sfx/hall_impulse.wav')
     );
 
-    load.audio(ASSET_KEYS.SOUND_BATTLE, 'assets/audio/battle.ogg');
-    load.audio(ASSET_KEYS.SOUND_BACKGROUND, 'assets/audio/background.ogg');
+    load.audio(ASSET_KEYS.SOUND_BATTLE, v('assets/audio/battle.ogg'));
+    load.audio(ASSET_KEYS.SOUND_BACKGROUND, v('assets/audio/background.ogg'));
   }
 
   static loadEnvironment(scene: Scene, environmentName: string): void {
@@ -37,28 +38,28 @@ export class AssetLoader {
 
     env.image(
       ASSET_KEYS.ENV_BACKGROUND,
-      `assets/environment/${environmentName}/background.png`
+      v(`assets/environment/${environmentName}/background.png`)
     );
 
     env.image(
       ASSET_KEYS.ENV_FOREGROUND,
-      `assets/environment/${environmentName}/foreground.png`
+      v(`assets/environment/${environmentName}/foreground.png`)
     );
 
     env.spritesheet(
       ASSET_KEYS.ENV_BACKGROUND_ANIM,
-      `assets/environment/${environmentName}/spritesheet.png`,
+      v(`assets/environment/${environmentName}/spritesheet.png`),
       { frameWidth: 720, frameHeight: 1280 }
     );
 
     env.image(
       ASSET_KEYS.ENV_COLLISION_TILES,
-      `assets/environment/${environmentName}/tileset.png`
+      v(`assets/environment/${environmentName}/tileset.png`)
     );
 
     env.tilemapTiledJSON(
       ASSET_KEYS.ENV_COLLISION_MAP,
-      `assets/environment/${environmentName}/tilemap.json`
+      v(`assets/environment/${environmentName}/tilemap.json`)
     );
   }
 
@@ -71,8 +72,8 @@ export class AssetLoader {
     charactersNameList.forEach((name) => {
       env.atlas(
         `${CHARACTER_NAME_TO_KEY[name]}`,
-        `assets/characters/${name}/texture.png`,
-        `assets/characters/${name}/texture.json`
+        v(`assets/characters/${name}/texture.png`),
+        v(`assets/characters/${name}/texture.json`)
       );
     });
   }
