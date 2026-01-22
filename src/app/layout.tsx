@@ -3,8 +3,9 @@ import './globals.css';
 import type { ReactNode } from 'react';
 import type { Metadata, Viewport } from 'next';
 import { JetBrains_Mono } from 'next/font/google';
-import { cn } from '@/lib/utils';
 import { OrientationLock, PreventZoom, VKProvider } from '@/components';
+import { cn } from '@/lib/utils';
+import { siteConfig } from '@/lib/constants';
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin', 'cyrillic'],
@@ -14,11 +15,14 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Shuffle Battle Game',
-  description: 'Танцевальный баттл по шаффлу',
-  manifest: '/manifest.json',
+  applicationName: siteConfig.name,
+  title: {
+    default: siteConfig.title,
+    template: siteConfig.titleTemplate,
+  },
+  description: siteConfig.description,
   appleWebApp: {
-    title: 'Shuffle Battle',
+    title: siteConfig.title,
     capable: true,
     statusBarStyle: 'black-translucent',
   },
@@ -27,14 +31,24 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.ico' },
-      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icons/favicon.ico' },
+      {
+        url: '/icons/favicon.png',
+        sizes: '32x32',
+        type: 'image/png',
+      },
     ],
-    apple: [{ url: '/icon-180.png', sizes: '180x180', type: 'image/png' }],
+    apple: [
+      {
+        url: '/icons/icon-180.png',
+        sizes: '180x180',
+        type: 'image/png',
+      },
+    ],
     other: [
       {
         rel: 'apple-touch-icon',
-        url: '/icon-180.png',
+        url: '/icons/icon-180.png',
       },
     ],
   },
