@@ -10,7 +10,14 @@ const nextConfig = {
     return [
       // Отключаем кэширование для CDN
       {
-        source: '/(:path*)',
+        source: '/:path*',
+        has: [
+          {
+            type: 'header',
+            key: 'accept',
+            value: '(.*text/html.*|.*application/xhtml\\+xml.*)',
+          },
+        ],
         headers: [
           {
             key: 'Cache-Control',

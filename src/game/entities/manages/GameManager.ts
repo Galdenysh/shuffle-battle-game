@@ -1,6 +1,7 @@
 import type { Scene, Time } from 'phaser';
 import { EventBus } from '@/game/core';
 import { GameState, EmitEvents } from '@/types';
+import logger from '@/lib/logger';
 
 export class GameManager {
   private scene: Scene | null = null;
@@ -30,8 +31,8 @@ export class GameManager {
 
   public start(): void {
     if (!this.isReady) {
-      console.warn(
-        `⚠️ Игра не может быть начата из состояния: ${this.currentState}`
+      logger.warn(
+        `Игра не может быть начата из состояния: ${this.currentState}`
       );
 
       return;

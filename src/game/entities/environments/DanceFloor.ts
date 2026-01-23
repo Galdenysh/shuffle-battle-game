@@ -3,6 +3,7 @@ import { Background } from '../abstract';
 import { BackgroundConfig } from '../types';
 import { BACKGROUND_ANIMATION_DEFAULTS } from '../constants';
 import { ASSET_KEYS } from '@/game/constants';
+import logger from '@/lib/logger';
 
 export class DanceFloor extends Background {
   private static readonly DEFAULT_CONFIG: BackgroundConfig = {
@@ -62,7 +63,7 @@ export class DanceFloor extends Background {
     });
 
     if (!tileset) {
-      console.warn(`⚠️ Tileset не инициализирован в ${this.constructor.name}`);
+      logger.warn(`Tileset не инициализирован в ${this.constructor.name}`);
 
       return;
     }
@@ -70,8 +71,8 @@ export class DanceFloor extends Background {
     this.wallsLayer = map.createLayer('walls', tileset, 0, 0);
 
     if (!this.wallsLayer) {
-      console.warn(
-        `⚠️ Walls Layer не инициализирован в ${this.constructor.name}`
+      logger.warn(
+        `Walls Layer не инициализирован в ${this.constructor.name}`
       );
 
       return;

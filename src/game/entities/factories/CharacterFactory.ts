@@ -2,6 +2,7 @@ import type { Scene } from 'phaser';
 import { Player } from '../abstract';
 import { MCMan, ShufflerMan } from '../characters';
 import type { FactoryCharacterConfig } from '../types';
+import logger from '@/lib/logger';
 
 export class CharacterFactory {
   static create(
@@ -25,8 +26,8 @@ export class CharacterFactory {
         return this.createMCMan(scene, baseConfig, custom);
 
       default:
-        console.warn(
-          `Unknown character type: ${type}, using shuffler as fallback`
+        logger.warn(
+          `Неизвестный тип персонажа ${type}, используется shuffler_man в качестве резервного варианта`
         );
 
         return this.createShufflerMan(scene, baseConfig, custom);

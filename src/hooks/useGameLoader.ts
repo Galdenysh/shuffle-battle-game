@@ -1,5 +1,6 @@
 'use client';
 
+import logger from '@/lib/logger';
 import { useState, useEffect } from 'react';
 
 interface LoadingState {
@@ -56,7 +57,7 @@ export function useGameLoader({ onComplete }: UseGameLoaderProps) {
 
       updateProgress({ eventBus: true });
     } catch (error) {
-      console.error('❌ Ошибка загрузки EventBus:', error);
+      logger.error('Ошибка загрузки EventBus:', error);
 
       setMessage('Ошибка! Обновите страницу.');
     }

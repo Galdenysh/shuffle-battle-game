@@ -1,5 +1,6 @@
 import { GameObjects, Scene, Tilemaps } from 'phaser';
 import type { AnimationConfig, BackgroundConfig, TileConfig } from '../types';
+import logger from '@/lib/logger';
 
 export abstract class Background extends GameObjects.Sprite {
   protected config: BackgroundConfig;
@@ -98,8 +99,8 @@ export abstract class Background extends GameObjects.Sprite {
 
     if (!this.scene.anims.exists(key)) {
       if (cachedTime === undefined) {
-        console.warn(
-          `⚠️ Анимация ${key} не обнаружена для ${this.constructor.name}`
+        logger.warn(
+          `Анимация ${key} не обнаружена для ${this.constructor.name}`
         );
       }
 

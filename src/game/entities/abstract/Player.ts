@@ -3,6 +3,7 @@ import type { Scene } from 'phaser';
 import type { AnimationConfig, PlayerConfig } from '../types';
 import { CHARACTER_ANIMATION_DEFAULTS } from '../constants';
 import { Direction } from '@/types';
+import logger from '@/lib/logger';
 
 export abstract class Player extends Physics.Arcade.Sprite {
   protected config: PlayerConfig;
@@ -40,8 +41,8 @@ export abstract class Player extends Physics.Arcade.Sprite {
     const body = this.body as Physics.Arcade.Body | null;
 
     if (!body) {
-      console.warn(
-        `⚠️ Physics body не инициализирован в ${this.constructor.name}`
+      logger.warn(
+        `Physics body не инициализирован в ${this.constructor.name}`
       );
 
       return;
@@ -63,8 +64,8 @@ export abstract class Player extends Physics.Arcade.Sprite {
     const body = this.body as Physics.Arcade.Body | null;
 
     if (!body) {
-      console.warn(
-        `⚠️ Physics body не инициализирован в ${this.constructor.name}`
+      logger.warn(
+        `Physics body не инициализирован в ${this.constructor.name}`
       );
 
       return;
@@ -81,8 +82,8 @@ export abstract class Player extends Physics.Arcade.Sprite {
     const body = this.body as Physics.Arcade.Body | null;
 
     if (!body) {
-      console.warn(
-        `⚠️ Physics body не инициализирован в ${this.constructor.name}`
+      logger.warn(
+        `Physics body не инициализирован в ${this.constructor.name}`
       );
 
       return;
@@ -106,8 +107,8 @@ export abstract class Player extends Physics.Arcade.Sprite {
     const body = this.body as Physics.Arcade.Body | null;
 
     if (!body) {
-      console.warn(
-        `⚠️ Physics body не инициализирован в ${this.constructor.name}`
+      logger.warn(
+        `Physics body не инициализирован в ${this.constructor.name}`
       );
 
       return;
@@ -131,8 +132,8 @@ export abstract class Player extends Physics.Arcade.Sprite {
     const body = this.body as Physics.Arcade.Body | null;
 
     if (!body) {
-      console.warn(
-        `⚠️ Physics body не инициализирован в ${this.constructor.name}`
+      logger.warn(
+        `Physics body не инициализирован в ${this.constructor.name}`
       );
 
       return;
@@ -276,8 +277,8 @@ export abstract class Player extends Physics.Arcade.Sprite {
     const offsetY = (this.height - height) / 2 + this.config.colliderOffsetY;
 
     if (!body) {
-      console.warn(
-        `⚠️ Physics body не инициализирован в ${this.constructor.name}`
+      logger.warn(
+        `Physics body не инициализирован в ${this.constructor.name}`
       );
 
       return;
@@ -361,8 +362,8 @@ export abstract class Player extends Physics.Arcade.Sprite {
 
     if (!this.scene.anims.exists(key)) {
       if (cachedTime === undefined) {
-        console.warn(
-          `⚠️ Анимация ${key} не обнаружена для ${this.constructor.name}`
+        logger.warn(
+          `Анимация ${key} не обнаружена для ${this.constructor.name}`
         );
       }
 
