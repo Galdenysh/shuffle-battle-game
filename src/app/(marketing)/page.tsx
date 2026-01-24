@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { ChangeEvent, MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { BackgroundParticles } from './components';
 import {
@@ -23,6 +23,7 @@ export default function MarketingPage() {
   const [playerName, setPlayerName] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showHint, setShowHint] = useState(false);
 
   const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -32,6 +33,12 @@ export default function MarketingPage() {
     if (error && value.trim()) {
       setError('');
     }
+  };
+
+  const handleTutorialClick = () => {
+    setShowHint(false);
+
+    localStorage.setItem('onboarding_complete', 'true');
   };
 
   const handleStartGame = (e: MouseEvent<HTMLButtonElement>) => {
@@ -59,6 +66,12 @@ export default function MarketingPage() {
 
     router.push('/game');
   };
+
+  useEffect(() => {
+    const tutorialSeen = localStorage.getItem('onboarding_complete');
+
+    if (!tutorialSeen) setShowHint(true);
+  }, []);
 
   return (
     <div
@@ -121,15 +134,72 @@ export default function MarketingPage() {
           </MenuButton>
 
           <Modal>
-            <ModalTrigger>
-              <MenuGhostButton className="uppercase">
-                Инструкция к битве
-              </MenuGhostButton>
-            </ModalTrigger>
+            <div className="relative flex">
+              <ModalTrigger>
+                <MenuGhostButton
+                  className="uppercase"
+                  onClick={handleTutorialClick}
+                  onTouchStart={handleTutorialClick}
+                >
+                  Инструкция к битве
+                </MenuGhostButton>
+              </ModalTrigger>
+              <AnimatePresence>
+                {showHint && (
+                  <>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                    >
+                      <motion.span
+                        className={cn(
+                          'absolute top-0 left-full pl-4 flex pointer-events-none w-max z-20',
+                          'text-cyan-400 text-2xl'
+                        )}
+                        animate={{ x: [-4, 4, -4] }}
+                        transition={{ repeat: Infinity, duration: 1.5 }}
+                      >
+                        ⬅
+                      </motion.span>
+                      <motion.span
+                        className={cn(
+                          'absolute top-0 right-full pr-4 flex pointer-events-none w-max z-20',
+                          'text-cyan-400 text-2xl'
+                        )}
+                        animate={{ x: [4, -4, 4] }}
+                        transition={{ repeat: Infinity, duration: 1.5 }}
+                      >
+                        ⮕
+                      </motion.span>
+                      <div className="absolute top-full left-1/2 -translate-x-1/2 flex flex-col p-2 mt-2 w-[180px] bg-black/50 backdrop-blur-sm text-center">
+                        <p className="text-cyan-400 font-bold text-sm tracking-wider uppercase ">
+                          Новичок?
+                        </p>
+                        <p className="text-white/50 text-xs leading-tight normal-case">
+                          Тогда начни с правил!
+                        </p>
+                      </div>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+            </div>
             <TutorialModalBody />
           </Modal>
         </motion.form>
       </div>
     </div>
   );
+}
+
+{
+  /* <div className="flex flex-col p-2 bg-black/50 backdrop-blur-sm text-left max-w-[40px]">
+                        <p className="text-cyan-400 font-bold text-sm tracking-wider uppercase ">
+                          Начни здесь
+                        </p>
+                        <p className="text-white/50 text-xs max-w-[140px] leading-tight normal-case">
+                          Изучи правила перед боем
+                        </p>
+                      </div> */
 }

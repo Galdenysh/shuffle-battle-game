@@ -1,11 +1,35 @@
-
+import { Fragment } from 'react';
 import type { FC } from 'react';
 import { ModalContent } from '../ui';
+
+interface Combo {
+  name: string;
+  steps: string[];
+  multiplier: string;
+  isMaster?: boolean;
+}
 
 const keyClasses =
   'px-2 py-1 m-0.5 rounded bg-cyan-500/20 border border-cyan-500/40 text-xs text-cyan-300 shadow-[0_2px_0_rgba(6,182,212,0.3)]';
 
 const listClasses = 'flex flex-col gap-2 text-sm text-cyan-100/80';
+
+const COMBOS: Combo[] = [
+  {
+    name: 'T-Шаффл',
+    steps: ['T(L)', 'T(R)', 'T(L)', 'T(R)'],
+    multiplier: 'x1.1',
+  },
+  { name: 'Цепочка бега', steps: ['RM', 'RM', 'RM'], multiplier: 'x1.2' },
+  { name: 'База', steps: ['RM', 'T(R)', 'RM'], multiplier: 'x1.3' },
+  { name: 'Микс', steps: ['RM', 'T(L)', 'T(R)', 'RM'], multiplier: 'x1.8' },
+  {
+    name: 'Мастер',
+    steps: ['RM', 'T(L)', 'RM', 'T(R)', 'T(L)', 'RM'],
+    multiplier: 'x2.5',
+    isMaster: true,
+  },
+];
 
 const TutorialModalContent: FC = () => {
   return (
@@ -27,14 +51,12 @@ const TutorialModalContent: FC = () => {
                   {key}
                 </kbd>
               ))}{' '}
-              <span className="text-cyan-500/60">
-                (на мобильных — тач-панель)
-              </span>
-              .
+              <span className="text-cyan-500/60">(Touch: джойстик)</span>
             </li>
             <li>
-              <kbd className={keyClasses}>F</kbd> — Вкл/Выкл режим перемещения{' '}
-              <span className="text-cyan-500/60">(для точных степов)</span>.
+              <kbd className={keyClasses}>F</kbd> — Вкл/Выкл режим фиксации.
+              Идеально для ювелирных шагов{' '}
+              <span className="text-cyan-500/60">(Touch: центр стрелок)</span>
             </li>
           </ul>
         </article>
@@ -44,18 +66,17 @@ const TutorialModalContent: FC = () => {
           </span>
           <ul className={listClasses}>
             <li>
-              Спецприемы (Running Man, T-Step) активны только{' '}
-              <span className="text-purple-400">
-                при удержании кнопки направления.
-              </span>
+              Спецприемы работают только{' '}
+              <span className="text-purple-400">в связке с направлением</span>
             </li>
             <li>
-              <kbd className={keyClasses}>R</kbd> — Базовый шаг Running Man.
+              <kbd className={keyClasses}>R</kbd> — Базовый шаг Running Man{' '}
+              <span className="text-cyan-500/60">(Touch: кнопка RM)</span>
             </li>
             <li>
               <kbd className={keyClasses}>T</kbd> /{' '}
-              <kbd className={keyClasses}>Y</kbd> — Т-Step (левая / правая
-              нога).
+              <kbd className={keyClasses}>Y</kbd> — Т-Step (левая / правая нога){' '}
+              <span className="text-cyan-500/60">(Touch: кнопки T(L/R))</span>
             </li>
           </ul>
         </article>
@@ -66,12 +87,12 @@ const TutorialModalContent: FC = () => {
           <ul className={listClasses}>
             <li>
               Соединяй движения в связки, чтобы взломать счетчик очков и
-              активировать множители.
+              активировать множители
             </li>
             <li>
               Смена вектора — ключ к успеху! Для активации комбо необходимо{' '}
               <span className="text-purple-400">изменить направление</span>{' '}
-              движения хотя бы один раз внутри связки.
+              движения хотя бы один раз внутри связки
             </li>
           </ul>
         </article>
@@ -83,85 +104,30 @@ const TutorialModalContent: FC = () => {
             <li>
               <span className="text-cyan-300">RM</span> — Running Man,{' '}
               <span className="text-cyan-300">T(L/R)</span> — Т-Step (левая /
-              правая нога).
+              правая нога)
             </li>
-
-            {/* T-Шаффл */}
-            <li>
-              <span className="text-white font-bold whitespace-nowrap">
-                T-Шаффл:
-              </span>{' '}
-              <span className="text-cyan-300">T(L)</span>{' '}
-              <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300">T(R)</span>{' '}
-              <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300">T(L)</span>{' '}
-              <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300">T(R)</span>
-              <span className="ml-2 text-purple-400 text-[10px]">x1.1</span>
-            </li>
-
-            {/* Цепочка бега */}
-            <li>
-              <span className="text-white font-bold whitespace-nowrap">
-                Цепочка бега:
-              </span>{' '}
-              <span className="text-cyan-300">RM</span>{' '}
-              <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300">RM</span>{' '}
-              <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300">RM</span>
-              <span className="ml-2 text-purple-400 text-[10px]">x1.2</span>
-            </li>
-
-            {/* База */}
-            <li>
-              <span className="text-white font-bold whitespace-nowrap">
-                База:
-              </span>{' '}
-              <span className="text-cyan-300">RM</span>{' '}
-              <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300">T(R)</span>{' '}
-              <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300">RM</span>
-              <span className="ml-2 text-purple-400 text-[10px]">x1.3</span>
-            </li>
-
-            {/* Микс */}
-            <li>
-              <span className="text-white font-bold whitespace-nowrap">
-                Микс:
-              </span>{' '}
-              <span className="text-cyan-300">RM</span>{' '}
-              <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300">T(L)</span>{' '}
-              <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300">T(R)</span>{' '}
-              <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300">RM</span>
-              <span className="ml-2 text-purple-400 text-[10px]">x1.8</span>
-            </li>
-
-            {/* Мастер */}
-            <li>
-              <span className="text-yellow-400 font-bold whitespace-nowrap">
-                Мастер:
-              </span>{' '}
-              <span className="text-cyan-300">RM</span>{' '}
-              <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300">T(L)</span>{' '}
-              <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300">RM</span>{' '}
-              <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300">T(R)</span>{' '}
-              <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300">T(L)</span>{' '}
-              <span className="text-gray-500 text-xs">→</span>{' '}
-              <span className="text-cyan-300">RM</span>
-              <span className="ml-2 text-yellow-400 text-[10px] font-bold">
-                x2.5
-              </span>
-            </li>
+            {COMBOS.map((combo) => (
+              <li key={combo.name}>
+                <span
+                  className={`${combo.isMaster ? 'text-yellow-400' : 'text-white'} font-bold`}
+                >
+                  {combo.name}:{' '}
+                </span>
+                {combo.steps.map((step, i) => (
+                  <Fragment key={step + i}>
+                    <span className="text-cyan-300">{step}</span>{' '}
+                    {i < combo.steps.length - 1 && (
+                      <span className="text-gray-500 text-xs mx-1">→</span>
+                    )}
+                  </Fragment>
+                ))}
+                <span
+                  className={`ml-2 ${combo.isMaster ? 'text-yellow-400 font-bold' : 'text-purple-400'} text-xs`}
+                >
+                  {combo.multiplier}
+                </span>
+              </li>
+            ))}
           </ul>
         </article>
       </div>
