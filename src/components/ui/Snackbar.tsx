@@ -68,24 +68,10 @@ const Snackbar: FC<SnackbarProps> = ({
             </div>
 
             <div className="flex flex-col gap-2">
-              <Button
-                type="button"
-                variant="primary"
-                onClick={onOpen}
-                onTouchStart={onOpen}
-              >
+              <Button type="button" variant="primary" onClick={onOpen}>
                 Открыть
               </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => {
-                  console.log('123');
-
-                  onClose?.();
-                }}
-                onTouchStart={onClose}
-              >
+              <Button type="button" variant="ghost" onClick={onClose}>
                 Пропустить
               </Button>
             </div>

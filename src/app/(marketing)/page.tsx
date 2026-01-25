@@ -3,20 +3,16 @@
 import { useEffect, useState } from 'react';
 import type { ChangeEvent, MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import {
-  BackgroundParticles,
-  TutorialArrows,
-  TutorialModalSnackbar,
-} from './components';
+import { BackgroundParticles, TutorialArrows } from './components';
 import {
   MenuButton,
   MenuGhostButton,
   MenuInput,
   MenuTitle,
   Modal,
-  ModalTrigger,
+  Snackbar,
 } from '@/components/ui';
 import { TutorialModalBody } from '@/components/shared';
 import { STORAGE_KEYS } from '@/lib/constants';
@@ -27,6 +23,7 @@ export default function MarketingPage() {
   const [playerName, setPlayerName] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [showHint, setShowHint] = useState(false);
 
   const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -39,10 +36,19 @@ export default function MarketingPage() {
     }
   };
 
-  const handleTutorialClick = () => {
+  const handleTutorial = () => {
     setShowHint(false);
 
     localStorage.setItem('onboarding_complete', 'true');
+  };
+
+  const handleModalOpen = () => {
+    setIsModalOpen(true);
+    handleTutorial();
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
   };
 
   const handleStartGame = (e: MouseEvent<HTMLButtonElement>) => {
@@ -112,7 +118,6 @@ export default function MarketingPage() {
             fullWidth
             onChange={handleNameChange}
           />
-
           <MenuButton
             disabled={isLoading}
             loading={isLoading}
@@ -136,27 +141,27 @@ export default function MarketingPage() {
               {isLoading ? 'Запуск игры...' : 'Начать игру'}
             </span>
           </MenuButton>
-
-          <Modal>
-            <ModalTrigger>
-              <MenuGhostButton
-                className="relative uppercase"
-                onClick={handleTutorialClick}
-                onTouchStart={handleTutorialClick}
-              >
-                Инструкция к битве
-                <TutorialArrows show={showHint} />
-              </MenuGhostButton>
-            </ModalTrigger>
-            <TutorialModalSnackbar
-              show={showHint}
-              onOpen={handleTutorialClick}
-              onClose={handleTutorialClick}
-            />
-            <TutorialModalBody />
-          </Modal>
+          <MenuGhostButton
+            className="relative uppercase"
+            onClick={handleModalOpen}
+          >
+            Инструкция к битве
+            <TutorialArrows show={showHint} />
+          </MenuGhostButton>
         </motion.form>
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={handleModalClose}>
+        <TutorialModalBody onClose={handleModalClose} />
+      </Modal>
+
+      <Snackbar
+        title="Впервые здесь?"
+        description="Твои шансы выше, если ты знаешь правила. Изучишь?"
+        show={showHint}
+        onOpen={handleModalOpen}
+        onClose={handleTutorial}
+      />
     </div>
   );
 }

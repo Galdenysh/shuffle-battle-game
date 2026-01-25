@@ -1,9 +1,10 @@
-import type { ButtonHTMLAttributes, FC } from 'react';
+import type { ButtonHTMLAttributes, FC, Ref } from 'react';
 import { motion, MotionProps } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface ButtonBaseProps {
   variant?: 'primary' | 'ghost';
+  ref?: Ref<HTMLButtonElement>;
 }
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
@@ -33,6 +34,7 @@ export const MenuButton: FC<ButtonProps> = (props) => {
     className,
     disabled,
     children,
+    ref,
     ...other
   } = props;
 
@@ -52,6 +54,7 @@ export const MenuButton: FC<ButtonProps> = (props) => {
       whileTap={{ scale: 0.95 }}
       type="submit"
       disabled={disabled}
+      ref={ref}
       {...other}
     >
       {children}

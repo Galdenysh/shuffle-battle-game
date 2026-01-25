@@ -1,11 +1,12 @@
 
-import type { ButtonHTMLAttributes, FC } from 'react';
+import type { ButtonHTMLAttributes, FC, Ref } from 'react';
 import { motion, MotionProps } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface MenuButtonBaseProps {
   loading?: boolean;
   fullWidth?: boolean;
+  ref?: Ref<HTMLButtonElement>;
 }
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
@@ -31,6 +32,7 @@ export const MenuButton: FC<ButtonProps> = (props) => {
     loading,
     fullWidth,
     children,
+    ref,
     ...other
   } = props;
 
@@ -49,6 +51,7 @@ export const MenuButton: FC<ButtonProps> = (props) => {
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       disabled={disabled}
+      ref={ref}
       {...other}
     >
       {loading && (

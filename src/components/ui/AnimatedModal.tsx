@@ -1,104 +1,43 @@
 'use client';
 
-import {
-  cloneElement,
-  createContext,
-  isValidElement,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import type { FC, ReactElement, ReactNode } from 'react';
+import { useEffect, useRef } from 'react';
+import type { FC, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'motion/react';
 import { useMounted, useOutsideClick } from '@/hooks';
 import { createPortal } from 'react-dom';
 
-interface ModalContextType {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-}
-
-const ModalContext = createContext<ModalContextType | undefined>(undefined);
-
-export const ModalProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <ModalContext.Provider value={{ open, setOpen }}>
-      {children}
-    </ModalContext.Provider>
-  );
-};
-
-export const useModal = () => {
-  const context = useContext(ModalContext);
-
-  if (!context) {
-    throw new Error('useModal must be used within a ModalProvider');
-  }
-  return context;
-};
-
-export const Modal: FC<{ children: ReactNode }> = ({ children }) => {
-  return <ModalProvider>{children}</ModalProvider>;
-};
-
-export const ModalTrigger: FC<{ children: ReactNode }> = ({ children }) => {
-  const { setOpen } = useModal();
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  if (!isValidElement(children)) {
-    return <>{children}</>;
-  }
-
-  const child = children as ReactElement<{
-    onClick?: (e: MouseEvent) => void;
-    onTouchStart?: (e: TouchEvent) => void;
-  }>;
-
-  // Клонируем элемент, добавляя ему необходимые пропсы
-  return cloneElement(child, {
-    onClick: (e: MouseEvent) => {
-      handleOpen();
-
-      child.props.onClick?.(e);
-    },
-    onTouchStart: (e: TouchEvent) => {
-      handleOpen();
-
-      child.props.onTouchStart?.(e);
-    },
-  });
-};
-
-export const ModalBody: FC<{
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
   children: ReactNode;
   className?: string;
-}> = ({ children, className }) => {
+}
+
+export const Modal: FC<ModalProps> = ({
+  isOpen,
+  onClose,
+  children,
+  className,
+}) => {
   const modalRef = useRef<HTMLDivElement | null>(null);
-  const { open, setOpen } = useModal();
   const mounted = useMounted();
 
   useEffect(() => {
-    if (open) {
+    if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
     }
-  }, [open]);
+  }, [isOpen]);
 
-  useOutsideClick(modalRef, () => setOpen(false));
+  useOutsideClick(modalRef, onClose);
 
   if (!mounted) return null;
 
-  return createPortal(
+  const content = (
     <AnimatePresence mode="wait">
-      {open && (
+      {isOpen && (
         <motion.div
           className="fixed [perspective:800px] [transform-style:preserve-3d] inset-0 h-full w-full flex items-center justify-center z-1000"
           initial={{
@@ -113,7 +52,7 @@ export const ModalBody: FC<{
             backdropFilter: 'blur(0px)',
           }}
         >
-          <Overlay />
+          <Overlay onClose={onClose} />
 
           <motion.div
             className={cn(
@@ -147,14 +86,15 @@ export const ModalBody: FC<{
             }}
             ref={modalRef}
           >
-            <CloseButton />
+            <CloseButton onClose={onClose} />
             {children}
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>,
-    document.body
+    </AnimatePresence>
   );
+
+  return createPortal(content, document.body);
 };
 
 export const ModalContent: FC<{
@@ -184,11 +124,12 @@ export const ModalFooter: FC<{
   );
 };
 
-const Overlay: FC<{ className?: string }> = ({ className }) => {
-  const { setOpen } = useModal();
-
+const Overlay: FC<{ onClose: () => void; className?: string }> = ({
+  onClose,
+  className,
+}) => {
   const handleClose = () => {
-    setOpen(false);
+    onClose();
   };
 
   return (
@@ -209,16 +150,13 @@ const Overlay: FC<{ className?: string }> = ({ className }) => {
         backdropFilter: 'blur(0px)',
       }}
       onClick={handleClose}
-      onTouchStart={handleClose}
     ></motion.div>
   );
 };
 
-const CloseButton = () => {
-  const { setOpen } = useModal();
-
+const CloseButton: FC<{ onClose: () => void }> = ({ onClose }) => {
   const handleClose = () => {
-    setOpen(false);
+    onClose();
   };
 
   return (
@@ -229,7 +167,6 @@ const CloseButton = () => {
       )}
       aria-label="Закрыть модальное окно"
       onClick={handleClose}
-      onTouchStart={handleClose}
     >
       <svg
         className="text-white h-5 w-5 group-hover:scale-125 group-hover:rotate-3 transition duration-200"
