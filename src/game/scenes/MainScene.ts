@@ -22,6 +22,7 @@ import { combos } from '../config';
 import { Direction, GameCommand, GameState } from '@/types';
 import { ASSET_KEYS } from '../constants';
 import { DEFAULT_VALUES, STORAGE_KEYS } from '@/lib/constants';
+import logger from '@/lib/logger';
 
 export class MainScene extends Scene {
   private background: DanceFloor | null = null;
@@ -148,11 +149,11 @@ export class MainScene extends Scene {
 
   private setupLoading() {
     this.load.on('progress', (value: number) => {
-      console.log(`${Math.round(value * 100)}%`);
+      logger.debug(`${Math.round(value * 100)}%`);
     });
 
     this.load.on('complete', () => {
-      console.log('✅ Все ассеты загружены!');
+      logger.debug('✅ Все ассеты загружены!');
     });
   }
 

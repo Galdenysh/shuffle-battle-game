@@ -6,6 +6,7 @@ import type { Game, Sound } from 'phaser';
 import GameInfo from './GameInfo';
 import GameHUD from './GameHUD';
 import { useIsTouchDevice } from '@/hooks';
+import logger from '@/lib/logger';
 
 interface GameInterfaceProps {
   gameInstance?: Game | null;
@@ -32,7 +33,7 @@ const GameInterface: FC<GameInterfaceProps> = ({ gameInstance, onMounted }) => {
         soundManager.setMute(nextMuteState);
       }
     } catch (error) {
-      console.warn('⚠️ Не удалось установить состояние звука:', error);
+      logger.warn('Не удалось установить состояние звука:', error);
     }
   };
 
@@ -63,7 +64,7 @@ const GameInterface: FC<GameInterfaceProps> = ({ gameInstance, onMounted }) => {
     try {
       if (soundManager) setIsMuted(soundManager.mute);
     } catch (error) {
-      console.warn('⚠️ Не удалось получить начальное состояние звука:', error);
+      logger.warn('⚠️ Не удалось получить начальное состояние звука:', error);
     }
 
     soundManager?.on('mute', syncMuteState);

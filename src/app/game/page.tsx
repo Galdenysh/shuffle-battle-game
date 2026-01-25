@@ -8,6 +8,7 @@ import { LoadingScreen } from './components';
 import { useGameLoader } from '@/hooks';
 import { cn } from '@/lib/utils';
 import type { RefPhaserGame } from './components/PhaserGame';
+import logger from '@/lib/logger';
 
 const GameInterface = dynamic(() => import('./components/GameInterface'), {
   ssr: false,
@@ -23,7 +24,7 @@ export default function GamePage() {
 
   // useCallback обязателен, так как функция передается в массив зависимостей
   const onComplete = useCallback(() => {
-    console.log('✅ Все компоненты загружены!');
+    logger.debug('✅ Все компоненты загружены!');
   }, []);
 
   const {

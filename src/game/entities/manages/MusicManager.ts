@@ -1,3 +1,4 @@
+import logger from '@/lib/logger';
 import { Sound } from 'phaser';
 import type { Scene, Types } from 'phaser';
 
@@ -151,7 +152,7 @@ export class MusicManager {
           volumeNode.connect(this.reverbNode);
         }
       } catch (e) {
-        console.warn('⚠️ Реверберация звука не подключена.', e);
+        logger.warn('Реверберация звука не подключена.', e);
       }
     }
   }

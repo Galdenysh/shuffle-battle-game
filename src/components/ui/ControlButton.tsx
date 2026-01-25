@@ -4,7 +4,7 @@ import type {
   HTMLAttributes,
   MouseEvent,
   ReactNode,
-  RefCallback,
+  Ref,
   TouchEvent,
 } from 'react';
 import { cn } from '@/lib/utils';
@@ -20,7 +20,7 @@ interface ControlButtonProps {
   onTouchStart?: HTMLAttributes<HTMLButtonElement>['onTouchStart'];
   onTouchEnd?: HTMLAttributes<HTMLButtonElement>['onTouchEnd'];
   onTouchCancel?: HTMLAttributes<HTMLButtonElement>['onTouchCancel'];
-  ref?: RefCallback<HTMLButtonElement>;
+  ref?: Ref<HTMLButtonElement>;
 }
 
 const buttonClasses = {

@@ -1,30 +1,22 @@
-
 import type { FC } from 'react';
-import { MenuButton, ModalBody, ModalFooter, useModal } from '@/components/ui';
+import { MenuButton, ModalFooter } from '@/components/ui';
 import TutorialModalContent from './TutorialModalContent';
 
-export const TutorialModalBody: FC<{ className?: string }> = ({ className }) => {
-  const { setOpen } = useModal();
-
+export const TutorialModalBody: FC<{ onClose?: () => void }> = ({
+  onClose,
+}) => {
   const handleClose = () => {
-    setOpen(false);
+    onClose?.();
   };
 
   return (
     <>
-      <ModalBody className={className}>
-        <TutorialModalContent />
-        <ModalFooter>
-          <MenuButton
-            className="uppercase"
-            fullWidth
-            onClick={handleClose}
-            onTouchStart={handleClose}
-          >
-            Понятно
-          </MenuButton>
-        </ModalFooter>
-      </ModalBody>
+      <TutorialModalContent />
+      <ModalFooter>
+        <MenuButton className="uppercase" fullWidth onClick={handleClose}>
+          Понятно
+        </MenuButton>
+      </ModalFooter>
     </>
   );
 };

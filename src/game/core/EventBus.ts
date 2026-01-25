@@ -1,5 +1,6 @@
 import { Events } from 'phaser';
 import type { GameEvent } from '@/types';
+import logger from '@/lib/logger';
 
 class ReadyEventEmitter extends Events.EventEmitter {
   private isReady: boolean = false;
@@ -14,12 +15,12 @@ class ReadyEventEmitter extends Events.EventEmitter {
       this.isReady = true;
 
       if (this.pendingEvents.length) {
-        console.log(
+        logger.debug(
           '✅ EventBus готов. 📨 Количество обрабатываемых событий из очереди:',
           this.pendingEvents.length
         );
       } else {
-        console.log('✅ EventBus готов');
+        logger.debug('✅ EventBus готов');
       }
 
       this.pendingEvents.forEach(([event, args]) => super.emit(event, ...args));
@@ -31,7 +32,7 @@ class ReadyEventEmitter extends Events.EventEmitter {
     if (!this.isReady) {
       this.pendingEvents.push([event, args]);
 
-      console.log(`📥 Событие ${event.toString()} добавлено в очередь`);
+      logger.debug(`Событие ${event.toString()} добавлено в очередь`);
 
       return true;
     }

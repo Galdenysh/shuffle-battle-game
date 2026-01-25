@@ -14,3 +14,5 @@ export { default as MenuTitle } from './MenuTitle';
 export { default as ScoreDisplay } from './ScoreDisplay';
 export { default as LevelControls } from './LevelControls';
 export * from './AnimatedModal';
+export { default as Snackbar } from './Snackbar';
+export { default as Button } from './Button';

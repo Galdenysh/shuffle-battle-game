@@ -5,13 +5,7 @@ import type { FC } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import {
-  Modal,
-  ModalTrigger,
-  MuteIcon,
-  RulesIcon,
-  ShowHideIcon,
-} from '@/components/ui';
+import { Modal, MuteIcon, RulesIcon, ShowHideIcon } from '@/components/ui';
 import { TutorialModalBody } from '@/components/shared';
 import { DEFAULT_VALUES, STORAGE_KEYS } from '@/lib/constants';
 
@@ -41,6 +35,7 @@ const GameInfo: FC<GameInfoProps> = ({
 }) => {
   const router = useRouter();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const playerName =
     (typeof window !== 'undefined' &&
@@ -57,12 +52,22 @@ const GameInfo: FC<GameInfoProps> = ({
     setIsExpanded(!isExpanded);
   };
 
-  const handleMuted = () => {
-    onMuted?.();
+  const handleModalOpen = () => {
+    setIsModalOpen(true);
+
+    localStorage.setItem('onboarding_complete', 'true');
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
   };
 
   const handleVisibleGamepad = () => {
     onVisibleGamepad?.(!isVisibleGamepad);
+  };
+
+  const handleMuted = () => {
+    onMuted?.();
   };
 
   const handleExit = () => {
@@ -76,7 +81,7 @@ const GameInfo: FC<GameInfoProps> = ({
         'flex items-center gap-1.5 min-w-fit px-1.5 py-1.5',
         'bg-black/50 backdrop-blur-sm border-2 border-purple-500/30',
         'shadow-[0_0_4px_rgba(147,51,234,0.15)]',
-        'text-purple-300/90  text-xs',
+        'text-purple-300/90 text-xs'
       )}
     >
       <div
@@ -133,27 +138,23 @@ const GameInfo: FC<GameInfoProps> = ({
         </motion.div>
       </div>
       <div className="h-3 w-px bg-purple-600/50" />
-      <Modal>
-        <ModalTrigger>
-          <button
-            className={cn(
-              buttonClasses.base,
-              buttonClasses.baseIcon,
-              buttonClasses.hover,
-              buttonClasses.active,
-              buttonClasses.focus,
-              buttonClasses.disabled
-            )}
-            type="button"
-            title="Инструкция к битве"
-            aria-label="Инструкция к битве"
-          >
-            <RulesIcon />
-          </button>
-        </ModalTrigger>
-        <TutorialModalBody />
-      </Modal>
-
+      <button
+        className={cn(
+          buttonClasses.base,
+          buttonClasses.baseIcon,
+          buttonClasses.hover,
+          buttonClasses.active,
+          buttonClasses.focus,
+          buttonClasses.disabled
+        )}
+        type="button"
+        title="Инструкция к битве"
+        aria-label="Инструкция к битве"
+        onClick={handleModalOpen}
+        onTouchStart={handleModalOpen}
+      >
+        <RulesIcon />
+      </button>
       <button
         className={cn(
           buttonClasses.base,
@@ -204,6 +205,10 @@ const GameInfo: FC<GameInfoProps> = ({
       >
         EXIT
       </button>
+
+      <Modal isOpen={isModalOpen} onClose={handleModalClose}>
+        <TutorialModalBody onClose={handleModalClose} />
+      </Modal>
     </div>
   );
 };

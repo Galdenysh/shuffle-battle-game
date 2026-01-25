@@ -4,6 +4,7 @@ import { MainScene } from '../scenes';
 
 export const config: Types.Core.GameConfig = {
   title: 'Shuffle Battle',
+  banner: process.env.NODE_ENV === 'development',
 
   type: AUTO,
 
