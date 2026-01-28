@@ -39,7 +39,7 @@ const TutorialModalContent: FC = () => {
       </h2>
 
       <div className="grid grid-cols-1 gap-4 text-sm text-cyan-100/80">
-        <article className="p-4 border border-cyan-500/20 bg-cyan-500/5">
+        <article className="p-3 md:p-4 border border-cyan-500/20 bg-cyan-500/5">
           <span className="text-cyan-400 block mb-1 uppercase">
             01. Управление
           </span>
@@ -56,18 +56,22 @@ const TutorialModalContent: FC = () => {
             <li>
               <kbd className={keyClasses}>F</kbd> — Вкл/Выкл режим фиксации.
               Идеально для ювелирных шагов{' '}
-              <span className="text-cyan-500/60">(Touch: центр стрелок)</span>
+              <span className="text-cyan-500/60">
+                (Touch: кнопка в центре стрелок)
+              </span>
             </li>
           </ul>
         </article>
-        <article className="p-4 border border-blue-500/20 bg-blue-500/5">
+        <article className="p-3 md:p-4 border border-blue-500/20 bg-blue-500/5">
           <span className="text-blue-400 block mb-1 uppercase">
             02. Спецприемы
           </span>
           <ul className={listClasses}>
             <li>
-              Спецприемы работают только{' '}
-              <span className="text-purple-400">в связке с направлением</span>
+              Спецприемы работают только при{' '}
+              <span className="text-purple-400">
+                <span className="font-bold">удержании</span> клавиши направления
+              </span>
             </li>
             <li>
               <kbd className={keyClasses}>R</kbd> — Базовый шаг Running Man{' '}
@@ -80,7 +84,7 @@ const TutorialModalContent: FC = () => {
             </li>
           </ul>
         </article>
-        <article className="p-4 border border-violet-500/20 bg-violet-500/5">
+        <article className="p-3 md:p-4 border border-violet-500/20 bg-violet-500/5">
           <span className="text-violet-400 block mb-1 uppercase">
             03. Правила связок
           </span>
@@ -92,11 +96,15 @@ const TutorialModalContent: FC = () => {
             <li>
               Смена вектора — ключ к успеху! Для активации комбо необходимо{' '}
               <span className="text-purple-400">изменить направление</span>{' '}
-              движения хотя бы один раз внутри связки
+              движения{' '}
+              <span className="text-purple-400">
+                хотя бы <span className="font-bold">один раз</span>
+              </span>{' '}
+              внутри связки
             </li>
           </ul>
         </article>
-        <article className="p-4 border border-fuchsia-500/20 bg-fuchsia-500/5">
+        <article className="p-3 md:p-4 border border-fuchsia-500/20 bg-fuchsia-500/5">
           <span className="text-fuchsia-400 block mb-1 uppercase">
             04. Комбо-связки
           </span>
@@ -115,12 +123,15 @@ const TutorialModalContent: FC = () => {
                 </span>
                 {combo.steps.map((step, i) => (
                   <Fragment key={step + i}>
-                    <span className="text-cyan-300">{step}</span>{' '}
+                    <span className="text-cyan-300">{step}</span>
                     {i < combo.steps.length - 1 && (
-                      <span className="text-gray-500 text-xs mx-1">→</span>
+                      <span className="text-gray-500 text-xs mx-1">
+                        ⮕{'\u200B'}
+                      </span>
                     )}
                   </Fragment>
                 ))}
+                {'\u200B'}
                 <span
                   className={`ml-2 ${combo.isMaster ? 'text-yellow-400 font-bold' : 'text-purple-400'} text-xs`}
                 >

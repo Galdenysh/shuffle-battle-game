@@ -120,8 +120,8 @@ const GameInfo: FC<GameInfoProps> = ({
                 }
               : {
                   type: 'tween',
-                  duration: 0.2,
                   ease: 'circOut',
+                  duration: 0.2,
                 }
           }
         >

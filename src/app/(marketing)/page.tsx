@@ -107,7 +107,12 @@ export default function MarketingPage() {
           )}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{
+            type: 'tween',
+            ease: 'easeOut',
+            duration: 0.6,
+            delay: 0.2,
+          }}
         >
           <MenuInput
             id="playerName"
