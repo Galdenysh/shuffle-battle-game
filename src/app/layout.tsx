@@ -2,7 +2,7 @@ import './globals.css';
 
 import type { ReactNode } from 'react';
 import type { Metadata, Viewport } from 'next';
-import { JetBrains_Mono } from 'next/font/google';
+import { JetBrains_Mono, Orbitron } from 'next/font/google';
 import { OrientationLock, PreventZoom, VKProvider } from '@/components';
 import { cn } from '@/lib/utils';
 import { siteConfig } from '@/lib/constants';
@@ -12,6 +12,13 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
   display: 'swap',
   weight: ['400', '500', '600', '700'],
+});
+
+const orbitron = Orbitron({
+  subsets: ['latin'],
+  variable: '--font-orbitron',
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '900'],
 });
 
 export const metadata: Metadata = {
@@ -74,6 +81,7 @@ export default function RootLayout({
       <body
         className={cn(
           jetbrainsMono.variable,
+          orbitron.variable,
           'font-mono antialiased',
           'h-full m-0 p-0 bg-black overflow-hidden'
         )}

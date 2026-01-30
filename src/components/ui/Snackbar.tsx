@@ -33,7 +33,11 @@ const Snackbar: FC<SnackbarProps> = ({
           initial={{ opacity: 0, x: 50, scale: 0.9 }}
           animate={{ opacity: 1, x: 0, scale: 1 }}
           exit={{ opacity: 0, x: 20, scale: 0.95 }}
-          transition={{ type: 'spring', damping: 20, stiffness: 200 }}
+          transition={{
+            type: 'tween',
+            ease: 'easeOut',
+            duration: 0.3,
+          }}
           className={cn(
             'fixed top-0 left-0 right-0 flex p-4 pointer-events-none',
             'justify-center',

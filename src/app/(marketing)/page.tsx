@@ -95,7 +95,14 @@ export default function MarketingPage() {
       <div className={cn('max-w-md')}>
         <MenuTitle
           className="mb-12"
-          title="Shuffle Battle"
+          title={
+            <>
+              <span className="text-stroke-purple-400">
+                Shuffle
+              </span>{' '}
+              <span className="text-stroke-cyan-400">Battle</span>
+            </>
+          }
           subtitle="Твой танцевальный вызов начинается здесь"
         />
 
@@ -107,7 +114,12 @@ export default function MarketingPage() {
           )}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{
+            type: 'tween',
+            ease: 'easeOut',
+            duration: 0.6,
+            delay: 0.2,
+          }}
         >
           <MenuInput
             id="playerName"
