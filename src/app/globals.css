@@ -4,8 +4,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo,
-    Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --font-mono: var(--font-jetbrains-mono), monospace;
+  --font-header: var(--font-orbitron), monospace;
   --font-display: 'Inter', 'sans-serif';
   --color-primary-500: oklch(0.84 0.18 117.33);
   --spacing: 0.25rem;
@@ -163,6 +163,11 @@
     scrollbar-width: thin;
     scrollbar-color: theme('colors.cyan.500 / 40%') rgba(0, 0, 0, 0.3);
   }
+}
+
+@utility text-stroke-* {
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: --value(--color-*); 
 }
 
 .no-scroll {

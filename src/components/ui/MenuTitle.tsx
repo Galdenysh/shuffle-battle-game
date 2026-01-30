@@ -1,10 +1,10 @@
-import type { FC } from 'react';
+import type { FC, ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface TitleProps {
-  title: string;
-  subtitle?: string;
+  title: string | ReactNode;
+  subtitle?: string | ReactNode;
   className?: string;
 }
 
@@ -22,7 +22,7 @@ export const MenuTitle: FC<TitleProps> = ({ title, subtitle, className }) => {
     >
       <h1
         className={cn(
-          'text-5xl md:text-6xl font-bold bg-clip-text text-transparent uppercase tracking-wider bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 drop-shadow-[0_0_10px_rgba(0,255,255,0.7)]'
+          'font-header text-5xl md:text-6xl text-white font-black uppercase tracking-wider drop-shadow-[0_0_10px_rgba(0,255,255,0.7)]'
         )}
       >
         {title}

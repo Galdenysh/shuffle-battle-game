@@ -95,7 +95,14 @@ export default function MarketingPage() {
       <div className={cn('max-w-md')}>
         <MenuTitle
           className="mb-12"
-          title="Shuffle Battle"
+          title={
+            <>
+              <span className="text-stroke-purple-400">
+                Shuffle
+              </span>{' '}
+              <span className="text-stroke-cyan-400">Battle</span>
+            </>
+          }
           subtitle="Твой танцевальный вызов начинается здесь"
         />
 
